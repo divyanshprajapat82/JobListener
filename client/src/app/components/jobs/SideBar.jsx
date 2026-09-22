@@ -34,29 +34,29 @@
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li> */}
 //                                 <li className='flex justify-between items-center'>
-//                                     <label class="checkbox-label"> <input type="checkbox" className='checkbox' />
+//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' />
 //                                         Commerce
 //                                     </label>
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li>
 
 //                                 <li className='flex justify-between items-center'>
-//                                     <label class="checkbox-label"> <input type="checkbox" className='checkbox' />
+//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' />
 
 //                                         Telecomunications
 //                                     </label>
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li>
 //                                 <li className='flex justify-between items-center'>
-//                                     <label class="checkbox-label"> <input type="checkbox" className='checkbox' /> Hotels & Tourism </label>
+//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> Hotels & Tourism </label>
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li>
 //                                 <li className='flex justify-between items-center'>
-//                                     <label class="checkbox-label"> <input type="checkbox" className='checkbox' /> Education </label>
+//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> Education </label>
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li>
 //                                 <li className='flex justify-between items-center'>
-//                                     <label class="checkbox-label"> <input type="checkbox" className='checkbox' />Financial Services </label>
+//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' />Financial Services </label>
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li>
 //                             </ul>
@@ -69,23 +69,23 @@
 //                             <h4 className='font-semibold text-[18px] my-1'> Job Type</h4>
 //                             <ul className='grid space-y-1 mt-2'>
 //                                 <li className='flex justify-between items-center'>
-//                                     <span class="checkbox-label"> <input type="checkbox" className='checkbox' /> Full Time </span>
+//                                     <span className="checkbox-label"> <input type="checkbox" className='checkbox' /> Full Time </span>
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li>
 //                                 <li className='flex justify-between items-center'>
-//                                     <span class="checkbox-label"> <input type="checkbox" className='checkbox' /> Part Time </span>
+//                                     <span className="checkbox-label"> <input type="checkbox" className='checkbox' /> Part Time </span>
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li>
 //                                 <li className='flex justify-between items-center'>
-//                                     <span class="checkbox-label"> <input type="checkbox" className='checkbox' /> Freelance </span>
+//                                     <span className="checkbox-label"> <input type="checkbox" className='checkbox' /> Freelance </span>
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li>
 //                                 <li className='flex justify-between items-center'>
-//                                     <span class="checkbox-label"> <input type="checkbox" className='checkbox' /> Seasonal </span>
+//                                     <span className="checkbox-label"> <input type="checkbox" className='checkbox' /> Seasonal </span>
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li>
 //                                 <li className='flex justify-between items-center'>
-//                                     <span class="checkbox-label"> <input type="checkbox" className='checkbox' /> Fixed-Price </span>
+//                                     <span className="checkbox-label"> <input type="checkbox" className='checkbox' /> Fixed-Price </span>
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li>
 //                             </ul>
@@ -94,19 +94,19 @@
 //                             <h4 className='font-semibold text-[18px] my-1'> Experience Level</h4>
 //                             <ul className='grid space-y-1 mt-2'>
 //                                 <li className='flex justify-between items-center'>
-//                                     <label class="checkbox-label"> <input type="checkbox" className='checkbox' /> No-experience </label>
+//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> No-experience </label>
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li>
 //                                 <li className='flex justify-between items-center'>
-//                                     <label class="checkbox-label"> <input type="checkbox" className='checkbox' /> Fresher </label>
+//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> Fresher </label>
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li>
 //                                 <li className='flex justify-between items-center'>
-//                                     <label class="checkbox-label"> <input type="checkbox" className='checkbox' /> Intermediate </label>
+//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> Intermediate </label>
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li>
 //                                 <li className='flex justify-between items-center'>
-//                                     <label class="checkbox-label"> <input type="checkbox" className='checkbox' /> Expert </label>
+//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> Expert </label>
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li>
 //                             </ul>
@@ -115,23 +115,23 @@
 //                             <h4 className='font-semibold text-[18px] my-1'> Date Posted</h4>
 //                             <ul className='grid space-y-1 mt-2'>
 //                                 <li className='flex justify-between items-center'>
-//                                     <label class="checkbox-label"> <input type="checkbox" className='checkbox' /> All </label>
+//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> All </label>
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li>
 //                                 <li className='flex justify-between items-center'>
-//                                     <label class="checkbox-label"> <input type="checkbox" className='checkbox' /> Last Hour </label>
+//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> Last Hour </label>
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li>
 //                                 <li className='flex justify-between items-center'>
-//                                     <label class="checkbox-label"> <input type="checkbox" className='checkbox' /> Last 24 Hours </label>
+//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> Last 24 Hours </label>
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li>
 //                                 <li className='flex justify-between items-center'>
-//                                     <label class="checkbox-label"> <input type="checkbox" className='checkbox' /> Last 7 Days </label>
+//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> Last 7 Days </label>
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li>
 //                                 <li className='flex justify-between items-center'>
-//                                     <label class="checkbox-label"> <input type="checkbox" className='checkbox' /> Last 30 Days </label>
+//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> Last 30 Days </label>
 //                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
 //                                 </li>
 //                             </ul>

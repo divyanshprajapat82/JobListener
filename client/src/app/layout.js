@@ -5,6 +5,7 @@ import Footer from "./common/Footer";
 import { Toaster } from "sonner";
 import { MdError } from "react-icons/md";
 import { MainContext } from "./context/MainContext";
+import LoginPopup from "./common/LoginPopup";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default function RootLayout({ children }) {
           <Toaster richColors />
           <Header />
           {children}
+          <LoginPopup />
           <Footer />
         </MainContext>
       </body>

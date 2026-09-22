@@ -184,7 +184,7 @@ export default function Header() {
 
   return (
     <>
-      <div className="bg-[#000] px-4 z-10">
+      <div className="bg-[#000] px-4 z-10 select-none">
         <div className="max-w-[1200px] m-auto">
           <div className="flex items-center justify-between relative">
             <div className="text-[20px] text-[#fff] font-semibold">
@@ -253,15 +253,19 @@ export default function Header() {
             </div>
 
             <div className="flex items-center space-x-8 relative">
-              <div>
-                <div className="relative cursor-pointer" onClick={() => setIsNotifOpen(!isNotifOpen)}>
-                  <FaBell className="w-5 h-5 text-gray-300 hover:text-white transition" />
-                  <span className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-black">
-                    {count}
-                  </span>
-                </div>
+              {user &&
+                <div>
+                  <div className="relative cursor-pointer" onClick={() => setIsNotifOpen(!isNotifOpen)}>
+                    <FaBell className="w-5 h-5 text-gray-300 hover:text-white transition" />
+                    {notifications?.length > 0 &&
+                      <span className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-black">
+                        {count}
+                      </span>
+                    }
+                  </div>
 
-                {/* {isNotifOpen && (
+
+                  {/* {isNotifOpen && (
                   <div className="absolute top-15 right-10 md:right-0 w-80 sm:w-96 bg-gray-900 rounded-2xl shadow-2xl shadow-black/60 border border-gray-800 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200 z-40">
 
                     <div className="px-4 py-3 border-b border-gray-800 flex justify-between items-center bg-gray-900">
@@ -303,75 +307,76 @@ export default function Header() {
                   </div>
                 )} */}
 
-                {isNotifOpen && (
-                  <>
-                    {/* <div className="h-[100%] w-[100%] text-white absolute top-15 right-0">
+                  {isNotifOpen && (
+                    <>
+                      {/* <div className="h-[100%] w-[100%] text-white absolute top-15 right-0">
                     </div> */}
-                    <div className="absolute top-15 right-0 md:right-10 w-80 sm:w-96 bg-[#1f1f1f] border border-gray-700 rounded-xl shadow-lg overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200 z-50">
-                      <div className="px-4 py-3 border-b border-gray-700 flex justify-between items-center bg-[#1f1f1f]">
-                        <span className="font-bold text-gray-100">Notifications</span>
-                        <button
-                          onClick={readAllNotification}
-                          className="text-xs font-bold text-red-500 hover:text-red-600 transition-colors cursor-pointer">Mark all as read</button>
-                      </div>
-
-                      <div className="max-h-80 overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-[#1f1f1f] [&::-webkit-scrollbar-thumb]:bg-[#3f3f3f] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#555]">
-                        {notifications?.length === 0 ? (
-                          <div className="flex flex-col items-center justify-center py-10 px-5 text-center">
-                            <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
-                              <FaBell className="text-gray-400 text-xl" />
-                            </div>
-
-                            <h4 className="text-sm font-bold text-white">
-                              No notifications
-                            </h4>
-
-                            <p className="text-xs text-gray-400 mt-1">
-                              You don't have any notifications yet. We'll let you know when
-                              something important happens.
-                            </p>
-                          </div>
-                        ) : (notifications.slice(0, 4).map((item) => (
-                          <Link key={item._id} href={`/notifications/${item._id}`}>
-                            <div
-                              onClick={() => setIsNotifOpen(false)}
-                              className={`p-4 border-b border-gray-700 hover:bg-[#2a2a2a] transition flex gap-3 cursor-pointer ${!item.isRead ? 'bg-[#2a1a1a]' : 'bg-transparent'}`}
-                            >
-                              {/* <div className="mt-1 shrink-0">{item.icon}</div> */}
-                              {item.applicationId?.status &&
-                                <FaCheckCircle className="text-green-500" size={20} />
-                              }
-                              <div>
-                                <h4 className={`text-sm font-bold ${!item.isRead ? 'text-white' : 'text-gray-300'}`}>
-                                  {item.subject}
-                                </h4>
-                                <p className="text-xs text-gray-400 mt-0.5 leading-relaxed line-clamp-2">
-                                  {item.message}
-                                </p>
-                                <span className="text-[10px] font-bold text-gray-500 mt-1 block">
-                                  {getLocalTimeAgo(item.createdAt)}
-                                </span>
-                              </div>
-                              {!item.isRead && (
-                                <div className="w-2 h-2 bg-[#d00] rounded-full shrink-0 mt-1.5 ml-auto"></div>
-                              )}
-                            </div>
-                          </Link>
-                        )))}
-                      </div>
-
-                      <Link href="/notifications">
-                        <div onClick={() => setIsNotifOpen(false)} s className="p-3 bg-[#1f1f1f] border-t border-gray-700 text-center cursor-pointer group">
-                          <div className="text-sm font-bold text-gray-300 group-hover:text-[#d00] transition-colors">
-                            View all notifications
-                          </div>
+                      <div className="absolute top-15 right-0 md:right-10 w-80 sm:w-96 bg-[#1f1f1f] border border-gray-700 rounded-xl shadow-lg overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200 z-50">
+                        <div className="px-4 py-3 border-b border-gray-700 flex justify-between items-center bg-[#1f1f1f]">
+                          <span className="font-bold text-gray-100">Notifications</span>
+                          <button
+                            onClick={readAllNotification}
+                            className="text-xs font-bold text-red-500 hover:text-red-600 transition-colors cursor-pointer">Mark all as read</button>
                         </div>
-                      </Link>
-                    </div>
-                  </>
-                )}
 
-              </div>
+                        <div className="max-h-80 overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-[#1f1f1f] [&::-webkit-scrollbar-thumb]:bg-[#3f3f3f] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#555]">
+                          {notifications?.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center py-10 px-5 text-center">
+                              <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+                                <FaBell className="text-gray-400 text-xl" />
+                              </div>
+
+                              <h4 className="text-sm font-bold text-white">
+                                No notifications
+                              </h4>
+
+                              <p className="text-xs text-gray-400 mt-1">
+                                You don't have any notifications yet. We'll let you know when
+                                something important happens.
+                              </p>
+                            </div>
+                          ) : (notifications.slice(0, 4).map((item) => (
+                            <Link key={item._id} href={`/notifications/${item._id}`}>
+                              <div
+                                onClick={() => setIsNotifOpen(false)}
+                                className={`p-4 border-b border-gray-700 hover:bg-[#2a2a2a] transition flex gap-3 cursor-pointer ${!item.isRead ? 'bg-[#2a1a1a]' : 'bg-transparent'}`}
+                              >
+                                {/* <div className="mt-1 shrink-0">{item.icon}</div> */}
+                                {item.applicationId?.status &&
+                                  <FaCheckCircle className="text-green-500" size={20} />
+                                }
+                                <div>
+                                  <h4 className={`text-sm font-bold ${!item.isRead ? 'text-white' : 'text-gray-300'}`}>
+                                    {item.subject}
+                                  </h4>
+                                  <p className="text-xs text-gray-400 mt-0.5 leading-relaxed line-clamp-2">
+                                    {item.message}
+                                  </p>
+                                  <span className="text-[10px] font-bold text-gray-500 mt-1 block">
+                                    {getLocalTimeAgo(item.createdAt)}
+                                  </span>
+                                </div>
+                                {!item.isRead && (
+                                  <div className="w-2 h-2 bg-[#d00] rounded-full shrink-0 mt-1.5 ml-auto"></div>
+                                )}
+                              </div>
+                            </Link>
+                          )))}
+                        </div>
+
+                        <Link href="/notifications">
+                          <div onClick={() => setIsNotifOpen(false)} s className="p-3 bg-[#1f1f1f] border-t border-gray-700 text-center cursor-pointer group">
+                            <div className="text-sm font-bold text-gray-300 group-hover:text-[#d00] transition-colors">
+                              View all notifications
+                            </div>
+                          </div>
+                        </Link>
+                      </div>
+                    </>
+                  )}
+
+                </div>
+              }
               {/* </div> */}
               {user ? (
                 <div>

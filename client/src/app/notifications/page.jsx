@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { FaBell, FaBriefcase, FaEnvelope, FaBuilding, FaCheckCircle, FaTrashAlt } from 'react-icons/fa';
 import { toast } from 'sonner';
 import { useAuth } from '../context/MainContext';
+import LoginPopup from '../common/LoginPopup';
 
 export default function FullNotificationsPage() {
     const [activeFilter, setActiveFilter] = useState('All');
@@ -224,6 +225,8 @@ export default function FullNotificationsPage() {
 
     return (
         <div className="min-h-screen bg-gray-50 font-sans text-gray-900 pb-20">
+
+            {/* <LoginPopup /> */}
 
             {/* <nav className="bg-black text-white px-6 py-4 flex items-center justify-between shadow-sm sticky top-0 z-40">
                 <div className="flex items-center space-x-2">

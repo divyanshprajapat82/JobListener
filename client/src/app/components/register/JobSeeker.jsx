@@ -220,10 +220,10 @@ export default function JobSeeker() {
       <div className="p-2 mt-4">
         <form
           onSubmit={handleSubmit}
-          class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4"
+          className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4"
         >
           <div>
-            <label class="block text-sm font-semibold mb-1">
+            <label className="block text-sm font-semibold mb-1">
               First Name <span className="text-red-500">*</span>
             </label>
             <div
@@ -239,8 +239,8 @@ export default function JobSeeker() {
                 name="firstName"
                 value={data.firstName}
                 onChange={handleChange}
-                // noValidate
-                // required
+              // noValidate
+              // required
               />
             </div>
             {error.firstName && (
@@ -249,7 +249,7 @@ export default function JobSeeker() {
           </div>
 
           <div>
-            <label class="block text-sm font-semibold mb-1">last Name</label>
+            <label className="block text-sm font-semibold mb-1">last Name</label>
             <div
               className="w-full flex items-center gap-2 rounded-2xl border border-gray-200 px-4 py-3
                             focus-within:ring-2 focus-within:ring-red-500
@@ -262,7 +262,7 @@ export default function JobSeeker() {
                 name="lastName"
                 value={data.lastName}
                 onChange={handleChange}
-                // required
+              // required
               />
             </div>
             {error.lastName && (
@@ -271,7 +271,7 @@ export default function JobSeeker() {
           </div>
 
           <div>
-            <label class="block text-sm font-semibold mb-1">
+            <label className="block text-sm font-semibold mb-1">
               Email Address
             </label>
             <div
@@ -290,7 +290,7 @@ export default function JobSeeker() {
                 name="email"
                 value={data.email}
                 onChange={handleChange}
-                // required
+              // required
               />
             </div>
             {error.email && (
@@ -299,7 +299,7 @@ export default function JobSeeker() {
           </div>
 
           <div>
-            <label class="block text-sm font-semibold mb-1">
+            <label className="block text-sm font-semibold mb-1">
               Mobile Number
             </label>
             <div
@@ -318,7 +318,7 @@ export default function JobSeeker() {
                 name="mobile"
                 value={data.mobile}
                 onChange={handleChange}
-                // required
+              // required
               />
             </div>
             {error.mobile && (
@@ -327,7 +327,7 @@ export default function JobSeeker() {
           </div>
 
           <div>
-            <label class="block text-sm font-semibold mb-1">
+            <label className="block text-sm font-semibold mb-1">
               Password <span className="text-red-500">*</span>
             </label>
             <div
@@ -345,7 +345,7 @@ export default function JobSeeker() {
                 name="password"
                 value={data.password}
                 onChange={handleChange}
-                // required
+              // required
               />
               <span
                 onClick={() => setPasswordShow(!passwordShow)}
@@ -360,7 +360,7 @@ export default function JobSeeker() {
           </div>
 
           <div>
-            <label class="block text-sm font-semibold mb-1">
+            <label className="block text-sm font-semibold mb-1">
               Confirm Password <span className="text-red-500">*</span>
             </label>
             <div
@@ -379,7 +379,7 @@ export default function JobSeeker() {
                 name="confirmPassword"
                 value={data.confirmPassword}
                 onChange={handleChange}
-                // required
+              // required
               />
             </div>
             {error.confirmPassword && (
@@ -400,7 +400,7 @@ export default function JobSeeker() {
           <br className="hidden md:block" />
 
           <div>
-            <label class="block text-sm font-semibold mb-1">
+            <label className="block text-sm font-semibold mb-1">
               Date of Birth <span className="text-red-500">*</span>
             </label>
             <div
@@ -419,7 +419,7 @@ export default function JobSeeker() {
                 name="dateOfBirth"
                 value={data.dateOfBirth}
                 onChange={handleChange}
-                // required
+              // required
               />
             </div>
             {error.dateOfBirth && (
@@ -428,7 +428,7 @@ export default function JobSeeker() {
           </div>
 
           {/* <div>
-            <label class="block text-sm font-semibold mb-1">
+            <label className="block text-sm font-semibold mb-1">
               Mobile Number
             </label>
             <div
@@ -451,7 +451,7 @@ export default function JobSeeker() {
           </div> */}
 
           <div className="w-full max-w-md">
-            <label class="block text-sm font-semibold mb-1">
+            <label className="block text-sm font-semibold mb-1">
               Gender <span className="text-red-500">*</span>
             </label>
 
@@ -494,8 +494,8 @@ export default function JobSeeker() {
 
           {/* ----------- */}
 
-          {/* <div class="md:col-span-2">
-            <label class="block text-sm font-semibold mb-1">
+          {/* <div className="md:col-span-2">
+            <label className="block text-sm font-semibold mb-1">
               Current Location <span className="text-red-500">*</span>
             </label>
             <div
@@ -518,19 +518,19 @@ export default function JobSeeker() {
             </div>
           </div> */}
 
-          {/* <div class="md:col-span-2">
-            <label class="block text-sm font-semibold mb-1">Message</label>
+          {/* <div className="md:col-span-2">
+            <label className="block text-sm font-semibold mb-1">Message</label>
             <textarea
               rows="5"
               placeholder="Write your message here..."
-              class="w-full rounded-2xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
+              className="w-full rounded-2xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
             ></textarea>
           </div> */}
 
-          <div class="md:col-span-2 flex justify-end">
+          <div className="md:col-span-2 flex justify-end">
             <button
               type="submit"
-              class="px-12 py-3 rounded-2xl bg-red-600 text-white font-semibold hover:bg-red-700 transition cursor-pointer"
+              className="px-12 py-3 rounded-2xl bg-red-600 text-white font-semibold hover:bg-red-700 transition cursor-pointer"
             >
               Register
             </button>

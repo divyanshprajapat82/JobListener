@@ -42,13 +42,13 @@ export const MainContext = ({ children }) => {
         if (finalData.success) {
           setUser(finalData.data);
         } else {
-          console.log(finalData.message);
+          // console.log(finalData.message);
         }
       })
       .catch((err) => {
         if (err.response?.status === 401) {
           setUser(null);
-          toast.error(err.response.data.message);
+          // toast.error(err.response.data.message);
         } else if (err.response) {
           toast.error(err.response.data.message);
         } else {
@@ -229,7 +229,7 @@ export const MainContext = ({ children }) => {
       .then((finalData) => {
         if (finalData.success) {
           setJobs(finalData.data);
-          console.log(finalData.data);
+          // console.log(finalData.data);
         } else {
           toast.error(finalData.message);
         }
@@ -271,14 +271,14 @@ export const MainContext = ({ children }) => {
       }
 
     } catch (err) {
-      console.error(
-        "Notification error:",
-        err.response?.data || err
-      );
+      // console.error(
+      //   "Notification error:",
+      //   err.response?.data || err
+      // );
 
-      toast.error(
-        err.response?.data?.message
-      );
+      // toast.error(
+      //   err.response?.data?.message
+      // );
 
     }
     // finally {

@@ -117,86 +117,86 @@ export default function Home() {
         <MoreJobs />
       </div>
 
-      {/* <section class="max-w-[1200px] mx-auto px-4 pb-10">
-        <div class="flex items-end justify-between gap-3 flex-wrap">
+      {/* <section className="max-w-[1200px] mx-auto px-4 pb-10">
+        <div className="flex items-end justify-between gap-3 flex-wrap">
           <div>
-            <h2 class="text-2xl font-extrabold">Featured Jobs</h2>
-            <p class="mt-2 text-gray-600">Hand-picked roles trending this week.</p>
+            <h2 className="text-2xl font-extrabold">Featured Jobs</h2>
+            <p className="mt-2 text-gray-600">Hand-picked roles trending this week.</p>
           </div>
-          <a href="#" class="font-semibold text-red-600 hover:underline">View all jobs</a>
+          <a href="#" className="font-semibold text-red-600 hover:underline">View all jobs</a>
         </div>
 
-        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100">
-            <div class="flex items-start justify-between">
-              <p class="text-xs font-semibold px-2 py-1 rounded-full bg-red-50 text-red-600">Full-time</p>
-              <button class="text-lg">♡</button>
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100">
+            <div className="flex items-start justify-between">
+              <p className="text-xs font-semibold px-2 py-1 rounded-full bg-red-50 text-red-600">Full-time</p>
+              <button className="text-lg">♡</button>
             </div>
-            <div class="mt-4 flex items-center gap-3">
-              <div class="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center font-bold">G</div>
+            <div className="mt-4 flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center font-bold">G</div>
               <div>
-                <h3 class="font-bold text-lg">Frontend Developer</h3>
-                <p class="text-sm text-gray-600">GreenTech • Bangalore</p>
+                <h3 className="font-bold text-lg">Frontend Developer</h3>
+                <p className="text-sm text-gray-600">GreenTech • Bangalore</p>
               </div>
             </div>
-            <div class="mt-4 flex flex-wrap gap-2">
-              <span class="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100">React</span>
-              <span class="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100">Tailwind</span>
-              <span class="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100">API</span>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100">React</span>
+              <span className="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100">Tailwind</span>
+              <span className="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100">API</span>
             </div>
-            <div class="mt-4 flex items-center justify-between">
-              <p class="text-sm text-gray-600">₹6–10 LPA</p>
-              <a href="#" class="px-4 py-2 rounded-2xl bg-gray-900 text-white font-semibold hover:bg-gray-800 transition">
+            <div className="mt-4 flex items-center justify-between">
+              <p className="text-sm text-gray-600">₹6–10 LPA</p>
+              <a href="#" className="px-4 py-2 rounded-2xl bg-gray-900 text-white font-semibold hover:bg-gray-800 transition">
                 Apply
               </a>
             </div>
           </div>
 
-          <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100">
-            <div class="flex items-start justify-between">
-              <p class="text-xs font-semibold px-2 py-1 rounded-full bg-green-50 text-green-700">Remote</p>
-              <button class="text-lg">♡</button>
+          <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100">
+            <div className="flex items-start justify-between">
+              <p className="text-xs font-semibold px-2 py-1 rounded-full bg-green-50 text-green-700">Remote</p>
+              <button className="text-lg">♡</button>
             </div>
-            <div class="mt-4 flex items-center gap-3">
-              <div class="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center font-bold">A</div>
+            <div className="mt-4 flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center font-bold">A</div>
               <div>
-                <h3 class="font-bold text-lg">Node.js Developer</h3>
-                <p class="text-sm text-gray-600">AsterLabs • Remote</p>
+                <h3 className="font-bold text-lg">Node.js Developer</h3>
+                <p className="text-sm text-gray-600">AsterLabs • Remote</p>
               </div>
             </div>
-            <div class="mt-4 flex flex-wrap gap-2">
-              <span class="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100">Node</span>
-              <span class="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100">Express</span>
-              <span class="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100">MongoDB</span>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100">Node</span>
+              <span className="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100">Express</span>
+              <span className="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100">MongoDB</span>
             </div>
-            <div class="mt-4 flex items-center justify-between">
-              <p class="text-sm text-gray-600">₹8–14 LPA</p>
-              <a href="#" class="px-4 py-2 rounded-2xl bg-gray-900 text-white font-semibold hover:bg-gray-800 transition">
+            <div className="mt-4 flex items-center justify-between">
+              <p className="text-sm text-gray-600">₹8–14 LPA</p>
+              <a href="#" className="px-4 py-2 rounded-2xl bg-gray-900 text-white font-semibold hover:bg-gray-800 transition">
                 Apply
               </a>
             </div>
           </div>
 
-          <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100">
-            <div class="flex items-start justify-between">
-              <p class="text-xs font-semibold px-2 py-1 rounded-full bg-blue-50 text-blue-700">Internship</p>
-              <button class="text-lg">♡</button>
+          <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100">
+            <div className="flex items-start justify-between">
+              <p className="text-xs font-semibold px-2 py-1 rounded-full bg-blue-50 text-blue-700">Internship</p>
+              <button className="text-lg">♡</button>
             </div>
-            <div class="mt-4 flex items-center gap-3">
-              <div class="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center font-bold">Z</div>
+            <div className="mt-4 flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center font-bold">Z</div>
               <div>
-                <h3 class="font-bold text-lg">UI/UX Intern</h3>
-                <p class="text-sm text-gray-600">Zynk • Delhi</p>
+                <h3 className="font-bold text-lg">UI/UX Intern</h3>
+                <p className="text-sm text-gray-600">Zynk • Delhi</p>
               </div>
             </div>
-            <div class="mt-4 flex flex-wrap gap-2">
-              <span class="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100">Figma</span>
-              <span class="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100">UX</span>
-              <span class="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100">Wireframes</span>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100">Figma</span>
+              <span className="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100">UX</span>
+              <span className="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100">Wireframes</span>
             </div>
-            <div class="mt-4 flex items-center justify-between">
-              <p class="text-sm text-gray-600">₹15k–25k</p>
-              <a href="#" class="px-4 py-2 rounded-2xl bg-gray-900 text-white font-semibold hover:bg-gray-800 transition">
+            <div className="mt-4 flex items-center justify-between">
+              <p className="text-sm text-gray-600">₹15k–25k</p>
+              <a href="#" className="px-4 py-2 rounded-2xl bg-gray-900 text-white font-semibold hover:bg-gray-800 transition">
                 Apply
               </a>
             </div>
