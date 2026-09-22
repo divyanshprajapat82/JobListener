@@ -1,0 +1,929 @@
+import React from "react";
+
+export default function page() {
+  // Mock data for the specific job being viewed
+  const jobDetails = {
+    title: "Senior React Developer",
+    company: "TechVision Corp",
+    companyLogo: "TV",
+    companyColor: "bg-blue-100 text-blue-700",
+    status: "Active",
+    category: "Frontend Development",
+    location: "San Francisco, CA (Hybrid)",
+    type: "Full-Time",
+    salary: "$120,000 - $150,000",
+    experience: "5+ Years",
+    postedDate: "Oct 24, 2026",
+    applicantsCount: 45,
+    description:
+      "We are looking for an experienced Senior React Developer to join our core product team. You will be responsible for architecting and building highly scalable frontend applications using React, Next.js, and TypeScript. You will work closely with our design and backend teams to deliver exceptional user experiences.",
+    requirements: [
+      "Strong proficiency in JavaScript/TypeScript and ES6+ features.",
+      "Extensive experience with React.js and its core principles.",
+      "Experience with popular React.js workflows (such as Redux or Context API).",
+      "Familiarity with server-side rendering (Next.js).",
+      "Experience with modern styling solutions (Tailwind CSS, Styled Components).",
+    ],
+  };
+
+  // Mock data for recent applicants to this specific job
+  const applicants = [
+    {
+      id: 1,
+      name: "Alex Johnson",
+      role: "Frontend Engineer",
+      applied: "2 hours ago",
+      match: "95%",
+    },
+    {
+      id: 2,
+      name: "Maria Garcia",
+      role: "React Developer",
+      applied: "5 hours ago",
+      match: "88%",
+    },
+    {
+      id: 3,
+      name: "David Chen",
+      role: "Web Developer",
+      applied: "1 day ago",
+      match: "72%",
+    },
+  ];
+
+  return (
+    <div className="flex-1 overflow-y-auto p-8 bg-[#fafafa]">
+      <div className="max-w-6xl mx-auto">
+        {/* Top Actions & Breadcrumb */}
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <a
+              href="/admin/jobs"
+              className="flex items-center text-sm font-semibold text-gray-500 hover:text-red-600 transition-colors mb-4 w-fit"
+            >
+              <svg
+                className="w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                ></path>
+              </svg>
+              Back to All Jobs
+            </a>
+            <div className="flex items-center gap-4">
+              <h2 className="text-[28px] font-bold text-gray-900 tracking-tight">
+                {jobDetails.title}
+              </h2>
+              <span
+                className={`px-3 py-1 rounded-full text-[11px] font-bold border flex items-center gap-1.5 ${
+                  jobDetails.status === "Active"
+                    ? "text-green-700 bg-green-50 border-green-200"
+                    : "text-gray-600 bg-gray-50 border-gray-200"
+                }`}
+              >
+                <span
+                  className={`w-1.5 h-1.5 rounded-full ${jobDetails.status === "Active" ? "bg-green-500" : "bg-gray-400"}`}
+                ></span>
+                {jobDetails.status}
+              </span>
+            </div>
+            <p className="text-gray-500 text-sm mt-2 flex items-center gap-2">
+              <span className="font-medium text-gray-700">
+                {jobDetails.company}
+              </span>
+              <span>•</span>
+              Posted on {jobDetails.postedDate}
+            </p>
+          </div>
+
+          <div className="flex gap-3">
+            <button className="px-5 py-2.5 text-sm font-bold text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm flex items-center gap-2">
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                ></path>
+              </svg>
+              Edit Job
+            </button>
+            <button className="px-5 py-2.5 text-sm font-bold text-red-600 bg-red-50 border border-red-100 rounded-lg hover:bg-red-100 transition-colors flex items-center gap-2">
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                ></path>
+              </svg>
+              Unpublish
+            </button>
+          </div>
+        </div>
+
+        {/* Content Layout */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          {/* Left Column: Job Description & Details */}
+          <div className="xl:col-span-2 space-y-8">
+            {/* Main Description Card */}
+            <div className="bg-white rounded-[20px] border border-gray-100 shadow-sm overflow-hidden">
+              <div className="p-6 border-b border-gray-100">
+                <h3 className="text-lg font-bold text-gray-900">
+                  Job Description
+                </h3>
+              </div>
+              <div className="p-8">
+                <p className="text-gray-600 leading-relaxed mb-8 text-sm">
+                  {jobDetails.description}
+                </p>
+
+                <h4 className="text-base font-bold text-gray-900 mb-4">
+                  Requirements & Qualifications
+                </h4>
+                <ul className="space-y-3">
+                  {jobDetails.requirements.map((req, idx) => (
+                    <li
+                      key={idx}
+                      className="flex items-start gap-3 text-sm text-gray-600"
+                    >
+                      <svg
+                        className="w-5 h-5 text-red-500 shrink-0 mt-0.5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M5 13l4 4L19 7"
+                        ></path>
+                      </svg>
+                      {req}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Applicants Table Card */}
+            <div className="bg-white rounded-[20px] border border-gray-100 shadow-sm overflow-hidden">
+              <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <h3 className="text-lg font-bold text-gray-900">
+                    Recent Applicants
+                  </h3>
+                  <span className="bg-gray-100 text-gray-600 px-2.5 py-0.5 rounded-full text-xs font-bold">
+                    {jobDetails.applicantsCount} Total
+                  </span>
+                </div>
+                <button className="text-sm font-bold text-red-600 hover:text-red-700 transition-colors">
+                  View All Candidates →
+                </button>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm text-gray-600">
+                  <thead className="bg-gray-50/50">
+                    <tr>
+                      <th className="px-6 py-4 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                        Candidate Name
+                      </th>
+                      <th className="px-6 py-4 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                        Applied Date
+                      </th>
+                      <th className="px-6 py-4 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                        AI Match
+                      </th>
+                      <th className="px-6 py-4 text-[11px] font-bold text-gray-500 uppercase tracking-wider text-right">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {applicants.map((app) => (
+                      <tr
+                        key={app.id}
+                        className="hover:bg-gray-50/30 transition-colors group"
+                      >
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center font-bold text-xs text-gray-600">
+                              {app.name.charAt(0)}
+                            </div>
+                            <div>
+                              <p className="font-bold text-gray-900 group-hover:text-red-600 transition-colors cursor-pointer">
+                                {app.name}
+                              </p>
+                              <p className="text-gray-400 text-xs mt-0.5">
+                                {app.role}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-gray-500 font-medium">
+                          {app.applied}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="bg-green-50 text-green-700 border border-green-200 px-2 py-1 rounded text-xs font-bold">
+                            {app.match}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <button
+                            className="text-gray-400 hover:text-blue-600 transition-colors p-1.5 hover:bg-blue-50 rounded-md"
+                            title="View Profile"
+                          >
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                              ></path>
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                              ></path>
+                            </svg>
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Meta Info Widgets */}
+          <div className="xl:col-span-1 space-y-6">
+            {/* Job Overview Widget */}
+            <div className="bg-white rounded-[20px] border border-gray-100 shadow-sm overflow-hidden">
+              <div className="p-6 border-b border-gray-100">
+                <h3 className="text-lg font-bold text-gray-900">
+                  Job Overview
+                </h3>
+              </div>
+              <div className="p-6 space-y-5">
+                <div className="flex items-start gap-4">
+                  <div className="p-2.5 bg-gray-50 rounded-lg text-gray-500">
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      ></path>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">
+                      Location
+                    </p>
+                    <p className="text-sm font-bold text-gray-900">
+                      {jobDetails.location}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="p-2.5 bg-gray-50 rounded-lg text-gray-500">
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">
+                      Salary Range
+                    </p>
+                    <p className="text-sm font-bold text-gray-900">
+                      {jobDetails.salary}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="p-2.5 bg-gray-50 rounded-lg text-gray-500">
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">
+                      Job Type & Experience
+                    </p>
+                    <p className="text-sm font-bold text-gray-900">
+                      {jobDetails.type} • {jobDetails.experience}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="p-2.5 bg-gray-50 rounded-lg text-gray-500">
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">
+                      Category
+                    </p>
+                    <a
+                      href="/admin/categories/frontend-development"
+                      className="text-sm font-bold text-red-600 hover:text-red-700 transition-colors"
+                    >
+                      {jobDetails.category}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Company Info Widget */}
+            <div className="bg-white rounded-[20px] border border-gray-100 shadow-sm overflow-hidden p-6 text-center">
+              <div
+                className={`w-16 h-16 mx-auto rounded-2xl flex items-center justify-center font-bold text-xl mb-4 ${jobDetails.companyColor}`}
+              >
+                {jobDetails.companyLogo}
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-1">
+                {jobDetails.company}
+              </h3>
+              <p className="text-sm text-gray-500 mb-5">Employer Account</p>
+
+              <button className="w-full px-4 py-2 text-sm font-bold text-gray-600 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">
+                View Employer Profile
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+////////////////////////////////////////
+
+const categories = [...new Set(platformJobs.map(j => j.category))];
+
+const finalData = categories.map(cat => ({
+  title: cat,
+  slug: cat.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+  description: `Jobs related to ${cat}`,
+  status: "active"
+}));
+
+////////////////////
+
+import React from "react";
+
+export default function ViewAdminContent() {
+  // Mock data for the specific admin being viewed
+  const adminDetails = {
+    firstName: "Jane",
+    lastName: "Doe",
+    fullName: "Jane Doe",
+    email: "jane.doe@yourdomain.com",
+    role: "Job Moderator",
+    status: "Active",
+    joinedDate: "Jan 15, 2026",
+    lastLogin: "2 hours ago",
+    avatar: "JD",
+    color: "bg-purple-100 text-purple-700",
+    permissions: [
+      "View Job Postings",
+      "Approve/Reject Jobs",
+      "Edit Job Postings",
+      "View User Profiles",
+    ],
+    restricted: [
+      "Manage Administrators",
+      "Delete Users",
+      "Platform Billing",
+      "System Settings",
+    ],
+  };
+
+  // Mock data for the admin's recent platform activity (Audit Log)
+  const activityLog = [
+    {
+      id: 1,
+      action: "Approved Job Posting",
+      target: "Senior Next.js Developer (TechVision Corp)",
+      date: "Today, 10:45 AM",
+      icon: "M5 13l4 4L19 7",
+      iconColor: "text-green-600 bg-green-50",
+    },
+    {
+      id: 2,
+      action: "Rejected Job Posting",
+      target: "Crypto Scraper (Unknown Entity)",
+      date: "Yesterday, 3:20 PM",
+      icon: "M6 18L18 6M6 6l12 12",
+      iconColor: "text-red-600 bg-red-50",
+    },
+    {
+      id: 3,
+      action: "Edited Category",
+      target: "Frontend Development (Added URL Slug)",
+      date: "Oct 22, 2026",
+      icon: "M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z",
+      iconColor: "text-blue-600 bg-blue-50",
+    },
+    {
+      id: 4,
+      action: "Password Reset Triggered",
+      target: "Candidate: Alex Johnson",
+      date: "Oct 20, 2026",
+      icon: "M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z",
+      iconColor: "text-amber-600 bg-amber-50",
+    },
+  ];
+
+  return (
+    <div className="flex-1 overflow-y-auto p-8 bg-[#fafafa]">
+      <div className="max-w-6xl mx-auto">
+        {/* Top Actions & Breadcrumb */}
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <a
+              href="/admin/users"
+              className="flex items-center text-sm font-semibold text-gray-500 hover:text-red-600 transition-colors mb-4 w-fit"
+            >
+              <svg
+                className="w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                ></path>
+              </svg>
+              Back to User Management
+            </a>
+            <div className="flex items-center gap-4">
+              <h2 className="text-[28px] font-bold text-gray-900 tracking-tight">
+                Staff Profile
+              </h2>
+              <span
+                className={`px-3 py-1 rounded-full text-[11px] font-bold border flex items-center gap-1.5 ${
+                  adminDetails.status === "Active"
+                    ? "text-green-700 bg-green-50 border-green-200"
+                    : "text-red-700 bg-red-50 border-red-200"
+                }`}
+              >
+                <span
+                  className={`w-1.5 h-1.5 rounded-full ${adminDetails.status === "Active" ? "bg-green-500" : "bg-red-500"}`}
+                ></span>
+                {adminDetails.status}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex gap-3">
+            <button className="px-5 py-2.5 text-sm font-bold text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm flex items-center gap-2">
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                ></path>
+              </svg>
+              Edit Access
+            </button>
+            <button className="px-5 py-2.5 text-sm font-bold text-amber-600 bg-amber-50 border border-amber-100 rounded-lg hover:bg-amber-100 transition-colors flex items-center gap-2">
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                ></path>
+              </svg>
+              Suspend Account
+            </button>
+          </div>
+        </div>
+
+        {/* Content Layout */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          {/* Left Column: Profile Card & Permissions */}
+          <div className="xl:col-span-1 space-y-6">
+            {/* Identity Card */}
+            <div className="bg-white rounded-[20px] border border-gray-100 shadow-sm overflow-hidden p-8 text-center relative">
+              <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-gray-50 to-white border-b border-gray-100"></div>
+
+              <div
+                className={`w-24 h-24 mx-auto rounded-3xl flex items-center justify-center font-bold text-3xl mb-5 relative z-10 border-4 border-white shadow-md ${adminDetails.color}`}
+              >
+                {adminDetails.avatar}
+              </div>
+
+              <h3 className="text-xl font-bold text-gray-900 mb-1 relative z-10">
+                {adminDetails.fullName}
+              </h3>
+              <p className="text-sm font-bold text-red-600 mb-6 relative z-10">
+                {adminDetails.role}
+              </p>
+
+              <div className="space-y-4 text-left relative z-10">
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 shrink-0 border border-gray-100">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div className="truncate">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                      Email Address
+                    </p>
+                    <p className="font-bold text-gray-900 truncate">
+                      {adminDetails.email}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 shrink-0 border border-gray-100">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                      Member Since
+                    </p>
+                    <p className="font-bold text-gray-900">
+                      {adminDetails.joinedDate}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 shrink-0 border border-gray-100">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                      Last Login
+                    </p>
+                    <p className="font-bold text-gray-900">
+                      {adminDetails.lastLogin}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Access Permissions Widget */}
+            <div className="bg-white rounded-[20px] border border-gray-100 shadow-sm overflow-hidden">
+              <div className="p-6 border-b border-gray-100">
+                <h3 className="text-lg font-bold text-gray-900">
+                  Permissions Overview
+                </h3>
+              </div>
+              <div className="p-6 space-y-6">
+                <div>
+                  <h4 className="text-[11px] font-bold text-green-600 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      ></path>
+                    </svg>
+                    Has Access To
+                  </h4>
+                  <ul className="space-y-2.5">
+                    {adminDetails.permissions.map((perm, idx) => (
+                      <li
+                        key={idx}
+                        className="flex items-center gap-2 text-sm text-gray-700 font-medium bg-green-50/50 p-2 rounded-lg border border-green-100/50"
+                      >
+                        <svg
+                          className="w-4 h-4 text-green-500 shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M5 13l4 4L19 7"
+                          ></path>
+                        </svg>
+                        {perm}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-[11px] font-bold text-red-600 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      ></path>
+                    </svg>
+                    Restricted From
+                  </h4>
+                  <ul className="space-y-2.5">
+                    {adminDetails.restricted.map((rest, idx) => (
+                      <li
+                        key={idx}
+                        className="flex items-center gap-2 text-sm text-gray-500 font-medium bg-gray-50 p-2 rounded-lg border border-gray-100"
+                      >
+                        <svg
+                          className="w-4 h-4 text-gray-400 shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M6 18L18 6M6 6l12 12"
+                          ></path>
+                        </svg>
+                        {rest}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Audit Log & Stats */}
+          <div className="xl:col-span-2 space-y-6">
+            {/* Quick Stats */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-white rounded-[20px] border border-gray-100 shadow-sm p-6 relative overflow-hidden">
+                <h3 className="text-gray-500 text-sm font-bold mb-1 uppercase tracking-wider text-[11px]">
+                  Jobs Moderated
+                </h3>
+                <p className="text-3xl font-extrabold text-gray-900">1,482</p>
+                <svg
+                  className="absolute right-[-10px] bottom-[-10px] w-24 h-24 text-gray-50 opacity-50"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+              </div>
+              <div className="bg-white rounded-[20px] border border-gray-100 shadow-sm p-6 relative overflow-hidden">
+                <h3 className="text-gray-500 text-sm font-bold mb-1 uppercase tracking-wider text-[11px]">
+                  Support Tickets
+                </h3>
+                <p className="text-3xl font-extrabold text-gray-900">345</p>
+                <svg
+                  className="absolute right-[-10px] bottom-[-10px] w-24 h-24 text-gray-50 opacity-50"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                  ></path>
+                </svg>
+              </div>
+            </div>
+
+            {/* Audit Log (Recent Activity) */}
+            <div className="bg-white rounded-[20px] border border-gray-100 shadow-sm overflow-hidden">
+              <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-white">
+                <h3 className="text-lg font-bold text-gray-900">
+                  Activity Log
+                </h3>
+                <button className="text-sm font-bold text-gray-500 hover:text-red-600 transition-colors bg-gray-50 hover:bg-red-50 px-3 py-1.5 rounded-lg border border-gray-200 hover:border-red-100">
+                  Export Log
+                </button>
+              </div>
+
+              <div className="p-2">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm text-gray-600">
+                    <thead className="bg-gray-50/50">
+                      <tr>
+                        <th className="px-6 py-4 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                          Action Taken
+                        </th>
+                        <th className="px-6 py-4 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                          Target Entity
+                        </th>
+                        <th className="px-6 py-4 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                          Date & Time
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {activityLog.map((log) => (
+                        <tr
+                          key={log.id}
+                          className="hover:bg-gray-50/50 transition-colors group"
+                        >
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-3">
+                              <div
+                                className={`w-8 h-8 rounded-lg flex items-center justify-center border border-white shadow-sm ${log.iconColor}`}
+                              >
+                                <svg
+                                  className="w-4 h-4"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d={log.icon}
+                                  ></path>
+                                </svg>
+                              </div>
+                              <span className="font-bold text-gray-900">
+                                {log.action}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="text-gray-600 font-medium">
+                              {log.target}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="text-gray-500 text-xs font-bold">
+                              {log.date}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* View All Button */}
+                <div className="p-4 border-t border-gray-100 mt-2">
+                  <button className="w-full py-2.5 text-sm font-bold text-gray-600 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors border border-gray-200">
+                    View Full Audit History
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Security Actions Card */}
+            <div className="bg-white rounded-[20px] border border-gray-100 shadow-sm overflow-hidden p-6 flex items-center justify-between border-l-4 border-l-red-500">
+              <div>
+                <h3 className="text-base font-bold text-gray-900 mb-1">
+                  Force Password Reset
+                </h3>
+                <p className="text-sm text-gray-500">
+                  Require this admin to change their password on next login.
+                </p>
+              </div>
+              <button className="px-4 py-2 text-sm font-bold text-red-600 bg-white border border-gray-200 rounded-lg hover:bg-red-50 hover:border-red-200 transition-colors shadow-sm whitespace-nowrap">
+                Send Reset Email
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
