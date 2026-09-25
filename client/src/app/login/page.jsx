@@ -129,7 +129,7 @@ export default function LoginPage() {
             <img src="/images/loginImg.png" width={1000} alt="Login" />
           </div>
 
-          <div className="p-4 bg-[#fff] w-full rounded-3xl shadow-sm">
+          <div className="p-4 bg-[#fff] text-black w-full rounded-3xl shadow-sm">
             <div>
               <h1 className="text-[20px] font-semibold">
                 Welcome to <span className="text-[#d00]">JobListener</span>

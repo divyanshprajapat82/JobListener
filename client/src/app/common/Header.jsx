@@ -448,13 +448,13 @@ export default function Header() {
                               </li>
                             </Link>
                             {user.role == "jobseeker" && (
-                              <>
+                              <Link href={"/my-applications"}>
                                 <li className="px-4 py-2 text-white hover:bg-[#2a2a2a] cursor-pointer">
                                   My Applications
                                 </li>
-                              </>
+                              </Link>
                             )}
-                            <Link href={"./saved-Jobs"}>
+                            <Link href={"/saved-Jobs"}>
                               <li className="px-4 py-2 text-white hover:bg-[#2a2a2a] cursor-pointer">
                                 Saved Jobes
                               </li>
@@ -530,7 +530,7 @@ export default function Header() {
         ></div>
         <div className="bg-[#fff] max-w-[300px] min-h-full  p-4">
           <div className="items-center flex justify-between">
-            <h1 className="flex items-center gap-2 mb-4">
+            <h1 className="flex items-center text-black gap-2 mb-4">
               <IoBriefcase className="text-[24px] mb-1 " />
               <span className="text-[22px] font-semibold relative">
                 JobListener

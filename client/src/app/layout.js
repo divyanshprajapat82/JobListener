@@ -32,6 +32,8 @@ export default function RootLayout({ children }) {
           <Toaster richColors />
           <Header />
           {children}
+          <script src="https://jsdelivr.net"></script>
+          <script dangerouslySetInnerHTML={{ __html: "eruda.init();" }} />
           <LoginPopup />
           <Footer />
         </MainContext>
