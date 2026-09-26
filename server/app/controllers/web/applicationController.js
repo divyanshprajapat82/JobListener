@@ -935,8 +935,8 @@ const updateApplicationStatus = async (req, res) => {
 		// 3. Find application + user + job
 		const application = await ApplicationModel.findById(applicationId)
 			.populate("userId", "name email")
-			.populate("jobId", "title jobType location")
-			// .populate("employerId", "companyName");
+			.populate("jobId", "title jobType location");
+		// .populate("employerId", "companyName");
 
 		if (!application) {
 			return res.status(404).json({
@@ -1038,7 +1038,7 @@ const updateApplicationStatus = async (req, res) => {
 			});
 
 			// Save offer information in MongoDB
-			await OfferModel.create({
+			const offer = await OfferModel.create({
 				applicationId: application._id,
 				candidateId: application.userId._id,
 				employerId: application.employerId,
@@ -1054,6 +1054,8 @@ const updateApplicationStatus = async (req, res) => {
 
 				status: "Sent",
 			});
+
+			application.OfferId = offer._id;
 		}
 
 		// =====================================================
@@ -1062,6 +1064,7 @@ const updateApplicationStatus = async (req, res) => {
 
 		application.status = status;
 
+		// application.OfferId = offer._id;
 		await application.save();
 
 		let notificationSubject = "";
@@ -1102,7 +1105,7 @@ const updateApplicationStatus = async (req, res) => {
 			type: status,
 			subject: notificationSubject,
 			message: notificationMessage,
-			category: "Applications"
+			category: "Applications",
 		});
 
 		// =====================================================

@@ -535,7 +535,8 @@ function JobCard({ job }) {
               <span>{job.location}</span>
               <span className="hidden sm:inline">•</span>
               <span>
-                {getLocalTimeAgo(job.createdAt)}              </span>
+                {getLocalTimeAgo(job.createdAt)}
+              </span>
             </div>
           </div>
 

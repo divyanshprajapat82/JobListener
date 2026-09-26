@@ -8,7 +8,8 @@ const createOfferLetterPDF = async (offerData) => {
 	try {
 		browser = await puppeteer.launch({
 			headless: true,
-
+			executablePath:
+				"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
 			// Important for Windows / local development
 			args: [
 				"--no-sandbox",

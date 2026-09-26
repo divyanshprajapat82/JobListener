@@ -267,7 +267,7 @@ export default function CandidateListView() {
         )}
 
 
-        <div className="block lg:hidden space-y-4">
+        {/* <div className="block lg:hidden space-y-4">
           {appliedCandidate.length > 0 &&
             <div className="flex items-center gap-3 px-2 mb-2">
               <input
@@ -280,59 +280,7 @@ export default function CandidateListView() {
             </div>
           }
 
-          {/* {appliedCandidate.map((item, c) => (
-            <div key={c._id} className={`bg-white border rounded-2xl p-4 shadow-sm transition-colors ${selected.includes(c.id) ? 'border-red-300 bg-red-50/10' : 'border-gray-200'}`}>
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    onChange={() => toggleSelect(c.id)}
-                    checked={selected.includes(c.id)}
-                    className="w-5 h-5 text-red-600 bg-white border-gray-300 rounded focus:ring-red-500 cursor-pointer"
-                  />
-                  <img src={item.userId?.logo} alt={item.userId?.name} className="w-12 h-12 rounded-full border border-gray-200 object-cover" />
-                  <div>
-                    <div className="font-bold text-gray-900">{item.userId?.name}</div>
-                    <div className="text-gray-500 text-xs font-medium">{item.userId?.email}</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
-                <div>
-                  <span className="block text-gray-400 text-xs font-semibold mb-1">Stage</span>
-                  <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-bold border ${getStatusBadge(item.status)}`}>
-                    {item.status}
-                  </span>
-                </div>
-                <div>
-                  <span className="block text-gray-400 text-xs font-semibold mb-1">Match Score</span>
-                  <div className="flex items-center font-extrabold text-gray-900">
-                    <FaStar className={`mr-1.5 ${c.matchScore >= 90 ? 'text-green-500' : c.matchScore >= 80 ? 'text-yellow-400' : 'text-gray-300'}`} />
-                    {c.matchScore}%
-                  </div>
-                </div>
-                <div className="col-span-2">
-                  <span className="block text-gray-400 text-xs font-semibold mb-1">Applied Date</span>
-                  <span className="font-medium text-gray-700">{c.appliedDate}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                  <FaEnvelope size={16} />
-                </button>
-                <div className="flex gap-2">
-                  <button className="text-xs font-bold bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg shadow-sm transition-colors">
-                    Review
-                  </button>
-                  <button className="p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
-                    <FaEllipsisV size={16} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))} */}
+       
 
           {appliedCandidate.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20">
@@ -350,115 +298,12 @@ export default function CandidateListView() {
             </div>
           ) : (
             appliedCandidate.map((item, c) => (
-              // <div
-              //   key={item._id}
-              //   className={`bg-white border rounded-2xl p-4 shadow-sm transition-colors ${selected.includes(item._id)
-              //     ? "border-red-300 bg-red-50/10"
-              //     : "border-gray-200"
-              //     }`}
-              // >
-              //   {/* Candidate */}
-              //   <div className="flex justify-between items-start mb-4">
-              //     <div className="flex items-center gap-3">
-
-              //       <input
-              //         type="checkbox"
-              //         onChange={() => toggleSelect(item._id)}
-              //         checked={selected.includes(item._id)}
-              //         className="w-5 h-5 text-red-600 bg-white border-gray-300 rounded focus:ring-red-500 cursor-pointer"
-              //       />
-
-              //       {item.userId?.logo ?
-
-              //         <img
-              //           src={item.userId?.logo || "/default-avatar.png"}
-              //           alt={item.userId?.name || "Candidate"}
-              //           className="w-12 h-12 rounded-full border border-gray-200 object-cover"
-              //         />
-              //         :
-              //         <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
-              //           <FaUser className="text-gray-400 text-xl" />
-              //         </div>
-              //       }
-
-              //       <div>
-              //         <div className="font-bold text-gray-900">
-              //           {item.userId?.name || "Unknown Candidate"}
-              //         </div>
-
-              //         <div className="text-gray-500 text-xs font-medium">
-              //           {item.userId?.email || "No email"}
-              //         </div>
-              //       </div>
-
-              //     </div>
-              //   </div>
-
-              //   {/* Application details */}
-              //   <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
-
-              //     {/* Status */}
-              //     <div>
-              //       <span className="block text-gray-400 text-xs font-semibold mb-1">
-              //         Stage
-              //       </span>
-
-              //       <span
-              //         className={`inline-block px-2.5 py-1 rounded-full text-xs font-bold border ${getStatusBadge(
-              //           item.status
-              //         )}`}
-              //       >
-              //         {item.status}
-              //       </span>
-              //     </div>
-
-              //     {/* Applied date */}
-              //     <div>
-              //       <span className="block text-gray-400 text-xs font-semibold mb-1">
-              //         Applied Date
-              //       </span>
-
-              //       <span className="font-medium text-gray-700">
-              //         {item.createdAt
-              //           ? new Date(item.createdAt).toLocaleDateString()
-              //           : "N/A"}
-              //       </span>
-              //     </div>
-
-              //   </div>
-
-              //   {/* Actions */}
-              //   <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-
-              //     <button
-              //       className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-              //     >
-              //       <FaEnvelope size={16} />
-              //     </button>
-
-              //     <div className="flex gap-2">
-
-              //       <button
-              //         className="text-xs font-bold bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg shadow-sm transition-colors"
-              //       >
-              //         Review
-              //       </button>
-
-              //       <button
-              //         className="p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-              //       >
-              //         <FaEllipsisV size={16} />
-              //       </button>
-
-              //     </div>
-              //   </div>
-              // </div>
               <CandidateSmallCard item={item} c={c} selected={selected} toggleSelect={toggleSelect} toggleSelectAll={toggleSelectAll} />
             ))
           )}
-        </div>
+        </div> */}
 
-        <div className="hidden lg:flex bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden flex-col">
+        <div className=" lg:flex bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden flex-col">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-[800px]">
               {appliedCandidate.length > 0 &&
@@ -497,81 +342,7 @@ export default function CandidateListView() {
                   </div>
                 ) : (
                   appliedCandidate.map((item, c) => (
-                    // <tr key={c._id} className={`hover:bg-gray-50 transition-colors ${selected.includes(c.id) ? 'bg-red-50/30' : ''}`}>
-                    //   <td className="p-4 text-center">
-                    //     <input
-                    //       type="checkbox"
-                    //       onChange={() => toggleSelect(c.id)}
-                    //       checked={selected.includes(c.id)}
-                    //       className="w-4 h-4 text-red-600 bg-white border-gray-300 rounded focus:ring-red-500 cursor-pointer"
-                    //     />
-                    //   </td>
 
-                    //   <td className="p-4">
-                    //     <div className="flex items-center gap-3">
-                    //       {item.userId?.logo ?
-
-                    //         <img
-                    //           src={item.userId?.logo || "/default-avatar.png"}
-                    //           alt={item.userId?.name || "Candidate"}
-                    //           className="w-12 h-12 rounded-full border border-gray-200 object-cover"
-                    //         />
-                    //         :
-                    //         <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
-                    //           <FaUser className="text-gray-400 text-xl" />
-                    //         </div>
-                    //       }
-                    //       <div>
-                    //         <div className="font-bold text-gray-900 cursor-pointer hover:text-red-600 transition-colors">{item.userId?.name}</div>
-                    //         <div className="text-gray-500 text-xs font-medium">{item.userId?.email}</div>
-                    //       </div>
-                    //     </div>
-                    //   </td>
-
-                    //   <td className="p-4">
-                    //     <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusBadge(item.status)}`}>
-                    //       {item.status}
-                    //     </span>
-                    //   </td>
-
-                    //   <td className="p-4 text-center">
-                    //     {item.jobSeekerId?.resume ? (
-                    //       <button
-                    //         onClick={() => window.open(item.jobSeekerId?.resume, "_blank")}
-                    //         className="inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 rounded-lg text-xs font-bold transition-colors cursor-pointer"
-                    //         title="View Resume"
-                    //       >
-                    //         <FaFilePdf size={14} />
-                    //         View Resume
-                    //       </button>
-                    //     ) : (
-                    //       <span className="text-xs text-gray-400 font-medium">
-                    //         No Resume
-                    //       </span>
-                    //     )}
-                    //   </td>
-
-                    //   <td className="p-4 text-gray-600 font-medium">
-                    //     {getLocalTimeAgo(item.createdAt)}
-
-                    //   </td>
-
-                    //   <td className="p-4 text-right">
-                    //     <div className="flex items-center justify-end gap-2">
-                    //       <Link href={`https://mail.google.com/mail/?view=cm&fs=1&to=${item.userId?.email}`} target='_blank'>
-                    //         <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Message">
-                    //           <FaEnvelope size={16} />
-                    //         </button>
-                    //       </Link>
-                    //       <button className="text-xs font-bold bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg shadow-sm transition-colors">
-                    //         Review
-                    //       </button>
-                    //       <button className="p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors" title="More Options">
-                    //         <FaEllipsisV size={16} />
-                    //       </button>
-                    //     </div>
-                    //   </td>
-                    // </tr>
                     <CandidateBigCard item={item} c={c} selected={selected} toggleSelect={toggleSelect} toggleSelectAll={toggleSelectAll} getappliedCandidate={getappliedCandidate} />
 
                   )))}

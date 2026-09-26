@@ -950,7 +950,7 @@ function JobCard({ item, index, isMounted }) {
               className="w-full md:w-auto"
             >
               <button className="relative overflow-hidden w-full md:w-auto px-6 py-2.5 bg-red-600 hover:bg-red-700 active:scale-95 text-white text-sm font-medium rounded-lg transition-all duration-300 shadow-sm shadow-red-600/20 focus:ring-4 focus:ring-red-100 group/apply  cursor-pointer">
-                <span className="relative z-10">Apply Now</span>
+                <span className="relative z-10">View Details</span>
                 {/* Shine Sweep Element */}
                 <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover/apply:animate-[shimmer_1.5s_infinite] skew-x-12"></div>
               </button>
