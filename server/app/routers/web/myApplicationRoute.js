@@ -4,6 +4,8 @@ const {
 	ViewMyApplications,
 	OfferAction,
 	viewOffer,
+	acceptOffer,
+	declineOffer,
 } = require("../../controllers/web/myApplicationController");
 
 let myApplications = express.Router();
@@ -11,7 +13,8 @@ let myApplications = express.Router();
 // applicationRoute.post("/apply-job", authMiddlewere, applyJob);
 myApplications.get("/View-My-Applications", authMiddlewere, ViewMyApplications);
 myApplications.get("/View-Offer/:id", authMiddlewere, viewOffer);
-// myApplications.put("/Offer-Action/:Id", authMiddlewere, OfferAction);
+myApplications.put("/accept-offer/:id", authMiddlewere, acceptOffer);
+myApplications.put("/decline-offer/:id", authMiddlewere, declineOffer);
 
 // applicationRoute.post("/add-perks", authMiddlewere, addPerks);
 // applicationRoute.get("/get-perks", authMiddlewere, getPerks);

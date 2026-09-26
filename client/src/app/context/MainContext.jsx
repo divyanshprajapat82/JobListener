@@ -12,7 +12,7 @@ export const MainContext = ({ children }) => {
   const [user, setUser] = useState(null);
   const APIURL = process.env.NEXT_PUBLIC_APIURL;
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [company, setCompany] = useState([]);
   const [jobSeeker, setJobSeeker] = useState([]);
   const [education, setEducation] = useState([]);
@@ -55,9 +55,9 @@ export const MainContext = ({ children }) => {
           toast.error("Something went wrong");
         }
       })
-      .finally(() => {
-        setLoading(false);
-      });
+    // .finally(() => {
+    //   setLoading(false);
+    // });
   };
 
   const employerView = () => {
@@ -78,9 +78,9 @@ export const MainContext = ({ children }) => {
           toast.error("Something went wrong");
         }
       })
-      .finally(() => {
-        setLoading(false);
-      });
+    // .finally(() => {
+    //   setLoading(false);
+    // });
   };
 
   const jobSeekerView = () => {
@@ -101,9 +101,9 @@ export const MainContext = ({ children }) => {
           toast.error("Something went wrong");
         }
       })
-      .finally(() => {
-        setLoading(false);
-      });
+    // .finally(() => {
+    //   setLoading(false);
+    // });
   };
 
   const logOut = () => {
@@ -156,9 +156,9 @@ export const MainContext = ({ children }) => {
           toast.error("Something went wrong");
         }
       })
-      .finally(() => {
-        setLoading(false);
-      });
+    // .finally(() => {
+    //   setLoading(false);
+    // });
   };
 
   const getExperience = () => {
@@ -182,9 +182,9 @@ export const MainContext = ({ children }) => {
           toast.error("Something went wrong");
         }
       })
-      .finally(() => {
-        setLoading(false);
-      });
+    // .finally(() => {
+    //   setLoading(false);
+    // });
   };
 
   const getCategory = () => {
@@ -206,9 +206,9 @@ export const MainContext = ({ children }) => {
           toast.error("Something went wrong");
         }
       })
-      .finally(() => {
-        setLoading(false);
-      });
+    // .finally(() => {
+    //   setLoading(false);
+    // });
   };
 
   // const remote = ""
@@ -241,9 +241,9 @@ export const MainContext = ({ children }) => {
           toast.error("Something went wrong");
         }
       })
-      .finally(() => {
-        setLoading(false);
-      });
+    // .finally(() => {
+    //   setLoading(false);
+    // });
   };
 
   const getNotification = async () => {
@@ -358,7 +358,7 @@ export const MainContext = ({ children }) => {
   useEffect(() => {
     getMe();
     getCategory();
-    getjob();
+    // getjob();
     getNotification()
   }, []);
 
@@ -421,8 +421,8 @@ export const MainContext = ({ children }) => {
         setUser,
         getMe,
         logOut,
-        loading,
-        setLoading,
+        // loading,
+        // setLoading,
         employerView,
         company,
         jobSeeker,

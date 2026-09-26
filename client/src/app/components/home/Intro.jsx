@@ -76,8 +76,9 @@ export default function Intro() {
 
                 {/* Category Dropdown */}
                 <div className="flex-1 w-full md:w-auto px-4 py-2 border-b md:border-b-0 md:border-r border-gray-200">
-                  <select className="w-full text-gray-900 bg-transparent outline-none font-medium appearance-none cursor-pointer">
-                    <option value="" disabled selected={true}>
+                  <select defaultValue="" className="w-full text-gray-900 bg-transparent outline-none font-medium appearance-none cursor-pointer">
+                    <option disabled >
+                      {/* selected={true} */}
                       Select Category
                     </option>
                     <option>Design</option>

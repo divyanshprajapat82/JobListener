@@ -83,11 +83,7 @@ export default function MyApplicationsPage() {
         return app.status === activeTab;
     });
 
-
-
-    useEffect(() => {
-        // const getEducation = () => {
-        // setLoading(true);
+    const getAppluication = () => {
         axios
             .get(`${APIURL}/my-Applications/view-my-Applications`, {
                 withCredentials: true,
@@ -111,10 +107,10 @@ export default function MyApplicationsPage() {
                     toast.error("Something went wrong");
                 }
             })
-        // .finally(() => {
-        //     setLoading(false);
-        // });
-        // };
+    }
+
+    useEffect(() => {
+        getAppluication()
     }, [])
 
     const getOffer = (id) => {
@@ -166,19 +162,79 @@ export default function MyApplicationsPage() {
     //     fileName: "TechVision_OfferLetter.pdf",
     // };
 
-    const handleAccept = () => {
-        setDecision('accepted');
-        // Add API call here to update status to "Hired/Accepted"
-        setTimeout(() => setIsOpen(false), 3000); // Close after showing success state
+    const handleAccept = (id) => {
+
+        axios
+            .put(`${APIURL}/my-Applications/accept-offer/${id}`, {}, {
+                withCredentials: true,
+            })
+            .then((res) => res.data)
+            .then((finalData) => {
+                if (finalData.success) {
+                    // console.log("Education List:", data.data);
+                    // setState(data.data)
+                    // setOfferData(finalData.data);
+                    // console.log("Offers", finalData.data);
+
+                    setDecision('accepted');
+                    // Add API call here to update status to "Hired/Accepted"
+                    setTimeout(() => setIsOpen(false), 3000); // Close after showing success state
+
+                    getAppluication()
+
+                } else {
+                    toast.error(finalData.message);
+                }
+            })
+            .catch((err) => {
+                if (err.response) {
+                    toast.error(err.response.finalData.message);
+                } else {
+                    toast.error("Something went wrong");
+                }
+            })
+
     };
 
-    const handleDecline = () => {
-        const confirmDecline = window.confirm("Are you sure you want to decline this offer? This cannot be undone.");
-        if (confirmDecline) {
-            setDecision('declined');
-            // Add API call here to update status to "Declined"
-            setTimeout(() => setIsOpen(false), 2000);
-        }
+    const handleDecline = (id) => {
+        // const confirmDecline = window.confirm("Are you sure you want to decline this offer? This cannot be undone.");
+
+        axios
+            .put(`${APIURL}/my-Applications/decline-offer/${id}`, {}, {
+                withCredentials: true,
+            })
+            .then((res) => res.data)
+            .then((finalData) => {
+                if (finalData.success) {
+                    // console.log("Education List:", data.data);
+                    // setState(data.data)
+                    // setOfferData(finalData.data);
+                    // console.log("Offers", finalData.data);
+
+                    // setDecision('accepted');
+                    // // Add API call here to update status to "Hired/Accepted"
+                    // setTimeout(() => setIsOpen(false), 3000); // Close after showing success state
+
+                    // if (confirmDecline) {
+                    setDecision('declined');
+                    // Add API call here to update status to "Declined"
+                    setTimeout(() => setIsOpen(false), 2000);
+                    // }
+
+                    getAppluication()
+
+                } else {
+                    toast.error(finalData.message);
+                }
+            })
+            .catch((err) => {
+                if (err.response) {
+                    toast.error(err.response.finalData.message);
+                } else {
+                    toast.error("Something went wrong");
+                }
+            })
+
     };
 
     const getLogoInitials = (name = "") => {
@@ -471,14 +527,14 @@ export default function MyApplicationsPage() {
                                 {/* Action Buttons */}
                                 <div className="flex flex-col sm:flex-row gap-3">
                                     <button
-                                        onClick={handleDecline}
-                                        className="flex-1 flex items-center justify-center bg-white border-2 border-red-100 text-red-600 hover:bg-red-50 py-3 rounded-xl font-bold transition-colors text-sm"
+                                        onClick={() => handleDecline(offerData.applicationId?._id)}
+                                        className="flex-1 flex items-center justify-center bg-white border-2 border-red-100 text-red-600 hover:bg-red-50 py-3 rounded-xl font-bold transition-colors text-sm cursor-pointer"
                                     >
                                         <FaTimesCircle className="mr-2" /> Decline Offer
                                     </button>
                                     <button
-                                        onClick={handleAccept}
-                                        className="flex-1 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-bold shadow-md transition-colors text-sm"
+                                        onClick={() => handleAccept(offerData.applicationId?._id)}
+                                        className="flex-1 flex items-center justify-center bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-bold shadow-md transition-colors text-sm cursor-pointer"
                                     >
                                         <FaCheckCircle className="mr-2" /> Accept Offer
                                     </button>
