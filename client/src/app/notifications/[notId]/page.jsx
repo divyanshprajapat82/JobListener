@@ -62,7 +62,7 @@ export default function NotificationDetail() {
             if (res.data.success) {
                 setNotification(res.data.data);
 
-
+                getNotification()
             } else {
                 toast.error(
                     res.data.message

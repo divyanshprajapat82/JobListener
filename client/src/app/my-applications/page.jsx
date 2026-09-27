@@ -13,8 +13,10 @@ import {
 import { toast } from 'sonner';
 import axios from 'axios';
 import { IoClose } from 'react-icons/io5';
+import { useAuth } from '../context/MainContext';
 
 export default function MyApplicationsPage() {
+    // const { getNotification } = useAuth()
     const [activeTab, setActiveTab] = useState('All');
     const [applications, setApplications] = useState([])
     const [isOpen, setIsOpen] = useState(false);
@@ -163,7 +165,6 @@ export default function MyApplicationsPage() {
     // };
 
     const handleAccept = (id) => {
-
         axios
             .put(`${APIURL}/my-Applications/accept-offer/${id}`, {}, {
                 withCredentials: true,
@@ -182,6 +183,8 @@ export default function MyApplicationsPage() {
 
                     getAppluication()
 
+                    // getNotification()
+
                 } else {
                     toast.error(finalData.message);
                 }
@@ -193,6 +196,7 @@ export default function MyApplicationsPage() {
                     toast.error("Something went wrong");
                 }
             })
+        // getNotification()
 
     };
 
@@ -341,7 +345,7 @@ export default function MyApplicationsPage() {
                                 const { color, icon } = getStatusUI(app.status);
                                 return (
                                     <div
-                                        key={app.id}
+                                        key={app._id}
                                         className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 hover:border-[#d00]/30 hover:shadow-md transition-all duration-300 group flex flex-col md:flex-row md:items-center gap-6"
                                     >
                                         {/* Left: Logo */}

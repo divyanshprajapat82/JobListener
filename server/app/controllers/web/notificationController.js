@@ -10,6 +10,8 @@ const getNotification = async (req, res) => {
 			.populate("jobId", "title")
 			.populate("applicationId", "status");
 
+		// console.log("Notifications:", data);
+
 		const count = await NotificationModel.countDocuments({
 			userId,
 			isRead: false,

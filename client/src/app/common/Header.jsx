@@ -365,7 +365,7 @@ export default function Header() {
                         </div>
 
                         <Link href="/notifications">
-                          <div onClick={() => setIsNotifOpen(false)} s className="p-3 bg-[#1f1f1f] border-t border-gray-700 text-center cursor-pointer group">
+                          <div onClick={() => setIsNotifOpen(false)} className="p-3 bg-[#1f1f1f] border-t border-gray-700 text-center cursor-pointer group">
                             <div className="text-sm font-bold text-gray-300 group-hover:text-[#d00] transition-colors">
                               View all notifications
                             </div>
