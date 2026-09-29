@@ -1,141 +1,147 @@
 const mongoose = require("mongoose");
 
 let jobSchema = new mongoose.Schema(
-  {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
+	{
+		userId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			required: true,
+		},
 
-    employer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Employer",
-      required: true,
-    },
+		employer: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Employer",
+			required: true,
+		},
 
-    category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
-      required: true,
-    },
+		application: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Application",
+			required: true,
+		},
 
-    title: {
-      type: String,
-      required: true,
-      unique: true,
-    },
+		category: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Category",
+			required: true,
+		},
 
-    // category: {
-    //   type: String,
-    //   required: true,
-    // },
+		title: {
+			type: String,
+			required: true,
+			unique: true,
+		},
 
-    jobType: {
-      type: String,
-      enum: ["Full-time", "Part-time", "Internship", "contract", "freelance"],
-      required: true,
-    },
+		// category: {
+		//   type: String,
+		//   required: true,
+		// },
 
-    workPlace: {
-      type: String,
-      enum: ["Remote", "Hybrid", "On-site"],
-      required: true,
-    },
+		jobType: {
+			type: String,
+			enum: ["Full-time", "Part-time", "Internship", "contract", "freelance"],
+			required: true,
+		},
 
-    keyRes: [
-      {
-        type: String,
-        trim: true,
-        required: true,
-      },
-    ],
+		workPlace: {
+			type: String,
+			enum: ["Remote", "Hybrid", "On-site"],
+			required: true,
+		},
 
-    location: {
-      type: String,
-      required: true,
-    },
+		keyRes: [
+			{
+				type: String,
+				trim: true,
+				required: true,
+			},
+		],
 
-    minSalary: {
-      type: Number,
-      required: true,
-    },
+		location: {
+			type: String,
+			required: true,
+		},
 
-    maxSalary: {
-      type: Number,
-      required: true,
-    },
+		minSalary: {
+			type: Number,
+			required: true,
+		},
 
-    moneySym: {
-      type: String,
-      enum: ["$", "€", "£", "₹"],
-      required: true,
-    },
+		maxSalary: {
+			type: Number,
+			required: true,
+		},
 
-    description: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+		moneySym: {
+			type: String,
+			enum: ["$", "€", "£", "₹"],
+			required: true,
+		},
 
-    expLevel: {
-      type: String,
-      required: true,
-    },
+		description: {
+			type: String,
+			required: true,
+			trim: true,
+		},
 
-    status: {
-      type: String,
-      enum: ["Active", "Draft", "Closed"],
-      required: true,
-    },
+		expLevel: {
+			type: String,
+			required: true,
+		},
 
-    skills: [
-      {
-        type: String,
-        trim: true,
-      },
-    ],
+		status: {
+			type: String,
+			enum: ["Active", "Draft", "Closed"],
+			required: true,
+		},
 
-    tags: [
-      {
-        type: String,
-        trim: true,
-      },
-    ],
+		skills: [
+			{
+				type: String,
+				trim: true,
+			},
+		],
 
-    technicalSkills: [
-      {
-        type: String,
-        trim: true,
-      },
-    ],
+		tags: [
+			{
+				type: String,
+				trim: true,
+			},
+		],
 
-    education: [
-      {
-        type: String,
-        trim: true,
-      },
-    ],
+		technicalSkills: [
+			{
+				type: String,
+				trim: true,
+			},
+		],
 
-    applicantCount: {
-      type: Number,
-      default: 0,
-    },
+		education: [
+			{
+				type: String,
+				trim: true,
+			},
+		],
 
-    viewCount: {
-      type: Number,
-      default: 0,
-    },
+		applicantCount: {
+			type: Number,
+			default: 0,
+		},
 
-    // foundedYear: { type: String, trim: true },
-    // website: { type: String, trim: true },
-    // linkedIn: { type: String, trim: true },
-    // twitter: { type: String, trim: true },
-    // other: { type: String, trim: true },
-  },
-  {
-    timestamps: true,
-  },
+		viewCount: {
+			type: Number,
+			default: 0,
+		},
+
+		// foundedYear: { type: String, trim: true },
+		// website: { type: String, trim: true },
+		// linkedIn: { type: String, trim: true },
+		// twitter: { type: String, trim: true },
+		// other: { type: String, trim: true },
+	},
+	{
+		timestamps: true,
+	},
 );
 
 let JobModel = mongoose.model("Job", jobSchema);

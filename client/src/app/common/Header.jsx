@@ -242,6 +242,18 @@ export default function Header() {
                   <li>About Us</li>
                 </Link>
 
+                {user?.role == "employer" &&
+                  <>
+                    <Link
+                      href={"/profile/employer/dashboard"}
+                      className={`hover:text-[#fff] ${pathName == "/profile/employer/dashboard" && "text-[#fff] font-semibold"
+                        }`}
+                    >
+                      <li>Dashboard</li>
+                    </Link>
+                  </>
+                }
+
                 <Link
                   href={"/contact-us"}
                   className={`hover:text-[#fff] ${pathName == "/contact-us" && "text-[#fff] font-semibold"
@@ -257,7 +269,7 @@ export default function Header() {
                 <div>
                   <div className="relative cursor-pointer" onClick={() => setIsNotifOpen(!isNotifOpen)}>
                     <FaBell className="w-5 h-5 text-gray-300 hover:text-white transition" />
-                    {notifications?.length > 0 &&
+                    {notifications?.length > 0 && count > 0 &&
                       <span className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-black">
                         {count}
                       </span>
