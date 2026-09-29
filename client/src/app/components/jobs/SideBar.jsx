@@ -194,11 +194,16 @@ export default function SideBar() {
     "Financial Services",
   ];
   const jobTypes = [
-    "Full Time",
-    "Part Time",
-    "Freelance",
-    "Seasonal",
-    "Fixed-Price",
+    "Full-time",
+    "Part-time",
+    "Internship",
+    "contract",
+    "freelance",
+  ];
+  const workPlaces = [
+    "Remote",
+    "Hybrid",
+    "On-site",
   ];
   const experienceLevels = [
     "No-experience",
@@ -232,6 +237,7 @@ export default function SideBar() {
     setCategoryFilter,
     jobType,
     setJobType,
+    workPlace, setWorkPlace
   } = useAuth();
 
   // console.log("category", category);
@@ -309,7 +315,7 @@ export default function SideBar() {
       <hr className="border-slate-100" />
 
       {/* Dynamic Filter Sections */}
-      {[
+      {/* {[
         { title: "Job Type", items: jobTypes },
         { title: "Experience Level", items: experienceLevels },
         { title: "Date Posted", items: datesPosted },
@@ -339,7 +345,124 @@ export default function SideBar() {
           </div>
           <hr className="border-slate-100" />
         </React.Fragment>
-      ))}
+      ))} */}
+
+      {/* Job Type */}
+      <div>
+        <h4 className="font-semibold text-red-500 mb-3">
+          Job Type
+        </h4>
+
+        <ul className="space-y-2.5 select-none">
+          {jobTypes.map((item, i) => (
+            <li key={i} className="flex justify-between items-center cursor-pointer">
+              <label className="flex items-center gap-3 text-sm text-slate-600 cursor-pointer">
+                <input
+                  type="checkbox"
+                  value={item}
+                  checked={jobType === item}
+                  onChange={(e) =>
+                    setJobType(e.target.checked ? item : "")
+                  }
+                  className="w-4 h-4 rounded border-slate-300 accent-red-600"
+                />
+                {item}
+              </label>
+
+              <span className="bg-slate-100 text-slate-500 text-xs px-2 py-0.5 rounded-full">
+                10
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <hr className="border-slate-100" />
+
+
+      {/* work Place */}
+      <div>
+        <h4 className="font-semibold text-red-500 mb-3">
+          Work Place
+        </h4>
+
+        <ul className="space-y-2.5 select-none">
+          {workPlaces.map((item, i) => (
+            <li key={i} className="flex justify-between items-center cursor-pointer">
+              <label className="flex items-center gap-3 text-sm text-slate-600 cursor-pointer">
+                <input
+                  type="checkbox"
+                  value={item}
+                  checked={workPlace === item}
+                  onChange={(e) =>
+                    setWorkPlace(e.target.checked ? item : "")
+                  }
+                  className="w-4 h-4 rounded border-slate-300 accent-red-600"
+                />
+                {item}
+              </label>
+
+              <span className="bg-slate-100 text-slate-500 text-xs px-2 py-0.5 rounded-full">
+                10
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <hr className="border-slate-100" />
+
+      {/* Experience Level */}
+      <div>
+        <h4 className="font-semibold text-red-500 mb-3">
+          Experience Level
+        </h4>
+
+        <ul className="space-y-2.5">
+          {experienceLevels.map((item, i) => (
+            <li key={i} className="flex justify-between items-center">
+              <label className="flex items-center gap-3 text-sm text-slate-600 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 rounded border-slate-300 accent-red-600"
+                />
+                {item}
+              </label>
+
+              <span className="bg-slate-100 text-slate-500 text-xs px-2 py-0.5 rounded-full">
+                10
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <hr className="border-slate-100" />
+
+      {/* Date Posted */}
+      <div>
+        <h4 className="font-semibold text-red-500 mb-3">
+          Date Posted
+        </h4>
+
+        <ul className="space-y-2.5">
+          {datesPosted.map((item, i) => (
+            <li key={i} className="flex justify-between items-center">
+              <label className="flex items-center gap-3 text-sm text-slate-600 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 rounded border-slate-300 accent-red-600"
+                />
+                {item}
+              </label>
+
+              <span className="bg-slate-100 text-slate-500 text-xs px-2 py-0.5 rounded-full">
+                10
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       {/* Salary Range */}
       <div>

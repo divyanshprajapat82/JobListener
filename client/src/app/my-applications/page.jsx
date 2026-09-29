@@ -8,7 +8,8 @@ import {
     FaRegCommentDots, FaChevronRight, FaBriefcase,
     FaFilePdf,
     FaDownload,
-    FaHandshake
+    FaHandshake,
+    FaGift
 } from 'react-icons/fa';
 import { toast } from 'sonner';
 import axios from 'axios';
@@ -301,7 +302,10 @@ export default function MyApplicationsPage() {
             case 'Interviewing':
                 return { color: "bg-purple-50 text-purple-700 border-purple-200", icon: <FaRegCommentDots className="mr-1.5" /> };
             case 'Offered':
-                return { color: "bg-green-50 text-green-700 border-green-200", icon: <FaCheckCircle className="mr-1.5" /> };
+                return {
+                    color: "bg-yellow-50 text-yellow-700 border-yellow-200",
+                    icon: <FaGift className="mr-1.5" />
+                };
             case 'Rejected':
                 return { color: "bg-red-50 text-red-600 border-red-200", icon: <FaTimesCircle className="mr-1.5" /> };
             default:

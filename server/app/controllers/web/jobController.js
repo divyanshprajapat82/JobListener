@@ -79,7 +79,8 @@ const addjob = async (req, res) => {
 };
 
 const getJob = async (req, res) => {
-	const { search, location, categoryFilter, status } = req.query;
+	const { search, location, categoryFilter, status, jobType, workPlace } =
+		req.query;
 
 	let filter = {};
 
@@ -103,6 +104,14 @@ const getJob = async (req, res) => {
 
 	if (status) {
 		filter.status = status;
+	}
+
+	if (jobType) {
+		filter.jobType = jobType;
+	}
+
+	if (workPlace) {
+		filter.workPlace = workPlace;
 	}
 
 	filter.status = { $ne: "Draft" };

@@ -24,6 +24,7 @@ export const MainContext = ({ children }) => {
   const [categoryFilter, setCategoryFilter] = useState("");
   const [jobType, setJobType] = useState("");
   const [status, setStatus] = useState("");
+  const [workPlace, setWorkPlace] = useState("");
   const [experienceFilter, setExperienceFilter] = useState("");
   const [salary, setSalary] = useState("");
   const [isActivelyLooking, setIsActivelyLooking] = useState(false);
@@ -222,6 +223,7 @@ export const MainContext = ({ children }) => {
           categoryFilter,
           jobType,
           status,
+          workPlace
           // jobType: jobType ? true : "",
         }
       })
@@ -364,7 +366,7 @@ export const MainContext = ({ children }) => {
 
   useEffect(() => {
     getjob();
-  }, [search, location, categoryFilter, jobType, status]);
+  }, [search, location, categoryFilter, jobType, status, workPlace]);
 
   useEffect(() => {
     if (!user) return;
@@ -442,6 +444,7 @@ export const MainContext = ({ children }) => {
         setJobType,
         status,
         setStatus,
+        workPlace, setWorkPlace,
         isActivelyLooking, setIsActivelyLooking,
         notifications, setNotifications,
         count, setCount,
