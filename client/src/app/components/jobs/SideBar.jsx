@@ -1,182 +1,3 @@
-// "use client"
-// import Link from 'next/link'
-// import React, { useEffect, useRef, useState } from 'react'
-// import { CiLocationOn, CiSearch } from 'react-icons/ci'
-// import DualSalaryRange from './DualSalaryRange'
-
-// export default function SideBar() {
-//     return (
-//         <>
-
-//             <div className='p-2'>
-//                 <div>
-//                     {/* #fae7e7 */}
-//                     <div className='md:max-w-[300px] bg-[#FAD8D8] p-4 rounded-2xl space-y-2'>
-//                         <div>
-//                             <h4 className='font-semibold text-[18px]'>Search by Job Title</h4>
-//                             <div className='bg-[#fff] mt-1 flex items-center rounded-[8px]'>
-//                                 <CiSearch className='ml-1' />
-//                                 <input type="text" className=' px-2 py-1 outline-none' placeholder='Job title' />
-//                             </div>
-//                         </div>
-//                         <div>
-//                             <h4 className='font-semibold text-[18px]'>Location</h4>
-//                             <div className='bg-[#fff] mt-1 flex items-center rounded-[8px]'>
-//                                 <CiLocationOn className='ml-1' />
-//                                 <input type="text" className=' px-2 py-1 outline-none' placeholder='Location' />
-//                             </div>
-//                         </div>
-//                         <div>
-//                             <h4 className='font-semibold text-[18px] my-1'>Category</h4>
-//                             <ul className='grid space-y-1 mt-2'>
-//                                 {/* <li className='flex justify-between items-center'>
-//                                     <span> <input type="checkbox" /> Commerce </span>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li> */}
-//                                 <li className='flex justify-between items-center'>
-//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' />
-//                                         Commerce
-//                                     </label>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li>
-
-//                                 <li className='flex justify-between items-center'>
-//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' />
-
-//                                         Telecomunications
-//                                     </label>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li>
-//                                 <li className='flex justify-between items-center'>
-//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> Hotels & Tourism </label>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li>
-//                                 <li className='flex justify-between items-center'>
-//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> Education </label>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li>
-//                                 <li className='flex justify-between items-center'>
-//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' />Financial Services </label>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li>
-//                             </ul>
-//                             <Link href={""}>
-//                                 <button className='py-2 px-4 w-full bg-[#d00] text-[#fff] hover:bg-[#dd0000cb] my-2 rounded-[10px] transition-all duration-300 cursor-pointer'>Show more</button>
-//                             </Link>
-
-//                         </div>
-//                         <div className='my-2'>
-//                             <h4 className='font-semibold text-[18px] my-1'> Job Type</h4>
-//                             <ul className='grid space-y-1 mt-2'>
-//                                 <li className='flex justify-between items-center'>
-//                                     <span className="checkbox-label"> <input type="checkbox" className='checkbox' /> Full Time </span>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li>
-//                                 <li className='flex justify-between items-center'>
-//                                     <span className="checkbox-label"> <input type="checkbox" className='checkbox' /> Part Time </span>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li>
-//                                 <li className='flex justify-between items-center'>
-//                                     <span className="checkbox-label"> <input type="checkbox" className='checkbox' /> Freelance </span>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li>
-//                                 <li className='flex justify-between items-center'>
-//                                     <span className="checkbox-label"> <input type="checkbox" className='checkbox' /> Seasonal </span>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li>
-//                                 <li className='flex justify-between items-center'>
-//                                     <span className="checkbox-label"> <input type="checkbox" className='checkbox' /> Fixed-Price </span>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li>
-//                             </ul>
-//                         </div>
-//                         <div className='my-2'>
-//                             <h4 className='font-semibold text-[18px] my-1'> Experience Level</h4>
-//                             <ul className='grid space-y-1 mt-2'>
-//                                 <li className='flex justify-between items-center'>
-//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> No-experience </label>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li>
-//                                 <li className='flex justify-between items-center'>
-//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> Fresher </label>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li>
-//                                 <li className='flex justify-between items-center'>
-//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> Intermediate </label>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li>
-//                                 <li className='flex justify-between items-center'>
-//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> Expert </label>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li>
-//                             </ul>
-//                         </div>
-//                         <div className='my-2'>
-//                             <h4 className='font-semibold text-[18px] my-1'> Date Posted</h4>
-//                             <ul className='grid space-y-1 mt-2'>
-//                                 <li className='flex justify-between items-center'>
-//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> All </label>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li>
-//                                 <li className='flex justify-between items-center'>
-//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> Last Hour </label>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li>
-//                                 <li className='flex justify-between items-center'>
-//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> Last 24 Hours </label>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li>
-//                                 <li className='flex justify-between items-center'>
-//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> Last 7 Days </label>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li>
-//                                 <li className='flex justify-between items-center'>
-//                                     <label className="checkbox-label"> <input type="checkbox" className='checkbox' /> Last 30 Days </label>
-//                                     <div className='bg-[#fff] text-[13px] px-2 flex items-center rounded-full'>10</div>
-//                                 </li>
-//                             </ul>
-//                         </div>
-//                         <div>
-//                             <h4 className='font-semibold text-[18px] my-1'>Salary Range</h4>
-//                             <div className='bg-[#fff] p-3 rounded-[10px] mt-2'>
-//                                 <DualSalaryRange />
-//                             </div>
-//                         </div>
-
-//                         <div>
-//                             <h4 className='font-semibold text-[18px] my-1'> Tags</h4>
-//                             <ul className="flex flex-wrap gap-2 mt-2">
-//                                 <li className="bg-red-100 text-red-600 text-sm px-3 py-1 rounded-full">
-//                                     Engineering
-//                                 </li>
-//                                 <li className="bg-red-100 text-red-600 text-sm px-3 py-1 rounded-full">
-//                                     Design
-//                                 </li>
-//                                 <li className="bg-red-100 text-red-600 text-sm px-3 py-1 rounded-full">
-//                                     UI/UX
-//                                 </li>
-//                                 <li className="bg-red-100 text-red-600 text-sm px-3 py-1 rounded-full">
-//                                     Marketing
-//                                 </li>
-//                                 <li className="bg-red-100 text-red-600 text-sm px-3 py-1 rounded-full">
-//                                     Management
-//                                 </li>
-//                                 <li className="bg-red-100 text-red-600 text-sm px-3 py-1 rounded-full">
-//                                     Soft
-//                                 </li>
-//                                 <li className="bg-red-100 text-red-600 text-sm px-3 py-1 rounded-full">
-//                                     Construction
-//                                 </li>
-//                             </ul>
-
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div >
-//         </>
-//     )
-// }
-
 "use client";
 import Link from "next/link";
 import React from "react";
@@ -206,17 +27,21 @@ export default function SideBar() {
     "On-site",
   ];
   const experienceLevels = [
-    "No-experience",
     "Fresher",
-    "Intermediate",
-    "Expert",
+    "0-2 years",
+    "3-5 years",
+    "5-8 years",
+    "8+ years"
+    // "No-experience",
+    // "Fresher",
+    // "Intermediate",
+    // "Expert",
   ];
   const datesPosted = [
-    "All",
-    "Last Hour",
-    "Last 24 Hours",
-    "Last 7 Days",
-    "Last 30 Days",
+    "Today",
+    "Last 3 days",
+    "Last 7 days",
+    "Last 30 days",
   ];
   const tags = [
     "Engineering",
@@ -237,7 +62,9 @@ export default function SideBar() {
     setCategoryFilter,
     jobType,
     setJobType,
-    workPlace, setWorkPlace
+    workPlace, setWorkPlace,
+    experienceFilter, setExperienceFilter,
+    datePostedFilter, setDatePostedFilter
   } = useAuth();
 
   // console.log("category", category);
@@ -424,6 +251,11 @@ export default function SideBar() {
               <label className="flex items-center gap-3 text-sm text-slate-600 cursor-pointer">
                 <input
                   type="checkbox"
+                  value={item}
+                  checked={experienceFilter === item}
+                  onChange={(e) =>
+                    setExperienceFilter(e.target.checked ? item : "")
+                  }
                   className="w-4 h-4 rounded border-slate-300 accent-red-600"
                 />
                 {item}
@@ -451,6 +283,11 @@ export default function SideBar() {
               <label className="flex items-center gap-3 text-sm text-slate-600 cursor-pointer">
                 <input
                   type="checkbox"
+                  value={item}
+                  checked={datePostedFilter === item}
+                  onChange={(e) =>
+                    setDatePostedFilter(e.target.checked ? item : "")
+                  }
                   className="w-4 h-4 rounded border-slate-300 accent-red-600"
                 />
                 {item}

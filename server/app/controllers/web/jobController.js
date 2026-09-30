@@ -79,8 +79,16 @@ const addjob = async (req, res) => {
 };
 
 const getJob = async (req, res) => {
-	const { search, location, categoryFilter, status, jobType, workPlace } =
-		req.query;
+	const {
+		search,
+		location,
+		categoryFilter,
+		status,
+		jobType,
+		workPlace,
+		experienceFilter,
+		datePostedFilter,
+	} = req.query;
 
 	let filter = {};
 
@@ -112,6 +120,35 @@ const getJob = async (req, res) => {
 
 	if (workPlace) {
 		filter.workPlace = workPlace;
+	}
+
+	if (experienceFilter) {
+		filter.expLevel = experienceFilter;
+	}
+
+	if (datePostedFilter) {
+		const now = new Date();
+		let startDate = new Date();
+
+		if (datePostedFilter === "Today") {
+			startDate.setHours(0, 0, 0, 0);
+		}
+
+		if (datePostedFilter === "Last 3 days") {
+			startDate.setDate(now.getDate() - 3);
+		}
+
+		if (datePostedFilter === "Last 7 days") {
+			startDate.setDate(now.getDate() - 7);
+		}
+
+		if (datePostedFilter === "Last 30 days") {
+			startDate.setDate(now.getDate() - 40);
+		}
+
+		if (datePostedFilter === "Last 90 days") {
+			startDate.setDate(now.getDate() - 40);
+		}
 	}
 
 	filter.status = { $ne: "Draft" };

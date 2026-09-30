@@ -58,18 +58,18 @@ export default function PostJobPage() {
     maxSalary: "",
     moneySym: "$",
     description: "",
-    expLevel: "0-2 year",
+    expLevel: "Fresher",
     status: "Active",
     // skills: [],
     // education: [],
   });
   const APIURL = process.env.NEXT_PUBLIC_APIURL;
 
-  useEffect(() => {
-    if (!user && !loading) {
-      return router.push("/login");
-    }
-  }, [user, loading, router]);
+  // useEffect(() => {
+  //   if (!user && !loading) {
+  //     return router.push("/login");
+  //   }
+  // }, [user, loading, router]);
 
   if (loading) {
     return (
@@ -776,6 +776,7 @@ export default function PostJobPage() {
                     onChange={handleChange}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-red-600 focus:ring-4 focus:ring-red-600/10 outline-none transition-all appearance-none"
                   >
+                    <option value="Fresher">Fresher</option>
                     <option value="0-2 years">Entry Level (0-2 years)</option>
                     <option value="3-5 years">Mid Level (3-5 years)</option>
                     <option value="5-8 years">Senior Level (5-8 years)</option>

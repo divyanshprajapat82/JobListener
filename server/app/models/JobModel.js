@@ -86,6 +86,7 @@ let jobSchema = new mongoose.Schema(
 
 		expLevel: {
 			type: String,
+			enum: ["Fresher", "0-2 years", "3-5 years", "5-8 years", "8+ years"],
 			required: true,
 		},
 
