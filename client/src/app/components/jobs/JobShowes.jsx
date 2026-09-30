@@ -649,12 +649,12 @@ import { useAuth } from "@/app/context/MainContext";
 import axios from "axios";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 
-function JobCard({ item, index, isMounted }) {
+function JobCard({ item, index, isMounted, savedJobs }) {
   const [isLiked, setIsLiked] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [showRmToast, setShowRmToast] = useState(false);
-  const [savedJobs, setSavedJobs] = useState([]);
+  // const [savedJobs, setSavedJobs] = useState([]);
   // const [isSaved, setIsSaved] = useState(false);
   const APIURL = process.env.NEXT_PUBLIC_APIURL;
 
@@ -739,37 +739,47 @@ function JobCard({ item, index, isMounted }) {
     }
   };
 
-  const getSavedJobs = async () => {
-    try {
-      const res = await axios.get(`${APIURL}/job/saved-jobs`, {
-        withCredentials: true,
-      });
-
-      const savedJobsData = res.data.data;
-      console.log("saved Jobs", savedJobsData);
-
-      setSavedJobs(savedJobsData);
-
-      const saved = savedJobsData.some(
-        (savedItem) => savedItem.jobId._id === item._id,
-      );
-
-      setIsLiked(saved);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    getSavedJobs();
-  }, []);
+    const saved = savedJobs?.some(
+      (savedItem) => savedItem.jobId?._id === item._id
+    );
+
+    setIsLiked(saved);
+  }, [savedJobs, item._id]);
+
+  // const getSavedJobs = async () => {
+  //   try {
+  //     const res = await axios.get(`${APIURL}/job/saved-jobs`, {
+  //       withCredentials: true,
+  //     });
+
+  //     const savedJobsData = res.data.data;
+  //     // console.log("saved Jobs", savedJobsData);
+
+  //     setSavedJobs(savedJobsData);
+
+  //     const saved = savedJobsData.some(
+  //       (savedItem) => savedItem.jobId._id === item._id,
+  //     );
+
+  //     setIsLiked(saved);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   getSavedJobs();
+  // }, []);
+
+
 
   const mockDescription =
     "We are looking for a highly skilled professional to join our dynamic team. You will be responsible for developing scalable solutions, collaborating with cross-functional teams, and driving impactful results.";
 
   return (
     <div
-      className={`relative group bg-white border border-slate-200 rounded-xl p-5 hover:border-red-200 hover:shadow-[0_8px_30px_rgb(220,38,38,0.06)] hover:-translate-y-1 z-10 overflow-hidden cursor-pointer
+      className={`relative group bg-white border border-slate-200 rounded-xl p-5 hover:border-red-200 hover:shadow-[0_8px_30px_rgb(220,38,38,0.06)] hover:-translate-y-1 z-10 overflow-hidden
       transition-all duration-700 ease-[cubic-bezier(0.25,0.8,0.25,1)]
       ${isMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
       style={{ transitionDelay: `${index * 100}ms` }}
@@ -784,7 +794,7 @@ function JobCard({ item, index, isMounted }) {
         {/* Desktop Like Button */}
         <button
           onClick={handleLike}
-          className="hidden md:block relative p-2 -m-2 focus:outline-none group/btn"
+          className=" relative p-2 -m-2 focus:outline-none group/btn"
         >
           <span
             className={`absolute inset-0 rounded-full bg-red-400 ${isLiked ? "animate-ping opacity-0" : "opacity-0"}`}
@@ -842,13 +852,15 @@ function JobCard({ item, index, isMounted }) {
 
         {/* Main Job Info */}
         <div className="flex-1 w-full">
-          <div className="flex justify-between items-start md:items-center">
-            <h3 className="text-lg font-bold text-slate-900 group-hover:text-red-600 transition-colors line-clamp-1">
-              {item.title}
-            </h3>
 
-            {/* Mobile Like Button */}
-            <button
+          <div className="flex justify-between items-start md:items-center">
+            <Link href={`./jobs/${item._id}`}>
+              <h3 className="text-lg font-bold text-slate-900 group-hover:text-red-600 transition-colors line-clamp-1 cursor-pointer">
+                {item.title}
+              </h3>
+            </Link>
+
+            {/* <button
               onClick={handleLike}
               className="md:hidden relative p-2 -m-2 focus:outline-none"
             >
@@ -868,7 +880,7 @@ function JobCard({ item, index, isMounted }) {
                   <FaRegHeart />
                 )}
               </div>
-            </button>
+            </button> */}
           </div>
 
           <div className="flex items-center flex-wrap gap-2 mt-1.5 text-sm text-slate-500">
@@ -932,15 +944,14 @@ function JobCard({ item, index, isMounted }) {
           </div>
 
           <div className="flex items-center justify-between md:justify-end gap-5 w-full">
-            <span
+            {/* <span
               className={`text-xs font-medium flex items-center gap-1 transition-all duration-300 text-nowrap ${isExpanded ? "text-red-600" : "text-slate-400 group-hover:text-red-500"}`}
             >
               {isExpanded ? "Close" : "Quick View"}
-              {/* {isExpanded ? <span className="text-red-600">Close</span> : <span className="text-slate-400 group-hover:text-red-500">Quick View</span>} */}
               <IoIosArrowDown
                 className={`transition-transform duration-300 ${isExpanded ? "rotate-180" : "rotate-0"}`}
               />
-            </span>
+            </span> */}
 
             {/* Red Apply Button with shine sweep */}
             <Link
@@ -960,7 +971,7 @@ function JobCard({ item, index, isMounted }) {
       </div>
 
       {/* Accordion Expansion (Quick View - Red Tinted) */}
-      <div
+      {/* <div
         className={`grid transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${isExpanded ? "grid-rows-[1fr] opacity-100 mt-5" : "grid-rows-[0fr] opacity-0"}`}
       >
         <div className="overflow-hidden">
@@ -982,18 +993,39 @@ function JobCard({ item, index, isMounted }) {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
 
 export default function JobShowes() {
-  const { jobs } = useAuth();
+  const { jobs, sortBy, setSortBy } = useAuth();
   const [isMounted, setIsMounted] = useState(false);
+  const [savedJobs, setSavedJobs] = useState([]);
+  // const [sortBy, setSortBy] = useState("relevant");
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+
+  const APIURL = process.env.NEXT_PUBLIC_APIURL;
+
+  useEffect(() => {
+    const getSavedJobs = async () => {
+      try {
+        const res = await axios.get(`${APIURL}/job/saved-jobs`, {
+          withCredentials: true,
+        });
+
+        setSavedJobs(res.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getSavedJobs();
+  }, [APIURL]);
 
   return (
     <div className="flex flex-col space-y-6">
@@ -1008,14 +1040,25 @@ export default function JobShowes() {
           jobs found
         </h2>
 
+          {/* <button className="w-full sm:w-auto flex items-center justify-between gap-4 bg-white border border-slate-200 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700 hover:bg-red-50 hover:border-red-200 hover:text-red-700 transition-all focus:outline-none focus:ring-2 focus:ring-red-100 cursor-pointer">
+            Most Relevant
+            <IoIosArrowDown className="text-slate-400" />
+          </button> */}
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <span className="text-sm text-slate-500 hidden sm:block">
             Sort by:
           </span>
-          <button className="w-full sm:w-auto flex items-center justify-between gap-4 bg-white border border-slate-200 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700 hover:bg-red-50 hover:border-red-200 hover:text-red-700 transition-all focus:outline-none focus:ring-2 focus:ring-red-100">
-            Most Relevant
-            <IoIosArrowDown className="text-slate-400" />
-          </button>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="w-full sm:w-auto bg-white border border-slate-200 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700"
+          >
+            <option value="relevant">Most Relevant</option>
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+            <option value="salary-high">Salary: High to Low</option>
+            <option value="salary-low">Salary: Low to High</option>
+          </select>
         </div>
       </div>
 
@@ -1038,6 +1081,7 @@ export default function JobShowes() {
               item={item}
               index={index}
               isMounted={isMounted}
+              savedJobs={savedJobs}
             />
           ))
         ) : (

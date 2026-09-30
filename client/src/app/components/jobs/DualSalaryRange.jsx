@@ -1,4 +1,5 @@
 "use client"
+import { useAuth } from '@/app/context/MainContext'
 import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
 import { CiLocationOn, CiSearch } from 'react-icons/ci'
@@ -9,10 +10,12 @@ export default function DualSalaryRange({
     step = 1000,
     initialLow = 40000,
     initialHigh = 100000,
-    currency = '$',
+    currency = '₹',
 }) {
+    const { minSalary, setMinSalary, maxSalary, setMaxSalary } = useAuth()
     const [low, setLow] = useState(Math.max(min, initialLow))
     const [high, setHigh] = useState(Math.min(max, initialHigh))
+    // const [minSalary, setMinSalary] = useState()
     const trackRef = useRef(null)
 
     const format = (v) => `${currency}${Number(v).toLocaleString('en-US')}`
@@ -40,6 +43,11 @@ export default function DualSalaryRange({
         }
         window.addEventListener('mousemove', move)
         window.addEventListener('mouseup', up)
+    }
+
+    const handleApply = () => {
+        setMinSalary(low)
+        setMaxSalary(high)
     }
 
     return (
@@ -74,7 +82,7 @@ export default function DualSalaryRange({
             <div className='flex items-center justify-between text-[13px] text-[#666]'>
                 <div>salary: {format(low)} — {format(high)}</div>
                 {/* <div>Step: {format(step)}</div> */}
-                <button className='py-1 px-4 bg-[#d00] text-[#fff] hover:bg-[#dd0000ec] my-2 rounded-[10px] transition-all duration-300 cursor-pointer'>Apply</button>
+                <button onClick={handleApply} className='py-1 px-4 bg-[#d00] text-[#fff] hover:bg-[#dd0000ec] my-2 rounded-[10px] transition-all duration-300 cursor-pointer'>Apply</button>
             </div>
         </div>
     )

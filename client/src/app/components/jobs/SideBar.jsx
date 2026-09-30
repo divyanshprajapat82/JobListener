@@ -1,19 +1,13 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CiLocationOn, CiSearch } from "react-icons/ci";
 import DualSalaryRange from "./DualSalaryRange";
 import { useAuth } from "@/app/context/MainContext";
+import axios from "axios";
 
 export default function SideBar() {
-  const categories = [
-    "Commerce",
-    "frontend-developer",
-    "Telecommunications",
-    "Hotels & Tourism",
-    "Education",
-    "Financial Services",
-  ];
+
   const jobTypes = [
     "Full-time",
     "Part-time",
@@ -21,11 +15,13 @@ export default function SideBar() {
     "contract",
     "freelance",
   ];
+
   const workPlaces = [
     "Remote",
     "Hybrid",
     "On-site",
   ];
+
   const experienceLevels = [
     "Fresher",
     "0-2 years",
@@ -43,14 +39,17 @@ export default function SideBar() {
     "Last 7 days",
     "Last 30 days",
   ];
-  const tags = [
-    "Engineering",
-    "Design",
-    "UI/UX",
-    "Marketing",
-    "Management",
-    "Construction",
-  ];
+
+  // const tags = [
+  //   "Engineering",
+  //   "Design",
+  //   "UI/UX",
+  //   "Marketing",
+  //   "Management",
+  //   "Construction",
+  //   "html",
+  //   "fsdfsd",
+  // ];
 
   const {
     category,
@@ -64,8 +63,32 @@ export default function SideBar() {
     setJobType,
     workPlace, setWorkPlace,
     experienceFilter, setExperienceFilter,
-    datePostedFilter, setDatePostedFilter
+    datePostedFilter, setDatePostedFilter,
+    tag, setTag
   } = useAuth();
+
+  const [tags, setTags] = useState([])
+
+  const APIURL = process.env.NEXT_PUBLIC_APIURL;
+
+
+
+  useEffect(() => {
+    const getTags = async () => {
+      try {
+        const res = await axios.get(
+          `${APIURL}/job/popular-tags`
+        );
+
+        if (res.data.success) {
+          setTags(res.data.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getTags();
+  }, []);
 
   // console.log("category", category);
 
@@ -313,12 +336,17 @@ export default function SideBar() {
       <div>
         <h4 className="font-semibold text-red-500 mb-3">Popular Tags</h4>
         <div className="flex flex-wrap gap-2">
-          {tags.map((tag, i) => (
+          {tags.map((item, i) => (
             <span
               key={i}
-              className="bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 transition-colors cursor-pointer text-xs font-medium px-3 py-1.5 rounded-lg border border-red-100"
+              onClick={() => setTag(tag === item.name ? "" : item.name)}
+              className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-all duration-200 cursor-pointer
+                ${tag === item.name
+                  ? "bg-red-600 text-white border-red-600 shadow-sm"
+                  : "bg-red-50 text-red-600 border-red-100 hover:bg-red-100 hover:border-red-200"
+                }`}
             >
-              {tag}
+              {item.name}
             </span>
           ))}
         </div>

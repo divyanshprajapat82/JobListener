@@ -88,6 +88,10 @@ const getJob = async (req, res) => {
 		workPlace,
 		experienceFilter,
 		datePostedFilter,
+		minSalary,
+		maxSalary,
+		tag,
+		sortBy,
 	} = req.query;
 
 	let filter = {};
@@ -151,7 +155,46 @@ const getJob = async (req, res) => {
 		}
 	}
 
+	if (minSalary || maxSalary) {
+		filter.minSalary = {};
+
+		if (minSalary) {
+			filter.minSalary.$gte = Number(minSalary);
+		}
+
+		if (maxSalary) {
+			filter.minSalary.$lte = Number(maxSalary);
+		}
+	}
+
+	// if (tag) {
+	// 	filter.tags = tag;
+	// 	filter.skills = tag;
+	// }
+
+	if (tag) {
+		filter.$or = [{ tags: tag }, { technicalSkills: tag }];
+	}
+
 	filter.status = { $ne: "Draft" };
+
+	let sort = { createdAt: -1 };
+
+	if (sortBy === "oldest") {
+		sort = { createdAt: 1 };
+	}
+
+	if (sortBy === "salary-high") {
+		sort = { maxSalary: -1 };
+	}
+
+	if (sortBy === "salary-low") {
+		sort = { minSalary: 1 };
+	}
+
+	if (sortBy === "newest") {
+		sort = { createdAt: -1 };
+	}
 
 	//  if(search && search.trim()){
 	//   filter.title = {
@@ -161,7 +204,8 @@ const getJob = async (req, res) => {
 	// }
 
 	const data = await JobModel.find(filter)
-		.sort({ createdAt: -1 })
+		// .sort({ createdAt: -1 })
+		.sort(sort)
 		.populate("userId")
 		.populate("employer")
 		.populate("category");
@@ -427,116 +471,38 @@ const getSavedJobs = async (req, res) => {
 	}
 };
 
-// const addSkills = async (req, res) => {
-//   try {
-//     const userId = req.user?.userId;
-//     let { skills } = req.body;
+const getPopularTags = async (req, res) => {
+	try {
+		const tags = await JobModel.aggregate([
+			{ $unwind: "$technicalSkills" },
+			{
+				$group: {
+					_id: "$technicalSkills",
+					count: { $sum: 1 },
+				},
+			},
+			{ $sort: { count: -1 } },
+			{ $limit: 10 },
+			{
+				$project: {
+					_id: 0,
+					name: "$_id",
+					count: 1,
+				},
+			},
+		]);
 
-//     // basic check
-//     if (!skills || !Array.isArray(skills)) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Skills must be an array",
-//       });
-//     }
-
-//     // remove empty + trim
-//     skills = skills
-//       .map((skill) => skill.trim())
-//       .filter((skill) => skill !== "");
-
-//     const jobs = await JobModel.findOne({ userId });
-
-//     if (!jobs) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Profile not found",
-//       });
-//     }
-
-//     jobs.skills = skills;
-
-//     await jobs.save();
-
-//     res.status(200).json({
-//       success: true,
-//       message: "Skills updated successfully",
-//       data: jobs.skills,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
-// };
-
-// const getSkills = async (req, res) => {
-//   try {
-//     const userId = req.user?.userId;
-
-//     const jobs = await JobModel.findOne({ userId });
-
-//     res.status(200).json({
-//       success: true,
-//       data: jobs?.skills || [],
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
-// };
-
-// const deleteSkill = async (req, res) => {
-//   try {
-//     const userId = req.user?.userId;
-//     const { skill } = req.body;
-
-//     if (!skill || typeof skill !== "string") {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Valid skill is required",
-//       });
-//     }
-
-//     const jobs = await JobModel.findOne({ userId });
-
-//     if (!jobs) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Profile not found",
-//       });
-//     }
-
-//     const originalLength = jobs.skills.length;
-
-//     jobs.skills = jobs.skills.filter(
-//       (s) => s.toLowerCase() !== skill.toLowerCase(),
-//     );
-
-//     if (jobs.skills.length === originalLength) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Skill not found",
-//       });
-//     }
-
-//     await jobs.save();
-
-//     res.status(200).json({
-//       success: true,
-//       message: "Skill removed successfully",
-//       data: jobs.skills,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: error.message || "Server error",
-//     });
-//   }
-// };
+		res.json({
+			success: true,
+			data: tags,
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
 
 module.exports = {
 	addjob,
@@ -546,7 +512,5 @@ module.exports = {
 	unsaveJob,
 	getSavedJobs,
 	jobViews,
-	// addSkills,
-	// getSkills,
-	// deleteSkill,
+	getPopularTags,
 };

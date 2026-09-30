@@ -74,7 +74,7 @@ let jobSchema = new mongoose.Schema(
 
 		moneySym: {
 			type: String,
-			enum: ["$", "€", "£", "₹"],
+			enum: ["₹", "$", "€", "£"],
 			required: true,
 		},
 

@@ -3,16 +3,17 @@ let express = require("express");
 // const upload = require("../middleware/multer");
 const { authMiddlewere } = require("../../middleware/authMiddlewere");
 const {
-  addjob,
-  addSkills,
-  getSkills,
-  deleteSkill,
-  getJob,
-  getSingleJob,
-  saveJob,
-  unsaveJob,
-  getSavedJobs,
-  jobViews,
+	addjob,
+	addSkills,
+	getSkills,
+	deleteSkill,
+	getJob,
+	getSingleJob,
+	saveJob,
+	unsaveJob,
+	getSavedJobs,
+	jobViews,
+	getPopularTags,
 } = require("../../controllers/web/jobController");
 const { SavedJobModel } = require("../../models/SavedJobModel");
 // const upload = require("../../middleware/multer");
@@ -26,6 +27,7 @@ jobRoute.post("/add-job", authMiddlewere, addjob);
 jobRoute.get("/view-job", getJob);
 jobRoute.get("/view-job/:id", getSingleJob);
 jobRoute.patch("/view/:jobId", authMiddlewere, jobViews);
+jobRoute.get("/popular-tags", getPopularTags);
 
 // routes/jobRoutes.js
 

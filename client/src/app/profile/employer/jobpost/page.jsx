@@ -56,7 +56,7 @@ export default function PostJobPage() {
     location: "",
     minSalary: "",
     maxSalary: "",
-    moneySym: "$",
+    moneySym: "₹",
     description: "",
     expLevel: "Fresher",
     status: "Active",
@@ -516,10 +516,10 @@ export default function PostJobPage() {
                 onChange={handleChange}
                 className="w-full sm:w-1/3 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-red-600 focus:ring-4 focus:ring-red-600/10 outline-none transition-all appearance-none"
               >
+                <option value="₹">INR (₹)</option>
                 <option value="$">USD ($)</option>
                 <option value="€">EUR (€)</option>
                 <option value="£">GBP (£)</option>
-                <option value="₹">INR (₹)</option>
               </select>
             </div>
           </section>

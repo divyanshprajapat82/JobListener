@@ -27,7 +27,11 @@ export const MainContext = ({ children }) => {
   const [workPlace, setWorkPlace] = useState("");
   const [experienceFilter, setExperienceFilter] = useState("");
   const [datePostedFilter, setDatePostedFilter] = useState("");
-  const [salary, setSalary] = useState("");
+  // const [salary, setSalary] = useState("");
+  const [minSalary, setMinSalary] = useState()
+  const [maxSalary, setMaxSalary] = useState()
+  const [tag, setTag] = useState("")
+  const [sortBy, setSortBy] = useState("relevant");
   const [isActivelyLooking, setIsActivelyLooking] = useState(false);
   const [notifications, setNotifications] = useState([])
   const [count, setCount] = useState()
@@ -226,7 +230,11 @@ export const MainContext = ({ children }) => {
           status,
           workPlace,
           experienceFilter,
-          datePostedFilter
+          datePostedFilter,
+          minSalary,
+          maxSalary,
+          tag,
+          sortBy
           // jobType: jobType ? true : "",
         }
       })
@@ -369,7 +377,7 @@ export const MainContext = ({ children }) => {
 
   useEffect(() => {
     getjob();
-  }, [search, location, categoryFilter, jobType, status, workPlace, experienceFilter, datePostedFilter]);
+  }, [search, location, categoryFilter, jobType, status, workPlace, experienceFilter, datePostedFilter, minSalary, maxSalary, tag, sortBy]);
 
   useEffect(() => {
     if (!user) return;
@@ -450,6 +458,10 @@ export const MainContext = ({ children }) => {
         workPlace, setWorkPlace,
         experienceFilter, setExperienceFilter,
         datePostedFilter, setDatePostedFilter,
+        minSalary, setMinSalary,
+        maxSalary, setMaxSalary,
+        tag, setTag,
+        sortBy, setSortBy,
         isActivelyLooking, setIsActivelyLooking,
         notifications, setNotifications,
         count, setCount,
