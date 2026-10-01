@@ -92,6 +92,8 @@ const getJob = async (req, res) => {
 		maxSalary,
 		tag,
 		sortBy,
+		page = 1,
+		limit = 5,
 	} = req.query;
 
 	let filter = {};
@@ -203,9 +205,21 @@ const getJob = async (req, res) => {
 	//   }
 	// }
 
+	const currentPage = Math.max(Number(page) || 1, 1);
+	const itemsPerPage = Math.max(Number(limit) || 5, 1);
+
+	const skip = (currentPage - 1) * itemsPerPage;
+
+	// Total jobs after filters
+	const totalJobs = await JobModel.countDocuments(filter);
+
+	const totalPages = Math.ceil(totalJobs / itemsPerPage);
+
 	const data = await JobModel.find(filter)
 		// .sort({ createdAt: -1 })
 		.sort(sort)
+		.skip(skip)
+		.limit(itemsPerPage)
 		.populate("userId")
 		.populate("employer")
 		.populate("category");
@@ -213,6 +227,12 @@ const getJob = async (req, res) => {
 		success: true,
 		message: "Jobs",
 		data,
+		pagination: {
+			currentPage,
+			limit: itemsPerPage,
+			totalJobs,
+			totalPages,
+		},
 	});
 };
 

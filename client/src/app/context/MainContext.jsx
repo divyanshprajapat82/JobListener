@@ -32,6 +32,10 @@ export const MainContext = ({ children }) => {
   const [maxSalary, setMaxSalary] = useState()
   const [tag, setTag] = useState("")
   const [sortBy, setSortBy] = useState("relevant");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalJobs, setTotalJobs] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [isActivelyLooking, setIsActivelyLooking] = useState(false);
   const [notifications, setNotifications] = useState([])
   const [count, setCount] = useState()
@@ -234,7 +238,9 @@ export const MainContext = ({ children }) => {
           minSalary,
           maxSalary,
           tag,
-          sortBy
+          sortBy,
+          page: currentPage,
+          limit: limit,
           // jobType: jobType ? true : "",
         }
       })
@@ -242,6 +248,10 @@ export const MainContext = ({ children }) => {
       .then((finalData) => {
         if (finalData.success) {
           setJobs(finalData.data);
+
+          setCurrentPage(finalData.pagination.currentPage);
+          setTotalJobs(finalData.pagination.totalJobs);
+          setTotalPages(finalData.pagination.totalPages);
           // console.log(finalData.data);
         } else {
           toast.error(finalData.message);
@@ -377,7 +387,38 @@ export const MainContext = ({ children }) => {
 
   useEffect(() => {
     getjob();
-  }, [search, location, categoryFilter, jobType, status, workPlace, experienceFilter, datePostedFilter, minSalary, maxSalary, tag, sortBy]);
+  }, [
+    search,
+    location,
+    categoryFilter,
+    jobType,
+    status,
+    workPlace,
+    experienceFilter,
+    datePostedFilter,
+    minSalary,
+    maxSalary,
+    tag,
+    sortBy,
+    currentPage
+  ]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [
+    search,
+    location,
+    categoryFilter,
+    jobType,
+    status,
+    workPlace,
+    experienceFilter,
+    datePostedFilter,
+    minSalary,
+    maxSalary,
+    tag,
+    sortBy,
+  ]);
 
   useEffect(() => {
     if (!user) return;
@@ -462,6 +503,10 @@ export const MainContext = ({ children }) => {
         maxSalary, setMaxSalary,
         tag, setTag,
         sortBy, setSortBy,
+        currentPage, setCurrentPage,
+        limit, setLimit,
+        totalJobs,
+        totalPages,
         isActivelyLooking, setIsActivelyLooking,
         notifications, setNotifications,
         count, setCount,

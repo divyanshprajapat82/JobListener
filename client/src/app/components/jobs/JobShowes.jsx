@@ -647,7 +647,7 @@ import { FiClock, FiBriefcase } from "react-icons/fi";
 import { BiFilterAlt } from "react-icons/bi";
 import { useAuth } from "@/app/context/MainContext";
 import axios from "axios";
-import { FaBookmark, FaRegBookmark } from "react-icons/fa";
+import { FaBookmark, FaChevronLeft, FaChevronRight, FaRegBookmark } from "react-icons/fa";
 
 function JobCard({ item, index, isMounted, savedJobs }) {
   const [isLiked, setIsLiked] = useState(false);
@@ -999,7 +999,7 @@ function JobCard({ item, index, isMounted, savedJobs }) {
 }
 
 export default function JobShowes() {
-  const { jobs, sortBy, setSortBy } = useAuth();
+  const { jobs, sortBy, setSortBy, currentPage, setCurrentPage, totalPages, totalJobs, limit, } = useAuth();
   const [isMounted, setIsMounted] = useState(false);
   const [savedJobs, setSavedJobs] = useState([]);
   // const [sortBy, setSortBy] = useState("relevant");
@@ -1027,6 +1027,52 @@ export default function JobShowes() {
     getSavedJobs();
   }, [APIURL]);
 
+
+  const getPageNumbers = () => {
+    const pages = [];
+
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else if (currentPage <= 4) {
+      pages.push(1, 2, 3, 4, 5, "...", totalPages);
+    } else if (currentPage >= totalPages - 3) {
+      pages.push(
+        1,
+        "...",
+        totalPages - 4,
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+        totalPages
+      );
+    } else {
+      pages.push(
+        1,
+        "...",
+        currentPage - 1,
+        currentPage,
+        currentPage + 1,
+        "...",
+        totalPages
+      );
+    }
+
+    return pages;
+  };
+
+  const handlePageChange = (page) => {
+    if (page < 1 || page > totalPages) return;
+
+    setCurrentPage(page);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <div className="flex flex-col space-y-6">
       {/* Top Controls Bar */}
@@ -1040,7 +1086,7 @@ export default function JobShowes() {
           jobs found
         </h2>
 
-          {/* <button className="w-full sm:w-auto flex items-center justify-between gap-4 bg-white border border-slate-200 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700 hover:bg-red-50 hover:border-red-200 hover:text-red-700 transition-all focus:outline-none focus:ring-2 focus:ring-red-100 cursor-pointer">
+        {/* <button className="w-full sm:w-auto flex items-center justify-between gap-4 bg-white border border-slate-200 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700 hover:bg-red-50 hover:border-red-200 hover:text-red-700 transition-all focus:outline-none focus:ring-2 focus:ring-red-100 cursor-pointer">
             Most Relevant
             <IoIosArrowDown className="text-slate-400" />
           </button> */}
@@ -1100,6 +1146,95 @@ export default function JobShowes() {
             </p>
           </div>
         )}
+      </div>
+
+
+      <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-4 sm:px-6 rounded-2xl shadow-sm mt-6">
+
+        {/* Mobile-only view (Simple Prev / Next) */}
+        <div className="flex flex-1 justify-between sm:hidden gap-3">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="relative inline-flex flex-1 items-center justify-center rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            Previous
+          </button>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="relative inline-flex flex-1 items-center justify-center rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            Next
+          </button>
+        </div>
+
+        {/* Desktop view (Full Pagination) */}
+        <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+
+          {/* Helper Text */}
+          <div>
+            <p className="text-sm font-medium text-gray-500">
+              Showing{" "}
+              <span className="font-medium">
+                {totalJobs === 0 ? 0 : (currentPage - 1) * limit + 1}
+              </span>{" "}
+              to{" "}
+              <span className="font-medium">
+                {Math.min(currentPage * limit, totalJobs)}
+              </span>{" "}
+              of{" "}
+              <span className="font-medium">
+                {totalJobs}
+              </span>{" "}
+              results
+            </p>
+          </div>
+
+          {/* Pagination Controls */}
+          <div>
+            <nav className="isolate inline-flex -space-x-px rounded-xl shadow-sm gap-2" aria-label="Pagination">
+
+              {/* Previous Button */}
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="relative inline-flex items-center rounded-xl border border-gray-200 bg-white px-3 py-2 text-gray-500 hover:bg-gray-50 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:z-20"
+              >
+                <span className="sr-only">Previous</span>
+                <FaChevronLeft className="h-3.5 w-3.5" aria-hidden="true" />
+              </button>
+
+              {/* Page Numbers */}
+              {getPageNumbers().map((page, index) => (
+                <button
+                  key={index}
+                  onClick={() => handlePageChange(page)}
+                  disabled={page === '...'}
+                  className={`relative inline-flex items-center justify-center w-10 h-10 rounded-xl text-sm font-bold transition-all duration-200 ${page === currentPage
+                    ? 'z-10 bg-[#d00] text-white shadow-md border border-[#d00]'
+                    : page === '...'
+                      ? 'text-gray-400 bg-transparent cursor-default border border-transparent'
+                      : 'text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 focus:z-20'
+                    }`}
+                >
+                  {page}
+                </button>
+              ))}
+
+              {/* Next Button */}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="relative inline-flex items-center rounded-xl border border-gray-200 bg-white px-3 py-2 text-gray-500 hover:bg-gray-50 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:z-20"
+              >
+                <span className="sr-only">Next</span>
+                <FaChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </button>
+
+            </nav>
+          </div>
+        </div>
       </div>
     </div>
   );
