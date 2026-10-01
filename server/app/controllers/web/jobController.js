@@ -178,7 +178,10 @@ const getJob = async (req, res) => {
 		filter.$or = [{ tags: tag }, { technicalSkills: tag }];
 	}
 
-	filter.status = { $ne: "Draft" };
+	// filter.status = { $ne: ["Draft", "Closed"] };
+	// filter.status = { $ne: "Closed" };
+
+	filter.status = { $nin: ["Draft", "Closed"] };
 
 	let sort = { createdAt: -1 };
 
@@ -248,6 +251,28 @@ const getSingleJob = async (req, res) => {
 		data,
 	});
 };
+
+// const getEditJob = async (req, res) => {
+// 	const { id } = req.params;
+// 	const userId = req.user?.userId;
+
+// 	if (!userId) {
+// 		return res.status(401).json({
+// 			success: false,
+// 			message: "Please login first",
+// 		});
+// 	}
+
+// 	const data = await JobModel.findOne({ id, userId })
+// 		.populate("userId")
+// 		.populate("employer")
+// 		.populate("category");
+// 	res.json({
+// 		success: true,
+// 		message: "Job Details",
+// 		data,
+// 	});
+// };
 
 // const jobViews = async (req, res) => {
 //   try {
@@ -343,6 +368,268 @@ const getSingleJob = async (req, res) => {
 //   }
 // };
 
+// const getEditJob = async (req, res) => {
+// 	try {
+// 		const { id } = req.params;
+// 		const userId = req.user?.userId;
+
+// 		if (!userId) {
+// 			return res.status(401).json({
+// 				success: false,
+// 				message: "Please login first",
+// 			});
+// 		}
+
+// 		const data = await JobModel.findOne({
+// 			_id: id,
+// 			userId: userId,
+// 		})
+// 			.populate("userId")
+// 			.populate("employer")
+// 			.populate("category");
+
+// 		if (!data) {
+// 			return res.status(404).json({
+// 				success: false,
+// 				message: "Job not found or you are not authorized to edit this job",
+// 			});
+// 		}
+
+// 		res.json({
+// 			success: true,
+// 			message: "Job Details",
+// 			data,
+// 		});
+// 	} catch (error) {
+// 		console.log("Get Edit Job Error:", error);
+
+// 		res.status(500).json({
+// 			success: false,
+// 			message: error.message,
+// 		});
+// 	}
+// };
+
+const getSingleEditJob = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const userId = req.user?.userId;
+
+		console.log("JOB ID:", id);
+		console.log("LOGGED USER ID:", userId);
+
+		if (!userId) {
+			return res.status(401).json({
+				success: false,
+				message: "Please login first",
+			});
+		}
+
+		const job = await JobModel.findById(id);
+
+		if (!job) {
+			return res.status(404).json({
+				success: false,
+				message: "Job does not exist",
+			});
+		}
+
+		if (job.userId.toString() !== userId.toString()) {
+			return res.status(403).json({
+				success: false,
+				message: "You are not authorized to edit this job",
+			});
+		}
+
+		const data = await JobModel.findById(id)
+			.populate("userId")
+			.populate("employer")
+			.populate("category");
+
+		res.json({
+			success: true,
+			message: "Job Details",
+			data,
+		});
+	} catch (error) {
+		console.log("Get Edit Job Error:", error);
+
+		res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
+
+const getEditJob = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const userId = req.user?.userId;
+
+		if (!userId) {
+			return res.status(401).json({
+				success: false,
+				message: "Please login first",
+			});
+		}
+
+		const {
+			title,
+			category,
+			jobType,
+			workPlace,
+			location,
+			minSalary,
+			maxSalary,
+			moneySym,
+			description,
+			expLevel,
+			status,
+			skills = [],
+			keyRes = [],
+			education = [],
+			tags = [],
+			technicalSkills = [],
+		} = req.body;
+
+		const employerData = await EmployerModel.findOne({ userId });
+
+		if (!employerData) {
+			return res.status(404).json({
+				success: false,
+				message: "Employer not found",
+			});
+		}
+
+		const cleanTags = tags.map((s) => s.trim()).filter((s) => s !== "");
+
+		const cleanKeyRes = keyRes.map((item) =>
+			typeof item === "string" ? item : item.text,
+		);
+
+		const cleanSkills = skills.map((item) =>
+			typeof item === "string" ? item : item.text,
+		);
+
+		const cleanTechnicalSkills = technicalSkills.map((item) =>
+			typeof item === "string" ? item : item.text,
+		);
+
+		const job = await JobModel.findOneAndUpdate(
+			{
+				_id: id,
+				userId: userId,
+				employer: employerData._id,
+			},
+			{
+				$set: {
+					title,
+					category,
+					jobType,
+					workPlace,
+					location,
+					minSalary,
+					maxSalary,
+					moneySym,
+					description,
+					expLevel,
+					status,
+					keyRes: cleanKeyRes,
+					skills: cleanSkills,
+					tags: cleanTags,
+					technicalSkills: cleanTechnicalSkills,
+					education,
+				},
+			},
+			{
+				new: true,
+				runValidators: true,
+			},
+		);
+
+		if (!job) {
+			return res.status(404).json({
+				success: false,
+				message: "Job not found or you are not authorized to update this job",
+			});
+		}
+
+		return res.json({
+			success: true,
+			message: "Job updated successfully",
+			data: job,
+		});
+	} catch (error) {
+		console.log("Update Job Error:", error);
+
+		return res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
+
+const getDeleteJob = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const userId = req.user?.userId;
+
+		if (!userId) {
+			return res.status(401).json({
+				success: false,
+				message: "Please login first",
+			});
+		}
+
+		const job = await JobModel.findById(id);
+
+		if (!job) {
+			return res.status(404).json({
+				success: false,
+				message: "Job does not exist",
+			});
+		}
+
+		const employerData = await EmployerModel.findOne({ userId });
+
+		if (!employerData) {
+			return res.status(404).json({
+				success: false,
+				message: "Employer not found",
+			});
+		}
+
+		if (job.userId.toString() !== userId.toString()) {
+			return res.status(403).json({
+				success: false,
+				message: "You are not authorized to Delete this job",
+			});
+		}
+
+		const data = await JobModel.findOneAndDelete({
+			_id: id,
+			userId: userId,
+			employer: employerData._id,
+		})
+			.populate("userId")
+			.populate("employer")
+			.populate("category");
+
+		res.json({
+			success: true,
+			message: "Job Deleted",
+			data,
+		});
+	} catch (error) {
+		console.log("Get Edit Job Error:", error);
+
+		res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
+
 const jobViews = async (req, res) => {
 	try {
 		const { jobId } = req.params;
@@ -391,8 +678,6 @@ const jobViews = async (req, res) => {
 			message: "Job view checked",
 		});
 	} catch (error) {
-		console.error("View job error:", error);
-
 		return res.status(500).json({
 			success: false,
 			message: error.message,
@@ -528,6 +813,9 @@ module.exports = {
 	addjob,
 	getJob,
 	getSingleJob,
+	getSingleEditJob,
+	getEditJob,
+	getDeleteJob,
 	saveJob,
 	unsaveJob,
 	getSavedJobs,

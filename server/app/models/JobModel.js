@@ -14,11 +14,11 @@ let jobSchema = new mongoose.Schema(
 			required: true,
 		},
 
-		application: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Application",
-			required: true,
-		},
+		// application: {
+		// 	type: mongoose.Schema.Types.ObjectId,
+		// 	ref: "Application",
+		// 	required: true,
+		// },
 
 		category: {
 			type: mongoose.Schema.Types.ObjectId,

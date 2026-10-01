@@ -3,7 +3,7 @@
 import NotAuthorized from "@/app/common/NotAuthorized";
 import { useAuth } from "@/app/context/MainContext";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import {
   FaBriefcase,
@@ -50,20 +50,22 @@ export default function PostJobPage() {
     // employer: "",
     title: "",
     category: "",
-    jobType: "Full-time",
-    workPlace: "Remote",
+    jobType: "",
+    workPlace: "",
     // keyRes: [],
     location: "",
     minSalary: "",
     maxSalary: "",
-    moneySym: "₹",
+    moneySym: "",
     description: "",
-    expLevel: "Fresher",
-    status: "Active",
+    expLevel: "",
+    status: "",
     // skills: [],
     // education: [],
   });
   const APIURL = process.env.NEXT_PUBLIC_APIURL;
+
+  const { jobId } = useParams();
 
   // useEffect(() => {
   //   if (!user && !loading) {
@@ -81,6 +83,57 @@ export default function PostJobPage() {
       [name]: value,
     }));
   };
+
+  // const handleKeyDown = (e) => {
+  //   // Trigger on 'Enter' or ',' (Comma)
+  //   if (e.key === "Enter" || e.key === ",") {
+  //     e.preventDefault(); // Prevent form submission or typing a comma
+
+  //     const newSkill = inputValue.trim();
+
+  //     const exists = skills.some(
+  //       (skill) => skill.toLowerCase() === newSkill.toLowerCase(),
+  //     );
+
+  //     if (!newSkill || exists) return;
+
+  //     const updatedSkills = [...skills, newSkill];
+
+  //     setSkills(updatedSkills);
+  //     setInputValue("");
+
+  //     axios
+  //       .post(
+  //         `${APIURL}/job/add-skills`,
+  //         { skills: updatedSkills },
+  //         { withCredentials: true },
+  //       )
+  //       .then((res) => res.data)
+  //       .then((finalData) => {
+  //         if (finalData.success) {
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         toast.error(err.response?.data?.message || "Error saving skills");
+  //       });
+  //   }
+  // };
+
+  // const removeSkill = (skillToRemove) => {
+  //   const updatedSkills = skills.filter((s) => s !== skillToRemove);
+
+  //   setSkills(updatedSkills);
+
+  //   axios
+  //     .post(
+  //       `${APIURL}/job/delete-skills`,
+  //       { skill: skillToRemove },
+  //       { withCredentials: true },
+  //     )
+  //     .catch(() => {
+  //       toast.error("Error removing skill");
+  //     });
+  // };
 
   const addResponsibility = () => {
     const trimmed = responsibilityInput.trim();
@@ -207,23 +260,83 @@ export default function PostJobPage() {
     setTags(tags.filter((s) => s !== tagToRemove));
   };
 
-  const handleSubmit = async (status = profileData.status) => {
+  const normalizedJobType =
+    profileData.jobType === "Freelance"
+      ? "freelance"
+      : profileData.jobType === "Contract"
+        ? "contract"
+        : profileData.jobType;
+
+  // const handleUpdate = async (e) => {
+  //   e.preventDefault();
+  //   setIsSubmitting(true);
+  //   try {
+  //     const payload = {
+  //       ...profileData,
+  //       jobType: normalizedJobType,
+  //       tags,
+  //       technicalSkills: technicalSkills.map((item) => item.text),
+  //       skills: professionalSkills.map((item) => item.text),
+  //       keyRes: responsibilities.map((item) => item.text),
+  //       education: selectedEducation,
+  //     };
+
+  //     const res = await axios.put(
+  //       `${APIURL}/job/edit-job/${jobId}`,
+  //       payload,
+  //       {
+  //         withCredentials: true,
+  //       }
+  //     );
+
+  //     if (res.data.success) {
+  //       toast.success("Job Posted ✅");
+  //       router.push("/profile/employer/manage-jobs");
+  //     }
+  //   } catch (err) {
+  //     console.log("FULL ERROR:", err);
+  //     console.log("STATUS:", err.response?.status);
+  //     console.log("DATA:", err.response?.data);
+  //     console.log("MESSAGE:", err.message);
+
+  //     toast.error(err.response?.data?.message || "Error posting job");
+  //     // console.log(err);
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
+
+  // console.log(jobId);
+
+  const handleUpdate = async (status = profileData.status) => {
     setIsSubmitting(true);
 
     try {
+      const normalizedJobType =
+        profileData.jobType === "Freelance"
+          ? "freelance"
+          : profileData.jobType === "Contract"
+            ? "contract"
+            : profileData.jobType;
+
       const payload = {
         ...profileData,
         status,
+        jobType: normalizedJobType,
         tags,
-        technicalSkills,
-        skills: professionalSkills, // ✅ include skills here
-        keyRes: responsibilities,
+        technicalSkills: technicalSkills.map((item) => item.text),
+        skills: professionalSkills.map((item) => item.text),
+        keyRes: responsibilities.map((item) => item.text),
         education: selectedEducation,
       };
 
-      const res = await axios.post(`${APIURL}/job/add-job`, payload, {
-        withCredentials: true,
-      });
+      const res = await axios.put(
+        `${APIURL}/job/edit-job/${jobId}`,
+        payload,
+        {
+          withCredentials: true,
+        }
+      );
 
       if (res.data.success) {
         toast.success(
@@ -233,15 +346,92 @@ export default function PostJobPage() {
               ? "Job closed successfully ✅"
               : "Job published successfully ✅"
         );
-        router.push("/profile/employer");
+
+        router.push("/profile/employer/manage-jobs");
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || "Error posting job");
-      // console.log(err);
+      // console.log("FULL ERROR:", err);
+      // console.log("STATUS:", err.response?.status);
+      // console.log("DATA:", err.response?.data);
+
+      toast.error(
+        err.response?.data?.message || "Error updating job"
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const getJobDetails = async () => {
+    try {
+      const res = await axios.get(`${APIURL}/job/single-job/${jobId}`, {
+        withCredentials: true,
+      });
+
+      if (res.data.success) {
+        const job = res.data.data;
+
+        console.log("job details", job);
+
+        setProfileData({
+          title: job.title || "",
+          category: job.category?._id || "",
+          jobType: job.jobType || "",
+          workPlace: job.workPlace || "",
+          location: job.location || "",
+          minSalary: job.minSalary || "",
+          maxSalary: job.maxSalary || "",
+          moneySym: job.moneySym || "",
+          description: job.description || "",
+          expLevel: job.expLevel || "",
+          status: job.status || "",
+        });
+
+        // Responsibilities
+        setResponsibilities(
+          (job.keyRes || []).map((item, index) => ({
+            id: Date.now() + index,
+            text: typeof item === "string" ? item : item.text,
+            done: false,
+          }))
+        );
+
+        // Professional skills
+        setProfessionalSkills(
+          (job.skills || []).map((item, index) => ({
+            id: Date.now() + index,
+            text: typeof item === "string" ? item : item.text,
+          }))
+        );
+
+        // Technical skills
+        setTechnicalSkills(
+          (job.technicalSkills || []).map((item, index) => ({
+            id: Date.now() + index,
+            text: typeof item === "string" ? item : item.text,
+          }))
+        );
+
+        // Tags
+        setTags(job.tags || []);
+
+        // Education
+        setSelectedEducation(job.education || []);
+      }
+    } catch (error) {
+      console.log("Get Job Details Error:", error);
+
+      toast.error(
+        error.response?.data?.message || "Failed to load job details"
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (jobId) {
+      getJobDetails();
+    }
+  }, [jobId]);
 
   if (loading) {
     return (
@@ -281,17 +471,16 @@ export default function PostJobPage() {
             Go back to profile
           </button>
           <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-            Post a New Job
+            Edit Job
           </h1>
           <p className="text-gray-500 mt-1">
-            Fill out the details below to publish your job to thousands of
-            candidates.
+            Update the details below and save your changes.
           </p>
         </div>
 
         <form onSubmit={(e) => {
           e.preventDefault();
-          handleSubmit("Active");
+          handleUpdate("Active");
         }} className="space-y-8">
           {/* 1. JOB DETAILS SECTION */}
           <section className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8">
@@ -910,27 +1099,6 @@ export default function PostJobPage() {
           </section> */}
 
           {/* STANDARD INLINE SAVE BUTTONS */}
-          {/* <div className="flex flex-col sm:flex-row items-center justify-end gap-4 mt-8 pt-4">
-            <button
-              type="button"
-              className="w-full sm:w-auto text-gray-600 hover:bg-gray-200 bg-gray-100 px-8 py-3 rounded-xl font-semibold transition duration-200"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              className="w-full sm:w-auto text-red-600 bg-red-50 hover:bg-red-100 px-8 py-3 rounded-xl font-bold transition duration-200"
-            >
-              Save Draft
-            </button>
-            <button
-              type="submit"
-              className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white px-10 py-3 rounded-xl font-bold shadow-sm transition duration-200"
-            >
-              {isSubmitting ? "Posting..." : "Publish Job"}
-            </button>
-          </div> */}
-
           <div className="flex flex-col sm:flex-row items-center justify-end gap-4 mt-8 pt-4">
             <button
               type="button"
@@ -941,7 +1109,7 @@ export default function PostJobPage() {
             </button>
             <button
               type="button"
-              onClick={() => handleSubmit("Draft")}
+              onClick={() => handleUpdate("Draft")}
               disabled={isSubmitting}
               className="w-full sm:w-auto text-red-600 bg-red-50 hover:bg-red-100 px-8 py-3 rounded-xl font-bold transition duration-200 cursor-pointer"
             >

@@ -17,8 +17,11 @@ import {
   FaRegTrashAlt,
   FaRegPauseCircle,
   FaArrowLeft,
+  FaRegFileAlt,
+  FaCheckCircle,
+  FaExclamationTriangle,
 } from "react-icons/fa";
-import { IoBriefcase } from "react-icons/io5";
+import { IoBriefcase, IoClose } from "react-icons/io5";
 import { toast } from "sonner";
 
 export default function ManageJobsPage() {
@@ -29,6 +32,8 @@ export default function ManageJobsPage() {
   const router = useRouter();
   // const [loading, setLoading] = useState()
   const [jobs, setJobs] = useState([])
+  const [openMenu, setOpenMenu] = useState(null);
+
   const APIURL = process.env.NEXT_PUBLIC_APIURL;
 
 
@@ -50,7 +55,7 @@ export default function ManageJobsPage() {
       .then((finalData) => {
         if (finalData.success) {
           setJobs(finalData.data);
-          console.log("Data", finalData.data);
+          // console.log("Data", finalData.data);
         } else {
           toast.error(finalData.message);
         }
@@ -62,9 +67,9 @@ export default function ManageJobsPage() {
           toast.error("Something went wrong");
         }
       })
-      .finally(() => {
-        setLoading(false);
-      });
+    // .finally(() => {
+    //   setLoading(false);
+    // });
   };
 
   useEffect(() => {
@@ -324,7 +329,12 @@ export default function ManageJobsPage() {
             //   </div>
             // </div>
             <div key={i}>
-              <JobCard job={job} />
+              <JobCard
+                job={job}
+                openMenu={openMenu}
+                setOpenMenu={setOpenMenu}
+                getjob={getjob}
+              />
             </div>
           ))}
 
@@ -453,7 +463,9 @@ export default function ManageJobsPage() {
 }
 
 
-function JobCard({ job }) {
+function JobCard({ job, openMenu, setOpenMenu, getjob }) {
+
+
   const getStatusBadge = (status) => {
     switch (status) {
       case "Active":
@@ -505,6 +517,76 @@ function JobCard({ job }) {
   };
 
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
+  const APIURL = process.env.NEXT_PUBLIC_APIURL;
+
+  const router = useRouter()
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".job-menu")) {
+        setOpenMenu(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleChangeStatus = async (jobId, status) => {
+    try {
+      const res = await axios.put(
+        `${APIURL}/job/edit-job/${jobId}`,
+        { status },
+        { withCredentials: true }
+      );
+
+      if (res.data.success) {
+        toast.success("Job closed successfully");
+        getjob();
+      }
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to Change Status"
+      );
+    }
+  };
+
+  const handleDeleteJob = async (jobId) => {
+    try {
+      const res = await axios.delete(
+        `${APIURL}/job/delete/${jobId}`,
+        { withCredentials: true }
+      );
+
+      if (res.data.success) {
+        toast.success("Job deleted successfully");
+        getjob();
+      }
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to delete job"
+      );
+    }
+  };
+
+
   return (
     <div>
       <div
@@ -543,7 +625,7 @@ function JobCard({ job }) {
           {/* Right: Metrics & Actions */}
           <div className="flex items-center gap-6 w-full lg:w-auto justify-between lg:justify-end border-t border-gray-100 lg:border-t-0 pt-4 lg:pt-0 mt-2 lg:mt-0">
             {/* Metrics */}
-            <div className="flex items-center gap-6 pr-6 lg:border-r border-gray-200">
+            <div className="flex items-center sm:gap-6 gap-2 sm:pr-6 pr-2 lg:border-r border-gray-200">
               <div className="flex flex-col items-center sm:items-end">
                 <div className="flex items-center text-gray-900 font-extrabold text-xl">
                   <FaUsers className="text-gray-400 text-sm mr-2" />
@@ -571,27 +653,32 @@ function JobCard({ job }) {
                   href={`./manage-jobs/${job._id}/review`}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <button className="bg-red-50 text-red-700 hover:bg-red-600 hover:text-white px-4 py-2 rounded-xl font-bold text-sm transition-colors duration-200  whitespace-nowrap cursor-pointer">
+                  <button className="bg-red-50 text-red-700 hover:bg-red-600 hover:text-white sm:px-4 px-2 py-2 rounded-xl font-bold text-sm transition-colors duration-200  whitespace-nowrap cursor-pointer">
                     <span className="flex gap-1">
-                      Review <span className="hidden sm:block"> Candidates </span>
+                      <span className="hidden sm:block">  Review Candidates </span>
+                      <span className="sm:hidden block"> <FaUsers /> </span>
                     </span>
                   </button>
                 </Link>
               )}
-              <button
-                className="p-2.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors duration-200"
-                title="Edit Job"
+              <Link
+                href={`./manage-jobs/${job._id}/edit`}
+                onClick={(e) => e.stopPropagation()}
               >
-                <FaEdit size={18} />
-              </button>
+                <button
+                  className="p-2.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors duration-200 cursor-pointer"
+                  title="Edit Job"
+                >
+                  <FaEdit size={18} />
+                </button>
+              </Link>
 
               {/* Action Dropdown Menu (Conceptual mapping using standard icons for this layout) */}
-              <div className="relative flex items-center group/menu cursor-pointer">
+              {/* <div className="relative flex items-center group/menu cursor-pointer">
                 <button className="p-2.5 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors duration-200">
                   <FaEllipsisV size={18} />
                 </button>
 
-                {/* Dropdown Box (Shows on hover for demonstration) */}
                 <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-xl shadow-lg opacity-0 invisible group-hover/menu:opacity-100 group-hover/menu:visible transition-all duration-200 z-10 py-2">
                   {job.status === "Active" && (
                     <a
@@ -617,11 +704,151 @@ function JobCard({ job }) {
                     <FaRegTrashAlt className="mr-3" /> Delete Job
                   </a>
                 </div>
+              </div> */}
+
+              <div className="job-menu relative flex items-center">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setOpenMenu(openMenu === job._id ? null : job._id)
+                  }
+                  className="p-2.5 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors duration-200 cursor-pointer"
+                >
+                  <FaEllipsisV size={18} />
+                </button>
+
+                {openMenu === job._id && (
+                  <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-xl shadow-lg z-10 py-2">
+                    {(job.status === "Active" || job.status === "Draft") && (
+                      <button
+                        type="button"
+                        onClick={() => { handleChangeStatus(job._id, "Closed"), setOpenMenu(null) }}
+                        className="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+                      >
+                        <FaRegPauseCircle className="mr-3 text-gray-400" />
+                        Close Job
+                      </button>
+                    )}
+
+                    {(job.status === "Active" || job.status === "Closed") && (
+                      <button
+                        type="button"
+                        onClick={() => { handleChangeStatus(job._id, "Draft"), setOpenMenu(null) }}
+                        className="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+                      >
+                        <FaRegFileAlt className="mr-3 text-gray-400" />
+                        Move to Draft
+                      </button>
+                    )}
+
+                    {(job.status === "Closed" || job.status === "Draft") && (
+                      <button
+                        type="button"
+                        onClick={() => { handleChangeStatus(job._id, "Active"), setOpenMenu(null) }}
+                        className="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+                      >
+                        <FaCheckCircle className="mr-3 text-gray-400" />
+                        Active Job
+                      </button>
+                    )}
+
+                    {/* <button
+                      type="button"
+                      className="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    >
+                      <FaEye className="mr-3 text-gray-400" />
+                      View Public Listing
+                    </button> */}
+
+                    <button
+                      type="button"
+                      onClick={() => router.push(`/jobs/${job._id}`)}
+                      className="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+                    >
+                      <FaEye className="mr-3 text-gray-400" />
+                      View Public Listing
+                    </button>
+
+
+                    <div className="border-t border-gray-100 my-1" />
+
+                    <button
+                      type="button"
+                      // onClick={() => { handleDeleteJob(job._id), setOpenMenu(null) }}
+                      onClick={() => { setIsOpen(true), setOpenMenu(null) }}
+                      className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium cursor-pointer"
+                    >
+                      <FaRegTrashAlt className="mr-3" />
+                      Delete Job
+                    </button>
+                  </div>
+                )}
               </div>
+
             </div>
           </div>
         </div>
       </div>
+
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 transition-opacity">
+
+          {/* --- MODAL CONTAINER --- */}
+          <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200 p-6 sm:p-8 text-center">
+
+            {/* Close Button */}
+            <button
+              onClick={() => setIsOpen(false)}
+              disabled={isDeleting}
+              className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 rounded-full transition-colors z-10 disabled:opacity-50"
+            >
+              <IoClose size={20} />
+            </button>
+
+            {/* Warning Icon */}
+            <div className="mx-auto w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mb-5 mt-2 shadow-sm border border-red-100">
+              <FaExclamationTriangle size={28} />
+            </div>
+
+            {/* Text Content */}
+            <h2 className="text-xl font-extrabold text-gray-900 mb-2">Delete Job Post?</h2>
+            <p className="text-sm text-gray-500 font-medium leading-relaxed mb-6">
+              Are you sure you want to delete <span className="font-bold text-gray-700">"{job.title}"</span>? This action cannot be undone and will permanently remove all associated applications.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 mt-2">
+              <button
+                onClick={() => setIsOpen(false)}
+                disabled={isDeleting}
+                className="flex-1 bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 py-3 rounded-xl font-bold transition-colors disabled:opacity-50 text-sm cursor-pointer"
+              >
+                Cancel
+              </button>
+
+              <button
+                // onClick={handleDelete}
+                onClick={() => { handleDeleteJob(job._id), setIsOpen(false) }}
+                disabled={isDeleting}
+                className="flex-1 flex items-center justify-center bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-bold shadow-sm transition-colors disabled:bg-red-400 text-sm cursor-pointer"
+              >
+                {isDeleting ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Deleting...
+                  </span>
+                ) : (
+                  "Yes, Delete"
+                )}
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 }

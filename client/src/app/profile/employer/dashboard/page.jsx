@@ -258,38 +258,68 @@ export default function EmployerDashboard() {
                             </div>
 
                             <div className="divide-y divide-gray-100">
-                                {applications.map((app) => {
-                                    const { color, icon } = getStatusBadge(app.status);
-                                    return (
-                                        <div key={app._id} className="p-6 hover:bg-gray-50/50 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4 group">
+                                {applications.length === 0 ? (
+                                    <div className="p-10 text-center">
+                                        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+                                            <span className="text-2xl">📄</span>
+                                        </div>
 
-                                            <div className="flex items-center gap-4">
-                                                <img src={app.userId?.logo || "/images/default-avatar.png"} alt={app.userId?.name} className="w-14 h-14 rounded-full border border-gray-200 object-cover shrink-0" />
-                                                <div>
-                                                    <h3 className="text-base font-bold text-gray-900 group-hover:text-[#d00] transition-colors">{app.userId?.name}</h3>
-                                                    <p className="text-sm font-medium text-gray-600 mt-0.5">{app.jobId?.title}</p>
-                                                    <div className="flex items-center gap-3 mt-1.5">
-                                                        <span className="text-xs font-bold text-gray-400">{getLocalTimeAgo(app.createdAt)}</span>
-                                                        {/* <span className="text-gray-300 text-[10px]">•</span>
-                                                    <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-md border border-green-100">
-                                                        {app.matchScore} Match
-                                                    </span> */}
+                                        <h3 className="text-base font-bold text-gray-900">
+                                            No Applications Yet
+                                        </h3>
+
+                                        <p className="text-sm text-gray-500 mt-1">
+                                            No candidates have applied for this job yet.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    applications.map((app) => {
+                                        const { color, icon } = getStatusBadge(app.status);
+
+                                        return (
+                                            <div
+                                                key={app._id}
+                                                className="p-6 hover:bg-gray-50/50 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4 group"
+                                            >
+                                                <div className="flex items-center gap-4">
+                                                    <img
+                                                        src={app.userId?.logo || "/images/default-avatar.png"}
+                                                        alt={app.userId?.name || "Applicant"}
+                                                        className="w-14 h-14 rounded-full border border-gray-200 object-cover shrink-0"
+                                                    />
+
+                                                    <div>
+                                                        <h3 className="text-base font-bold text-gray-900 group-hover:text-[#d00] transition-colors">
+                                                            {app.userId?.name}
+                                                        </h3>
+
+                                                        <p className="text-sm font-medium text-gray-600 mt-0.5">
+                                                            {app.jobId?.title}
+                                                        </p>
+
+                                                        <div className="flex items-center gap-3 mt-1.5">
+                                                            <span className="text-xs font-bold text-gray-400">
+                                                                {getLocalTimeAgo(app.createdAt)}
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
 
-                                            <div className="flex items-center justify-between sm:justify-end gap-4 border-t sm:border-0 border-gray-100 pt-4 sm:pt-0">
-                                                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${color}`}>
-                                                    {icon} {app.status}
-                                                </span>
-                                                <button className="text-sm font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-xl transition-colors shadow-sm">
-                                                    Review
-                                                </button>
-                                            </div>
+                                                <div className="flex items-center justify-between sm:justify-end gap-4 border-t sm:border-0 border-gray-100 pt-4 sm:pt-0">
+                                                    <span
+                                                        className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${color}`}
+                                                    >
+                                                        {icon} {app.status}
+                                                    </span>
 
-                                        </div>
-                                    )
-                                })}
+                                                    <button className="text-sm font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-xl transition-colors shadow-sm">
+                                                        Review
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        );
+                                    })
+                                )}
                             </div>
                         </div>
                     </div>
@@ -305,65 +335,72 @@ export default function EmployerDashboard() {
                             </div>
 
                             <div className="space-y-4">
-                                {activeJobs.map((job) => {
-                                    return (
-                                        <div key={job._id} className="p-4 rounded-2xl border border-gray-100 hover:border-gray-200 bg-gray-50/50 hover:bg-gray-50 transition-colors group cursor-pointer" >
-                                            <h3 className="font-bold text-gray-900 group-hover:text-[#d00] transition-colors mb-2">{job.title}</h3>
+                                {activeJobs.length === 0 ? (
+                                    <div className="p-10 text-center rounded-2xl border border-gray-100 bg-gray-50/50">
+                                        <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+                                            <FaBriefcase className="text-xl text-gray-400" />
+                                        </div>
+
+                                        <h3 className="text-base font-bold text-gray-900">
+                                            No Active Jobs
+                                        </h3>
+
+                                        <p className="text-sm text-gray-500 mt-1">
+                                            You don't have any active jobs at the moment.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    activeJobs.map((job) => (
+                                        <div
+                                            key={job._id}
+                                            className="p-4 rounded-2xl border border-gray-100 hover:border-gray-200 bg-gray-50/50 hover:bg-gray-50 transition-colors group cursor-pointer"
+                                        >
+                                            <h3 className="font-bold text-gray-900 group-hover:text-[#d00] transition-colors mb-2">
+                                                {job.title}
+                                            </h3>
 
                                             <div className="flex flex-col gap-2 text-xs font-medium text-gray-500 mb-3">
-                                                <span className="flex items-center"><FaMapMarkerAlt className="mr-2 text-gray-400" /> {job.location}</span>
-                                                <span className="flex items-center"><FaClock className="mr-2 text-gray-400" /> {job.daysLeft} days left to apply</span>
+                                                <span className="flex items-center">
+                                                    <FaMapMarkerAlt className="mr-2 text-gray-400" />
+                                                    {job.location}
+                                                </span>
+
+                                                <span className="flex items-center">
+                                                    <FaClock className="mr-2 text-gray-400" />
+                                                    {job.daysLeft} days left to apply
+                                                </span>
                                             </div>
-                                            {!job.applicantCount == 0 &&
+
+                                            {job.applicantCount > 0 && (
                                                 <div className="flex items-center justify-between pt-3 border-t border-gray-200/60">
                                                     <div className="flex -space-x-2">
-                                                        {/* {[1, 2, 3].map((i) => (
-                                                    <img key={i} className="w-6 h-6 rounded-full border-2 border-white" src={`https://i.pravatar.cc/150?img=${i + 10}`} alt="Applicant" />
-                                                ))} */}
-                                                        {/* {job.applications.map((i) => (
-                                                    <img key={i} className="w-6 h-6 rounded-full border-2 border-white" src={i.userId?.logo} alt="Applicant" />
-                                                ))} */}
+                                                        {job.applications?.slice(0, 3).map((application) => (
+                                                            <img
+                                                                key={application._id}
+                                                                className="w-6 h-6 rounded-full border-2 border-[#f4f3f7] bg-[#f4f3f7] object-cover"
+                                                                src={
+                                                                    application?.userId?.logo ||
+                                                                    "/images/default-avatar.png"
+                                                                }
+                                                                alt={application?.userId?.name || "Applicant"}
+                                                            />
+                                                        ))}
 
-                                                        {/* {job.applications?.slice(0, 3).map((application) => (
-                                                    <img
-                                                        key={application._id}
-                                                        className="w-6 h-6 rounded-full border-2 border-white object-cover"
-                                                        src={application.userId?.logo || "/default-avatar.png"}
-                                                        alt={application.userId?.name || "Applicant"}
-                                                    />
-                                                ))} */}
-
-                                                        {/* {console.log("USER DATA:", job.applications?.[0]?.userId)} */}
-
-                                                        {job.applications?.slice(0, 3).map((application) => {
-                                                            // console.log("APPLICATION:", application);
-                                                            // console.log("USER:", application?.userId);
-
-                                                            return (
-                                                                <img
-                                                                    key={application._id}
-                                                                    className="w-6 h-6 rounded-full border-2 border-[#f4f3f7] bg-[#f4f3f7] object-cover"
-                                                                    src={application?.userId?.logo || "/images/default-avatar.png"}
-                                                                    alt={application?.userId?.name || "Applicant"}
-                                                                />
-
-
-                                                            );
-                                                        })}
-
-
-                                                        {job.applicantCount >= 3 &&
+                                                        {job.applicantCount > 3 && (
                                                             <div className="w-6 h-6 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center text-[8px] font-bold text-gray-600">
-                                                                + {job.applicantCount - 3}
+                                                                +{job.applicantCount - 3}
                                                             </div>
-                                                        }
+                                                        )}
                                                     </div>
-                                                    <span className="text-xs font-bold text-gray-900">{job.applicants} Applicants</span>
+
+                                                    <span className="text-xs font-bold text-gray-900">
+                                                        {job.applicantCount} Applicants
+                                                    </span>
                                                 </div>
-                                            }
+                                            )}
                                         </div>
-                                    )
-                                })}
+                                    ))
+                                )}
                             </div>
 
                             <Link href="/manage-jobs">

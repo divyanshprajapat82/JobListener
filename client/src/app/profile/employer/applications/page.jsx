@@ -68,6 +68,7 @@ export default function AllCandidatesPage() {
     const { user } = useAuth()
     const [selected, setSelected] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState("")
 
     const [appliedCandidate, setAppliedCandidate] = useState([])
 
@@ -88,7 +89,11 @@ export default function AllCandidatesPage() {
             setLoading(true);
 
             const res = await axios.get(
-                `${APIURL}/application/applied-candidate`,
+                `${APIURL}/application/applied-candidate`, {
+                params: {
+                    search
+                }
+            },
                 {
                     withCredentials: true,
                 }
@@ -131,7 +136,7 @@ export default function AllCandidatesPage() {
             getappliedCandidate();
             return;
         }
-    }, [user]);
+    }, [user, search]);
 
     // Helper to colorize status badges
     const getStatusBadge = (status) => {
@@ -229,6 +234,8 @@ export default function AllCandidatesPage() {
                         <FaSearch className="absolute left-4 top-3.5 text-gray-400" />
                         <input
                             type="text"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
                             placeholder="Search by name, email, or skill..."
                             className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-red-600 outline-none transition-all"
                         />
@@ -357,19 +364,19 @@ export default function AllCandidatesPage() {
                                         </td>
 
                                         {/* Actions Cell */}
-                                        <td className="p-4 text-right">
+                                        <td className="p-4 pr-7 text-right">
                                             <div className="flex items-center justify-end gap-2">
                                                 <Link href={`https://mail.google.com/mail/?view=cm&fs=1&to=${item.userId?.email}`} target='_blank'>
                                                     <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Email Candidate">
                                                         <FaEnvelope size={16} />
                                                     </button>
                                                 </Link>
-                                                <button className="text-xs font-bold bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg shadow-sm transition-colors">
+                                                {/* <button className="text-xs font-bold bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg shadow-sm transition-colors">
                                                     View Application
                                                 </button>
                                                 <button className="p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors" title="More Options">
                                                     <FaEllipsisV size={16} />
-                                                </button>
+                                                </button> */}
                                             </div>
                                         </td>
                                     </tr>

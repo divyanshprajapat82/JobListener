@@ -393,51 +393,32 @@ const viewJobCandidate = async (req, res) => {
 };
 
 const getManageJob = async (req, res) => {
-	// const { search, location, categoryFilter, status } = req.query;
+	try {
+		const userId = req.user?.userId;
 
-	// let filter = {};
+		if (!userId) {
+			return res.status(401).json({
+				success: false,
+				message: "Please login first",
+			});
+		}
 
-	// if (search) {
-	//   filter.title = {
-	//     $regex: search,
-	//     $options: "i",
-	//   }
-	// }
-
-	// if (location) {
-	//   filter.location = {
-	//     $regex: location,
-	//     $options: "i",
-	//   }
-	// }
-
-	// if(categoryFilter){
-	//   filter.category = categoryFilter;
-	// }
-
-	// if(status){
-	//   filter.status = status;
-	// }
-
-	// filter.status = {$ne: "Draft"}
-
-	//  if(search && search.trim()){
-	//   filter.title = {
-	//     $regex: search.trim(),
-	//     $options: "i",
-	//   }
-	// }
-
-	const data = await JobModel.find()
-		.sort({ createdAt: -1 })
-		.populate("userId")
-		.populate("employer")
-		.populate("category");
-	res.json({
-		success: true,
-		message: "Jobs",
-		data,
-	});
+		const data = await JobModel.find({ userId })
+			.sort({ createdAt: -1 })
+			.populate("userId")
+			.populate("employer")
+			.populate("category");
+		res.json({
+			success: true,
+			message: "Jobs",
+			data,
+		});
+	} catch (error) {
+		return res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
 };
 
 // const updateApplicationStatus = async (req, res) => {
