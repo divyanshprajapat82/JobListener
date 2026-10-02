@@ -28,8 +28,15 @@ const notificationSchema = new mongoose.Schema(
 
 		type: {
 			type: String,
-			enum: ["Shortlisted", "Interviewing", "Offered", "Hired", "Rejected"],
-			// default: "general",
+			enum: [
+				"Shortlisted",
+				"Interviewing",
+				"Offered",
+				"Hired",
+				"Rejected",
+				"General",
+			],
+			default: "General",
 		},
 
 		subject: {
@@ -44,10 +51,42 @@ const notificationSchema = new mongoose.Schema(
 			trim: true,
 		},
 
-		category:{
+		category: {
 			type: String,
-			// required: true,
+			enum: [
+				"Application",
+				"Interview",
+				"Offer",
+				"Hiring",
+				"Announcement",
+				"General",
+			],
+			default: "General",
+		},
+
+		iconType: {
+			type: String,
+			enum: [
+				"Success",
+				"Info",
+				"Warning",
+				"Error",
+				"Update",
+				"Announcement",
+				"General",
+			],
+			default: "Info",
+		},
+
+		actionLink: {
+			type: String,
+			default: null,
 			trim: true,
+		},
+
+		sendEmail: {
+			type: Boolean,
+			default: false,
 		},
 
 		isRead: {

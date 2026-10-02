@@ -1,3 +1,7 @@
+const ApplicationModel = require("../../models/ApplicationModel");
+const { EmployerModel } = require("../../models/EmployerModel");
+const { JobModel } = require("../../models/JobModel");
+const { JobseekerModel } = require("../../models/JobseekerModel");
 const NotificationModel = require("../../models/NotificationModel");
 
 const getNotification = async (req, res) => {
@@ -123,9 +127,64 @@ const deleteNotification = async (req, res) => {
 	}
 };
 
+const getCandidates = async (req, res) => {
+	try {
+		const { jobId } = req.params;
+		const userId = req.user?.userId;
+
+		if (!jobId) {
+			return res.status(400).json({
+				success: false,
+				message: "Job ID is required",
+			});
+		}
+
+		// Verify that this job belongs to the logged-in employer
+		const job = await JobModel.findOne({
+			_id: jobId,
+			userId,
+		});
+
+		if (!job) {
+			return res.status(403).json({
+				success: false,
+				message: "You are not authorized to access this job",
+			});
+		}
+
+		const applications = await ApplicationModel.find({
+			jobId,
+		})
+			.populate("userId", "name email")
+			.sort({ createdAt: -1 });
+
+		const candidates = applications.map((application) => ({
+			userId: application.userId?._id,
+			applicationId: application._id,
+			name: application.userId?.name || "Unknown Candidate",
+			email: application.userId?.email || "",
+			status: application.status,
+		}));
+
+		return res.status(200).json({
+			success: true,
+			message: "Candidates fetched successfully",
+			data: candidates,
+		});
+	} catch (error) {
+		console.error("Get candidates error:", error);
+
+		return res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
+
 module.exports = {
 	getNotification,
 	readNotification,
 	readAllNotification,
 	deleteNotification,
+	getCandidates,
 };

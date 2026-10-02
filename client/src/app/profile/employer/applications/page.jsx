@@ -89,12 +89,11 @@ export default function AllCandidatesPage() {
             setLoading(true);
 
             const res = await axios.get(
-                `${APIURL}/application/applied-candidate`, {
-                params: {
-                    search
-                }
-            },
+                `${APIURL}/application/applied-candidate`,
                 {
+                    params: {
+                        search
+                    },
                     withCredentials: true,
                 }
             );

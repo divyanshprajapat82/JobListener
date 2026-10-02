@@ -5,6 +5,7 @@ const {
 	readNotification,
 	readAllNotification,
 	deleteNotification,
+	getCandidates,
 } = require("../../controllers/web/notificationController");
 
 let notificationRoute = express.Router();
@@ -25,6 +26,7 @@ notificationRoute.delete(
 	authMiddlewere,
 	deleteNotification,
 );
+notificationRoute.get("/get-candidates/:jobId", authMiddlewere, getCandidates);
 
 // notificationRoute.post("/add-perks", authMiddlewere, addPerks);
 // notificationRoute.get("/get-perks", authMiddlewere, getPerks);

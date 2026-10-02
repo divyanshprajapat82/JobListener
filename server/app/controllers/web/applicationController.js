@@ -293,6 +293,7 @@ const NotificationModel = require("../../models/NotificationModel");
 
 const appliedCandidat = async (req, res) => {
 	try {
+		const { search } = req.query;
 		const userId = req.user?.userId;
 
 		// Find employer profile belonging to logged-in user
@@ -307,11 +308,25 @@ const appliedCandidat = async (req, res) => {
 			});
 		}
 
+		let filter = {};
+
+		if (search) {
+			filter.title = {
+				$regex: search,
+				$options: "i",
+			};
+		}
+
 		// console.log("User ID:", userId);
 		// console.log("Employer ID:", employer._id);
 
+		const jobs = await JobModel.find(filter).select("_id");
+
+		const jobIds = jobs.map((job) => job._id);
+
 		const applications = await ApplicationModel.find({
 			employerId: employer._id,
+			jobId: { $in: jobIds },
 		})
 			.populate("jobId", "title location jobType createdAt")
 			.populate("jobSeekerId")
