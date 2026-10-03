@@ -14,6 +14,7 @@ import {
 } from 'react-icons/fa';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { MdNotificationAdd } from 'react-icons/md';
 
 export default function EmployerDashboard() {
 
@@ -221,6 +222,11 @@ export default function EmployerDashboard() {
                                 <FaSearch className="mr-2 text-gray-400" /> Search Resumes
                             </button>
                         </Link> */}
+                        <Link href="/profile/employer/create-notification" className="flex-1 sm:flex-none">
+                            <button className="w-full flex items-center justify-center bg-[#d00] hover:bg-[#b00000] text-white px-5 py-2.5 rounded-xl font-bold shadow-sm transition duration-200 text-sm cursor-pointer">
+                                <MdNotificationAdd className="mr-2 text-xl" /> Send Notification
+                            </button>
+                        </Link>
                         <Link href="/profile/employer/jobpost" className="flex-1 sm:flex-none">
                             <button className="w-full flex items-center justify-center bg-[#d00] hover:bg-[#b00000] text-white px-5 py-2.5 rounded-xl font-bold shadow-sm transition duration-200 text-sm cursor-pointer">
                                 <FaPlus className="mr-2" /> Post a Job

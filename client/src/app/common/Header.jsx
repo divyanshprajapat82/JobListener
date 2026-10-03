@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { FaBars, FaBell, FaBriefcase, FaCheckCircle, FaExclamationCircle, FaUser } from "react-icons/fa";
+import React, { useEffect, useRef, useState } from "react";
+import { FaBars, FaBell, FaBriefcase, FaCheckCircle, FaExclamationCircle, FaExclamationTriangle, FaInfoCircle, FaTimesCircle, FaUser } from "react-icons/fa";
 import { IoBriefcase, IoClose } from "react-icons/io5";
 import { useAuth } from "../context/MainContext";
 import { BiSolidDownArrow } from "react-icons/bi";
@@ -19,6 +19,9 @@ export default function Header() {
   // const [count, setCount] = useState()
 
   const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const profileRef = useRef(null);
+  const notifyRef = useRef(null);
 
   const APIURL = process.env.NEXT_PUBLIC_APIURL;
 
@@ -180,6 +183,92 @@ export default function Header() {
     });
   };
 
+  const getPreviewIcon = (icon) => {
+    switch (icon) {
+      case "Success":
+        return (
+          <FaCheckCircle
+            className="text-green-500"
+            size={20}
+          />
+        );
+
+      case "Warning":
+        return (
+          <FaExclamationTriangle
+            className="text-yellow-500"
+            size={20}
+          />
+        );
+
+      case "Error":
+        return (
+          <FaTimesCircle
+            className="text-red-500"
+            size={20}
+          />
+        );
+
+      case "Update":
+        return (
+          <FaBell
+            className="text-blue-500"
+            size={20}
+          />
+        );
+
+      case "Info":
+        return (
+          <FaInfoCircle
+            className="text-blue-500"
+            size={20}
+          />
+        );
+
+      case "Announcement":
+        return (
+          <FaBell
+            className="text-purple-500"
+            size={20}
+          />
+        );
+
+      default:
+        return (
+          <FaBell
+            className="text-[#d00]"
+            size={20}
+          />
+        );
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Close profile dropdown
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target)
+      ) {
+        setIsProfileOpen(false);
+      }
+
+      // Close notification dropdown
+      if (
+        notifyRef.current &&
+        !notifyRef.current.contains(event.target)
+      ) {
+        setIsNotifOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   // console.log(user?.logo?.[0]);
 
   return (
@@ -264,10 +353,13 @@ export default function Header() {
               </ul>
             </div>
 
-            <div className="flex items-center space-x-8 relative">
+            <div ref={notifyRef} className="flex items-center space-x-8 relative">
               {user &&
                 <div>
-                  <div className="relative cursor-pointer" onClick={() => setIsNotifOpen(!isNotifOpen)}>
+                  <div className="relative cursor-pointer" onClick={() => {
+                    setIsNotifOpen((prev) => !prev);
+                    setIsProfileOpen(false);
+                  }}>
                     <FaBell className="w-5 h-5 text-gray-300 hover:text-white transition" />
                     {notifications?.length > 0 && count > 0 &&
                       <span className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-black">
@@ -355,7 +447,8 @@ export default function Header() {
                               >
                                 {/* <div className="mt-1 shrink-0">{item.icon}</div> */}
                                 {item.applicationId?.status &&
-                                  <FaCheckCircle className="text-green-500" size={20} />
+                                  // <FaCheckCircle className="text-green-500" size={20} />
+                                  getPreviewIcon(item.iconType)
                                 }
                                 <div>
                                   <h4 className={`text-sm font-bold ${!item.isRead ? 'text-white' : 'text-gray-300'}`}>
@@ -401,8 +494,14 @@ export default function Header() {
                     LogOut
                   </button> */}
                     {/* </Link> */}
-                    <div className="group">
-                      <div className="py-4 flex items-center gap-2 cursor-pointer h-full">
+                    <div className="relative" ref={profileRef}>
+                      <div
+                        onClick={() => {
+                          setIsProfileOpen((prev) => !prev);
+                          setIsNotifOpen(false);
+                        }}
+                        className="py-4 flex items-center gap-2 cursor-pointer h-full"
+                      >
                         <div className="w-[35px] h-[35px] rounded-full overflow-hidden">
                           {/* <img src="/images/profile.jpeg" alt="" /> */}
                           {/* <img
@@ -426,7 +525,11 @@ export default function Header() {
                           )}
                         </div>
                         <div>
-                          <BiSolidDownArrow className="text-[#fff] test-[20px] group-hover:-rotate-180 transition-all duration-200" />
+                          {/* <BiSolidDownArrow className="text-[#fff] test-[20px] group-hover:-rotate-180 transition-all duration-200" /> */}
+                          <BiSolidDownArrow
+                            className={`text-[#fff] text-[20px] transition-all duration-200 ${isProfileOpen ? "-rotate-180" : ""
+                              }`}
+                          />
                         </div>
                       </div>
                       {/* <div className="hidden group-hover:block absolute top-[100%] right-0 py- shadow-amber-50 shadow-sm rounded-[8px] rounded-tl-none rounded-tr-none bg-[#1f1f1f] text-[#fff] z-10">
@@ -442,69 +545,71 @@ export default function Header() {
                         <li>Logout</li>
                       </ul>
                     </div> */}
-                      <div className="hidden group-hover:block absolute right-0 z-40">
-                        <div className="mt-2 min-w-[250px] bg-[#1f1f1f] border border-gray-700 rounded-xl shadow-lg">
-                          <div className="p-4 border-b border-gray-700">
-                            <p className="text-white font-semibold">
-                              {user.role == "employer" &&
-                                `${company.companyName}`}
-                              {user.role == "jobseeker" && `${user.name}`}
-                            </p>
-                            <p className="text-gray-400 text-sm">{user.email}</p>
-                          </div>
+                      {isProfileOpen && (
+                        <div className="absolute right-0 top-full z-40">
+                          <div className="mt-2 min-w-[250px] bg-[#1f1f1f] border border-gray-700 rounded-xl shadow-lg">
+                            <div className="p-4 border-b border-gray-700">
+                              <p className="text-white font-semibold">
+                                {user.role == "employer" &&
+                                  `${company.companyName}`}
+                                {user.role == "jobseeker" && `${user.name}`}
+                              </p>
+                              <p className="text-gray-400 text-sm">{user.email}</p>
+                            </div>
 
-                          <ul className="pt-2">
-                            <Link href={`/profile/${user.role}`}>
-                              <li className="px-4 py-2 text-white hover:bg-[#2a2a2a] cursor-pointer">
-                                Profile
-                              </li>
-                            </Link>
-                            {user.role == "jobseeker" && (
-                              <Link href={"/my-applications"}>
-                                <li className="px-4 py-2 text-white hover:bg-[#2a2a2a] cursor-pointer">
-                                  My Applications
+                            <ul className="pt-2">
+                              <Link href={`/profile/${user.role}`}>
+                                <li onClick={() => setIsProfileOpen(false)} className="px-4 py-2 text-white hover:bg-[#2a2a2a] cursor-pointer">
+                                  Profile
                                 </li>
                               </Link>
-                            )}
-                            <Link href={"/saved-Jobs"}>
-                              <li className="px-4 py-2 text-white hover:bg-[#2a2a2a] cursor-pointer">
-                                Saved Jobes
-                              </li>
-                            </Link>
-                            {user.role == "employer" && (
-                              <>
-                                <li className="px-4 py-2 text-white hover:bg-[#2a2a2a] cursor-pointer">
-                                  Post a Job
-                                </li>
-                                <Link href={"/profile/employer/manage-jobs"}>
+                              {user.role == "jobseeker" && (
+                                <Link onClick={() => setIsProfileOpen(false)} href={"/my-applications"}>
                                   <li className="px-4 py-2 text-white hover:bg-[#2a2a2a] cursor-pointer">
-                                    Manage Jobs
+                                    My Applications
                                   </li>
                                 </Link>
-                                <Link href={"/profile/employer/applications"}>
-                                  <li className="px-4 py-2 text-white hover:bg-[#2a2a2a] cursor-pointer">
-                                    Applications
-                                  </li>
-                                </Link>
-                                <li className="px-4 py-2 text-white hover:bg-[#2a2a2a] cursor-pointer">
-                                  Saved Candidates
+                              )}
+                              <Link href={"/saved-Jobs"}>
+                                <li onClick={() => setIsProfileOpen(false)} className="px-4 py-2 text-white hover:bg-[#2a2a2a] cursor-pointer">
+                                  Saved Jobes
                                 </li>
-                              </>
-                            )}
-                            <Link href={"/setting"}>
-                              <li className="px-4 py-2 text-white hover:bg-[#2a2a2a] cursor-pointer">
-                                Settings
-                              </li>
-                            </Link>
-                          </ul>
-                          <li
-                            onClick={logOut}
-                            className="p-4 border-t rounded-[8px] rounded-tl-none rounded-tr-none border-gray-700 text-white hover:bg-[#2a2a2a] hover:text-red-500 cursor-pointer"
-                          >
-                            Logout
-                          </li>
+                              </Link>
+                              {user.role == "employer" && (
+                                <>
+                                  <li onClick={() => setIsProfileOpen(false)} className="px-4 py-2 text-white hover:bg-[#2a2a2a] cursor-pointer">
+                                    Post a Job
+                                  </li>
+                                  <Link href={"/profile/employer/manage-jobs"}>
+                                    <li onClick={() => setIsProfileOpen(false)} className="px-4 py-2 text-white hover:bg-[#2a2a2a] cursor-pointer">
+                                      Manage Jobs
+                                    </li>
+                                  </Link>
+                                  <Link onClick={() => setIsProfileOpen(false)} href={"/profile/employer/applications"}>
+                                    <li className="px-4 py-2 text-white hover:bg-[#2a2a2a] cursor-pointer">
+                                      Applications
+                                    </li>
+                                  </Link>
+                                  <li onClick={() => setIsProfileOpen(false)} className="px-4 py-2 text-white hover:bg-[#2a2a2a] cursor-pointer">
+                                    Saved Candidates
+                                  </li>
+                                </>
+                              )}
+                              <Link href={"/setting"}>
+                                <li onClick={() => setIsProfileOpen(false)} className="px-4 py-2 text-white hover:bg-[#2a2a2a] cursor-pointer">
+                                  Settings
+                                </li>
+                              </Link>
+                            </ul>
+                            <li
+                              onClick={() => { setIsProfileOpen(false), logOut() }}
+                              className="p-4 border-t rounded-[8px] rounded-tl-none rounded-tr-none border-gray-700 text-white hover:bg-[#2a2a2a] hover:text-red-500 cursor-pointer"
+                            >
+                              Logout
+                            </li>
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </ul>
                 </div>
@@ -599,11 +704,11 @@ export default function Header() {
         </div>
       </div>
 
-      {isNotifOpen && (
+      {/* {isNotifOpen && (
         // <>
         <div onClick={() => setIsNotifOpen(false)} className="h-[100%] w-[100%] text-white absolute top-17 right-0 z-10">
         </div>
-      )}
+      )} */}
 
       {/* {isNotifOpen && (
         <div className="absolute top-10 right-10 md:right-0 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200 z-40">

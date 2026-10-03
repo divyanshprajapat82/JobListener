@@ -26,15 +26,45 @@ const notificationSchema = new mongoose.Schema(
 			default: null,
 		},
 
+		// type: {
+		// 	type: String,
+		// 	enum: [
+		// 		"Shortlisted",
+		// 		"Interviewing",
+		// 		"Offered",
+		// 		"Hired",
+		// 		"Rejected",
+		// 		"General",
+		// 	],
+		// 	default: "General",
+		// },
+
 		type: {
 			type: String,
 			enum: [
+				// Application
 				"Shortlisted",
-				"Interviewing",
-				"Offered",
-				"Hired",
 				"Rejected",
+
+				// Interview
+				"Interview Scheduled",
+				"Interview Rescheduled",
+				"Interview Reminder",
+
+				// Offer
+				"Offer Sent",
+				"Offer Accepted",
+				"Offer Declined",
+
+				// Hiring
+				"Hired",
+				"Joining Reminder",
+				"Onboarding",
+
+				// General / Announcement
 				"General",
+				"Important Announcement",
+				"Platform Update",
 			],
 			default: "General",
 		},

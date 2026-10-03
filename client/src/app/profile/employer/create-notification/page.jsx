@@ -34,6 +34,7 @@ export default function CreateNotificationPage() {
         candidateIds: [],
         iconType: "Info",
         category: "General",
+        type: "General",
         title: "",
         message: "",
         actionLink: "",
@@ -75,6 +76,47 @@ export default function CreateNotificationPage() {
     //     },
     // ];
 
+    // const typeOptions = {
+    //     General: ["General"],
+    //     Application: ["Shortlisted", "Rejected"],
+    //     Interview: ["Interviewing"],
+    //     Offer: ["Offered"],
+    //     Hiring: ["Hired"],
+    //     Announcement: ["General"],
+    // };
+
+    const typeOptions = {
+        General: ["General"],
+
+        Application: [
+            "Shortlisted",
+            "Rejected",
+        ],
+
+        Interview: [
+            "Interview Scheduled",
+            "Interview Rescheduled",
+            "Interview Reminder",
+        ],
+
+        Offer: [
+            "Offer Sent",
+            "Offer Accepted",
+            "Offer Declined",
+        ],
+
+        Hiring: [
+            "Hired",
+            "Joining Reminder",
+            "Onboarding",
+        ],
+
+        Announcement: [
+            "Important Announcement",
+            "Platform Update",
+        ],
+    };
+
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
 
@@ -90,6 +132,17 @@ export default function CreateNotificationPage() {
             if (value) {
                 getCandidates(value);
             }
+
+            return;
+        }
+
+        // Change Type automatically when Category changes
+        if (name === "category") {
+            setFormData((prev) => ({
+                ...prev,
+                category: value,
+                type: typeOptions[value]?.[0] || "General",
+            }));
 
             return;
         }
@@ -117,7 +170,7 @@ export default function CreateNotificationPage() {
         e.preventDefault();
 
         if (!formData.jobId) {
-            alert("Please select a job.");
+            toast.error("Please select a job.");
             return;
         }
 
@@ -125,22 +178,60 @@ export default function CreateNotificationPage() {
             formData.audience === "custom" &&
             formData.candidateIds.length === 0
         ) {
-            alert("Please select at least one candidate.");
+            toast.error("Please select at least one candidate.");
             return;
         }
 
         setIsSending(true);
 
-        // TODO:
-        // Connect your API here.
-        //
-        // Example:
-        // await axios.post("/notification/employer/create", formData);
+        try {
+            const res = await axios.post(
+                `${APIURL}/notification/create-emp-notification`,
+                {
+                    jobId: formData.jobId,
+                    audience: formData.audience,
+                    candidateIds: formData.candidateIds,
+                    iconType: formData.iconType,
+                    category: formData.category,
+                    type: formData.type,
+                    subject: formData.title,
+                    message: formData.message,
+                    actionLink: formData.actionLink,
+                    sendEmail: formData.sendEmailFallback,
+                },
+                {
+                    withCredentials: true,
+                }
+            );
 
-        setTimeout(() => {
+            if (res.data.success) {
+                toast.success(res.data.message);
+
+                setFormData({
+                    jobId: "",
+                    audience: "all",
+                    candidateIds: [],
+                    iconType: "Info",
+                    category: "General",
+                    type: "General",
+                    title: "",
+                    message: "",
+                    actionLink: "",
+                    sendEmailFallback: true,
+                });
+
+                setCandidates([]);
+            } else {
+                toast.error(res.data.message);
+            }
+        } catch (err) {
+            toast.error(
+                err.response?.data?.message ||
+                "Failed to send notification"
+            );
+        } finally {
             setIsSending(false);
-            alert("Notification sent successfully!");
-        }, 1000);
+        }
     };
 
     const getPreviewIcon = () => {
@@ -276,8 +367,6 @@ export default function CreateNotificationPage() {
             setLoadingCandidates(false);
         }
     };
-
-
 
     useEffect(() => {
         if (user && user.role === "employer") {
@@ -504,7 +593,7 @@ export default function CreateNotificationPage() {
                             )}
 
                             {/* Icon Type & Category */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
                                 {/* Icon Type */}
                                 <div>
@@ -548,6 +637,33 @@ export default function CreateNotificationPage() {
                                         <option value="Announcement">Announcement</option>
                                     </select>
                                 </div>
+
+                                {/* Type */}
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                                        Type
+                                    </label>
+
+                                    <select
+                                        name="type"
+                                        value={formData.type}
+                                        onChange={handleInputChange}
+                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:bg-white focus:border-[#d00] focus:ring-4 focus:ring-[#d00]/10 outline-none transition-all appearance-none cursor-pointer"
+                                    >
+                                        {(typeOptions[formData.category] || ["General"]).map((type) => (
+                                            <option key={type} value={type}>
+                                                {type}
+                                            </option>
+                                        ))}
+                                        {/* <option value="General">General</option>
+                                        <option value="Shortlisted">Shortlisted</option>
+                                        <option value="Interviewing">Interviewing</option>
+                                        <option value="Offered">Offered</option>
+                                        <option value="Hired">Hired</option>
+                                        <option value="Rejected">Rejected</option> */}
+                                    </select>
+                                </div>
+
                             </div>
 
                             {/* Title */}
@@ -647,13 +763,13 @@ export default function CreateNotificationPage() {
                             </div>
 
                             {/* Buttons */}
-                            <div className="flex gap-4 pt-4">
-                                <button
+                            <div className="flex pt-4">
+                                {/* <button
                                     type="button"
                                     className="flex-1 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-3 rounded-xl font-bold transition-colors text-sm"
                                 >
                                     Save Draft
-                                </button>
+                                </button> */}
 
                                 <button
                                     type="submit"

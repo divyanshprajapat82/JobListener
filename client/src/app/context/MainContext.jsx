@@ -39,6 +39,8 @@ export const MainContext = ({ children }) => {
   const [isActivelyLooking, setIsActivelyLooking] = useState(false);
   const [notifications, setNotifications] = useState([])
   const [count, setCount] = useState()
+  const [activeFilter, setActiveFilter] = useState(null);
+
 
   // const [appliedCandidate, setAppliedCandidate] = useState([])
 
@@ -276,6 +278,9 @@ export const MainContext = ({ children }) => {
       const res = await axios.get(
         `${APIURL}/notification/get-notification`,
         {
+          params: {
+            activeFilter
+          },
           withCredentials: true,
         }
       );
@@ -382,8 +387,12 @@ export const MainContext = ({ children }) => {
     getMe();
     getCategory();
     // getjob();
-    getNotification()
+    // getNotification()
   }, []);
+
+  useEffect(() => {
+    getNotification()
+  }, [activeFilter])
 
   useEffect(() => {
     getjob();
@@ -510,7 +519,8 @@ export const MainContext = ({ children }) => {
         isActivelyLooking, setIsActivelyLooking,
         notifications, setNotifications,
         count, setCount,
-        getNotification
+        getNotification,
+        activeFilter, setActiveFilter
         // appliedCandidate,
         // remote,
       }}

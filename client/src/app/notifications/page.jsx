@@ -3,15 +3,15 @@
 import axios from 'axios';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { FaBell, FaBriefcase, FaEnvelope, FaBuilding, FaCheckCircle, FaTrashAlt } from 'react-icons/fa';
+import { FaBell, FaBriefcase, FaEnvelope, FaBuilding, FaCheckCircle, FaTrashAlt, FaExclamationTriangle, FaTimesCircle, FaInfoCircle } from 'react-icons/fa';
 import { toast } from 'sonner';
 import { useAuth } from '../context/MainContext';
 import LoginPopup from '../common/LoginPopup';
 
 export default function FullNotificationsPage() {
-    const [activeFilter, setActiveFilter] = useState('All');
+    // const [activeFilter, setActiveFilter] = useState('All');
 
-    const { notifications, count, getNotification } = useAuth()
+    const { notifications, count, getNotification, activeFilter, setActiveFilter } = useAuth()
     const [loading, setLoading] = useState(true);
     const [allNotifications, setAllNotifications] = useState([])
 
@@ -182,6 +182,66 @@ export default function FullNotificationsPage() {
         });
     };
 
+    const getPreviewIcon = (icon) => {
+        switch (icon) {
+            case "Success":
+                return (
+                    <FaCheckCircle
+                        className="text-green-500"
+                        size={20}
+                    />
+                );
+
+            case "Warning":
+                return (
+                    <FaExclamationTriangle
+                        className="text-yellow-500"
+                        size={20}
+                    />
+                );
+
+            case "Error":
+                return (
+                    <FaTimesCircle
+                        className="text-red-500"
+                        size={20}
+                    />
+                );
+
+            case "Update":
+                return (
+                    <FaBell
+                        className="text-blue-500"
+                        size={20}
+                    />
+                );
+
+            case "Info":
+                return (
+                    <FaInfoCircle
+                        className="text-blue-500"
+                        size={20}
+                    />
+                );
+
+            case "Announcement":
+                return (
+                    <FaBell
+                        className="text-purple-500"
+                        size={20}
+                    />
+                );
+
+            default:
+                return (
+                    <FaBell
+                        className="text-[#d00]"
+                        size={20}
+                    />
+                );
+        }
+    };
+
     const deleteNotification = async (id) => {
         try {
             // setLoading(true);
@@ -260,11 +320,15 @@ export default function FullNotificationsPage() {
                 </div>
 
                 <div className="w-full flex space-x-2 mb-6 overflow-x-auto">
-                    {['All', 'Unread', 'Applications', 'Messages'].map((filter) => (
+                    {['All', 'Unread', "Application", "Announcement", "General",].map((filter) => (
                         <button
                             key={filter}
-                            onClick={() => setActiveFilter(filter)}
-                            className={`px-4 py-2 text-sm font-bold rounded-xl transition-colors cursor-pointer ${activeFilter === filter ? 'bg-gray-900 text-white shadow-sm' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+                            onClick={() => setActiveFilter(filter === "All" ? null : filter)}
+                            className={`px-4 py-2 text-sm font-bold rounded-xl transition-colors cursor-pointer ${(filter === "All" && activeFilter === null) ||
+                                activeFilter === filter
+                                ? "bg-gray-900 text-white shadow-sm"
+                                : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+                                }`}
                         >
                             {filter}
                         </button>
@@ -309,7 +373,8 @@ export default function FullNotificationsPage() {
                                 <div className='flex gap-2'>
                                     <div className="w-12 h-12 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0">
                                         {item.applicationId?.status &&
-                                            <FaCheckCircle className="text-green-500" size={20} />
+                                            // <FaCheckCircle className="text-green-500" size={20} />
+                                            getPreviewIcon(item.iconType)
                                         }
                                     </div>
 
