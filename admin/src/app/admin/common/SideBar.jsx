@@ -28,10 +28,10 @@ export default function SideBar() {
               </p>
 
               <Link
-                href="/"
-                className={`flex items-center space-x-3 px-4 py-3 ${pathName == "/" ? "bg-red-50 text-red-700" : " text-gray-500 hover:bg-gray-50 hover:text-gray-900"}  rounded-xl font-medium transition-all group relative`}
+                href="/admin"
+                className={`flex items-center space-x-3 px-4 py-3 ${pathName == "/admin" ? "bg-red-50 text-red-700" : " text-gray-500 hover:bg-gray-50 hover:text-gray-900"}  rounded-xl font-medium transition-all group relative`}
               >
-                {pathName == "/" && (
+                {pathName == "/admin" && (
                   <div className="absolute left-0 w-1 h-6 bg-red-600 rounded-r-full"></div>
                 )}
                 <AiOutlineAppstore className="w-5 h-5 transition-colors group-hover:text-red-500" />
@@ -39,10 +39,10 @@ export default function SideBar() {
               </Link>
 
               <Link
-                href="/jobs"
-                className={`flex items-center space-x-3 px-4 py-3 ${pathName == "/jobs" ? "bg-red-50 text-red-700" : " text-gray-500 hover:bg-gray-50 hover:text-gray-900"}  rounded-xl font-medium transition-all group relative`}
+                href="/admin/jobs"
+                className={`flex items-center space-x-3 px-4 py-3 ${pathName == "/admin/jobs" ? "bg-red-50 text-red-700" : " text-gray-500 hover:bg-gray-50 hover:text-gray-900"}  rounded-xl font-medium transition-all group relative`}
               >
-                {pathName == "/jobs" && (
+                {pathName == "/admin/jobs" && (
                   <div className="absolute left-0 w-1 h-6 bg-red-600 rounded-r-full"></div>
                 )}
                 <BsBriefcase className="w-5 h-5 transition-colors group-hover:text-red-500" />
@@ -50,10 +50,10 @@ export default function SideBar() {
               </Link>
 
               <Link
-                href="/admin-management"
-                className={`flex items-center space-x-3 px-4 py-3 ${pathName == "/admin-management" ? "bg-red-50 text-red-700" : " text-gray-500 hover:bg-gray-50 hover:text-gray-900"} hover:text-gray-900"  rounded-xl font-medium transition-all group relative`}
+                href="/admin/admin-management"
+                className={`flex items-center space-x-3 px-4 py-3 ${pathName == "/admin/admin-management" ? "bg-red-50 text-red-700" : " text-gray-500 hover:bg-gray-50 hover:text-gray-900"} hover:text-gray-900"  rounded-xl font-medium transition-all group relative`}
               >
-                {pathName == "/admin-management" && (
+                {pathName == "/admin/admin-management" && (
                   <div className="absolute left-0 w-1 h-6 bg-red-600 rounded-r-full"></div>
                 )}
                 <LuUsers className="w-5 h-5 transition-colors group-hover:text-red-500" />
@@ -61,12 +61,12 @@ export default function SideBar() {
               </Link>
 
               <Link
-                href="/categories"
-                className={`flex items-center space-x-3 px-4 py-3 ${pathName == "/categories" || pathName == "/categories/add" || pathName.startsWith("/categories/edit/") ? "bg-red-50 text-red-700" : " text-gray-500 hover:bg-gray-50 hover:text-gray-900"}  rounded-xl font-medium transition-all group relative`}
+                href="/admin/categories"
+                className={`flex items-center space-x-3 px-4 py-3 ${pathName == "/admin/categories" || pathName == "/admin/categories/add" || pathName.startsWith("/admin/categories/edit/") ? "bg-red-50 text-red-700" : " text-gray-500 hover:bg-gray-50 hover:text-gray-900"}  rounded-xl font-medium transition-all group relative`}
               >
-                {pathName == "/categories" ||
-                pathName == "/categories/add" ||
-                pathName.startsWith("/categories/edit/") ? (
+                {pathName == "/admin/categories" ||
+                  pathName == "/admin/categories/add" ||
+                  pathName.startsWith("/admin/categories/edit/") ? (
                   <div className="absolute left-0 w-1 h-6 bg-red-600 rounded-r-full"></div>
                 ) : null}
                 <FaRegFolder className="w-4.5 h-4.5 transition-colors group-hover:text-red-500" />

@@ -102,7 +102,7 @@ export default function page() {
   const paginatedData = filteredData.slice(startIndex, startIndex + pageSize);
 
   const handleUpdate = (id) => {
-    router.push(`/categories/edit/${id}`);
+    router.push(`/admin/categories/edit/${id}`);
   };
 
   // useEffect(() => {
@@ -126,7 +126,7 @@ export default function page() {
           </p>
         </div>
         <div className="flex gap-3">
-          <Link href="/categories/add">
+          <Link href="/admin/categories/add">
             <button className="text-sm font-bold text-white bg-red-600 border border-gray-200 rounded-lg px-4 py-2 hover:bg-red-700 transition-colors shadow-sm flex items-center gap-2 cursor-pointer">
               <FaPlus />
               Add Category

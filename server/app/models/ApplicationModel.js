@@ -30,7 +30,7 @@ const applicationSchema = new mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Offer",
 			// required: true,
-      		default: null,
+			default: null,
 		},
 
 		resume: {

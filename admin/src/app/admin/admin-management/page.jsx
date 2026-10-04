@@ -57,7 +57,7 @@ export default function AdminPage() {
           </p>
         </div>
         <div className="flex gap-3">
-          <Link href="/admin-management/add">
+          <Link href="/admin/admin-management/add">
             <button className="text-sm font-bold text-white bg-red-600 border border-gray-200 rounded-lg px-4 py-2 hover:bg-red-700 transition-colors shadow-sm flex items-center gap-2 cursor-pointer">
               <FaPlus />
               Add Admin

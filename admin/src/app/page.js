@@ -1,181 +1,152 @@
-"use client"
-import { useEffect } from "react";
-import { context } from "./context/MainContext";
-import CountUp from "react-countup";
+"use client";
 
-export default function Home() {
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { IoBriefcase } from 'react-icons/io5';
+import { FaEnvelope, FaLock, FaShieldAlt, FaEye, FaEyeSlash, FaArrowLeft } from 'react-icons/fa';
 
-  const { geCategorytData, categoryData } = context();
+export default function AdminLoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // status ? item.status == status : true
-  // console.log();
-  // return matchStatus  
-  const filteredData = categoryData.filter((item) =>
-    item.status === "active"
-  )
-  console.log(filteredData);
+  const handleAdminLogin = (e) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-  // useEffect(()=>{
-
-  // },[])
+    // Simulate authentication
+    setTimeout(() => {
+      setIsLoading(false);
+      alert("Admin authenticated. Redirecting to dashboard...");
+    }, 1500);
+  };
 
   return (
-    <div className="bg-gray-50/50 p-8">
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Platform Overview</h2>
-        <p className="text-sm text-gray-500 mt-1">
-          Manage users, categories, and system health.
-        </p>
+    <div className="min-h-screen bg-[#0a0a0a] flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+
+      {/* Background Decorative Elements */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#d00] opacity-10 blur-[120px] rounded-full pointer-events-none"></div>
+
+      {/* Top Navigation */}
+      <div className="absolute top-6 left-6 md:top-8 md:left-8 z-10">
+        <Link
+          href="/"
+          className="flex items-center text-sm font-bold text-gray-400 hover:text-white transition-colors"
+        >
+          <FaArrowLeft className="mr-2" /> Return to Public Site
+        </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {[
-          { title: "Total Registered Users", value: `${12, 450}`, trend: "+142 this week", isUp: true },
-          { title: "Active Job Categories", value: `${filteredData.length}`, trend: "2 added recently", isUp: true },
-          { title: "Total Platform Jobs", value: `${4, 821}`, trend: "+5.2% this month", isUp: true },
-        ].map((stat, idx) => (
-          <div
-            key={idx}
-            className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-md hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group"
-          >
-            <div className="absolute -right-6 -top-6 w-24 h-24 bg-gray-50 rounded-full group-hover:bg-red-50 transition-colors z-0"></div>
+      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
 
-            <div className="relative z-10">
-              <h3 className="text-sm font-semibold text-gray-500 mb-1">{stat.title}</h3>
-              <CountUp end={stat.value} duration={2} className="text-3xl font-extrabold text-gray-900" />
-            </div>
-
-            <div className="mt-4 flex items-center relative z-10">
-              <span className={`flex items-center text-sm font-semibold ${stat.isUp ? "text-green-600" : "text-red-600"}`}>
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d={
-                      stat.isUp
-                        ? "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                        : "M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6"
-                    }
-                  ></path>
-                </svg>
-                {stat.trend}
-              </span>
-            </div>
+        {/* Brand Header */}
+        <div className="flex flex-col items-center mb-8">
+          <div className="w-16 h-16 bg-[#1a1a1a] border border-gray-800 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
+            <IoBriefcase className="text-[#d00] text-3xl" />
           </div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-200 shadow-[0_1px_2px_rgba(0,0,0,0.04)] overflow-hidden">
-          <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-white">
-            <h3 className="text-lg font-bold text-gray-900">Job Categories</h3>
-            <button className="text-sm font-semibold text-gray-600 bg-white border border-gray-200 rounded-lg px-4 py-2 hover:bg-gray-50 hover:text-gray-900 transition-all shadow-sm">
-              Manage All
-            </button>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-gray-600">
-              <thead className="bg-gray-50/80 text-gray-500 uppercase tracking-wider text-xs font-semibold border-b border-gray-100">
-                <tr>
-                  <th className="px-6 py-4">Category Name</th>
-                  <th className="px-6 py-4">Jobs Count</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4 text-right">Actions</th>
-                </tr>
-              </thead>
-
-              <tbody className="divide-y divide-gray-100 bg-white">
-                {[
-                  { name: "Frontend Development", slug: "frontend-development", count: 1240, status: "Active" },
-                  { name: "Backend Engineering", slug: "backend-engineering", count: 985, status: "Active" },
-                  { name: "UI/UX Design", slug: "ui-ux-design", count: 432, status: "Active" },
-                  { name: "Data Science", slug: "data-science", count: 0, status: "Draft" },
-                ].map((cat, idx) => (
-                  <tr key={idx} className="hover:bg-gray-50/80 transition-colors group">
-                    <td className="px-6 py-4">
-                      <p className="font-bold text-gray-900 group-hover:text-red-600 transition-colors">
-                        {cat.name}
-                      </p>
-                      <p className="text-gray-400 text-xs mt-0.5">/{cat.slug}</p>
-                    </td>
-
-                    <td className="px-6 py-4 font-medium text-gray-900">{cat.count} jobs</td>
-
-                    <td className="px-6 py-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-bold border ${cat.status === "Active"
-                          ? "text-green-700 bg-green-50 border-green-200"
-                          : "text-gray-600 bg-gray-100 border-gray-200"
-                          }`}
-                      >
-                        {cat.status}
-                      </span>
-                    </td>
-
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex justify-end gap-2">
-                        <button className="text-gray-400 hover:text-blue-600 transition-colors p-1.5 hover:bg-blue-50 rounded-md">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                          </svg>
-                        </button>
-
-                        <button className="text-gray-400 hover:text-red-600 transition-colors p-1.5 hover:bg-red-50 rounded-md">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                          </svg>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <h2 className="text-center text-3xl font-extrabold text-white tracking-tight">
+            Admin Workspace
+          </h2>
+          <p className="mt-2 text-center text-sm font-medium text-gray-400 flex items-center justify-center">
+            <FaShieldAlt className="mr-1.5 text-[#d00]" /> Restricted Access
+          </p>
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-[0_1px_2px_rgba(0,0,0,0.04)] overflow-hidden flex flex-col">
-          <div className="p-6 border-b border-gray-100 bg-white">
-            <h3 className="text-lg font-bold text-gray-900">Recent Users</h3>
-          </div>
+        {/* Login Card */}
+        <div className="bg-white py-8 px-4 sm:px-10 shadow-2xl rounded-3xl relative overflow-hidden">
 
-          <div className="p-4 flex-1">
-            <div className="space-y-4">
-              {[
-                { name: "Sarah Jenkins", role: "Candidate", time: "2 hours ago" },
-                { name: "TechVision Corp", role: "Employer", time: "5 hours ago" },
-                { name: "Mike Ross", role: "Candidate", time: "1 day ago" },
-                { name: "Innovate Solutions", role: "Employer", time: "1 day ago" },
-              ].map((user, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-xl transition-colors border border-transparent hover:border-gray-100"
+          {/* Top Border Accent */}
+          <div className="absolute top-0 left-0 w-full h-1.5 bg-[#d00]"></div>
+
+          <form className="space-y-6" onSubmit={handleAdminLogin}>
+
+            {/* Admin Email */}
+            <div>
+              <label className="block text-sm font-bold text-gray-900 mb-2">Admin Email</label>
+              <div className="relative">
+                <FaEnvelope className="absolute left-4 top-3.5 text-gray-400" />
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="admin@joblistener.com"
+                  className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-900 focus:bg-white focus:border-[#d00] focus:ring-4 focus:ring-[#d00]/10 outline-none transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Admin Password */}
+            <div>
+              <label className="block text-sm font-bold text-gray-900 mb-2">Password</label>
+              <div className="relative">
+                <FaLock className="absolute left-4 top-3.5 text-gray-400" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••••••"
+                  className="w-full pl-11 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-900 focus:bg-white focus:border-[#d00] focus:ring-4 focus:ring-[#d00]/10 outline-none transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-bold text-sm">
-                      {user.name.charAt(0)}
-                    </div>
-
-                    <div>
-                      <p className="font-bold text-sm text-gray-900">{user.name}</p>
-                      <p className="text-xs text-gray-500">{user.role}</p>
-                    </div>
-                  </div>
-
-                  <span className="text-xs text-gray-400">{user.time}</span>
-                </div>
-              ))}
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
-          </div>
 
-          <div className="p-4 border-t border-gray-100 bg-gray-50/50">
-            <button className="w-full text-sm font-semibold text-red-600 hover:text-red-700 transition-colors">
-              View All Users →
+            {/* Actions */}
+            <div className="flex items-center justify-between mt-2">
+              <div className="flex items-center">
+                <input
+                  id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  className="h-4 w-4 text-[#d00] focus:ring-[#d00] border-gray-300 rounded cursor-pointer"
+                />
+                <label htmlFor="remember-me" className="ml-2 block text-sm font-bold text-gray-700 cursor-pointer">
+                  Remember this device
+                </label>
+              </div>
+
+              <div className="text-sm">
+                <a href="#" className="font-bold text-[#d00] hover:text-[#b00000] transition-colors">
+                  Forgot password?
+                </a>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading || !email || !password}
+              className="w-full flex items-center justify-center bg-[#d00] hover:bg-[#b00000] text-white py-3.5 rounded-xl font-bold shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+            >
+              {isLoading ? (
+                <span className="flex items-center gap-2">
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Authenticating...
+                </span>
+              ) : (
+                "Access Dashboard"
+              )}
             </button>
-          </div>
+          </form>
+
         </div>
+
+        {/* Footer Warning */}
+        <p className="text-center text-xs font-medium text-gray-500 mt-6">
+          This system is for authorized personnel only. All activity is monitored.
+        </p>
       </div>
     </div>
   );
