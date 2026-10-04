@@ -3,6 +3,7 @@ const { EmployerModel } = require("../../models/EmployerModel");
 const { JobModel } = require("../../models/JobModel");
 const { JobseekerModel } = require("../../models/JobseekerModel");
 const NotificationModel = require("../../models/NotificationModel");
+const { transporter } = require("../../utility/mail");
 
 const createEmployerNotification = async (req, res) => {
 	try {
@@ -165,9 +166,152 @@ const createEmployerNotification = async (req, res) => {
 			isRead: false,
 		}));
 
+		// const createdNotifications =
+		// 	await NotificationModel.insertMany(notifications);
+
 		const createdNotifications =
 			await NotificationModel.insertMany(notifications);
 
+		// -----------------------------
+		// 8. Send emails if requested
+		// -----------------------------
+
+		if (sendEmail) {
+			for (const application of selectedApplications) {
+				const candidateEmail = application.userId?.email;
+				const candidateName = application.userId?.name || "Candidate";
+
+				if (!candidateEmail) continue;
+
+				let emailSubject = subject.trim();
+
+				// Professional email subject based on notification type
+				switch (type) {
+					case "Shortlisted":
+						emailSubject = `Your Application Has Been Shortlisted - ${job.title}`;
+						break;
+
+					case "Rejected":
+						emailSubject = `Update on Your Job Application - ${job.title}`;
+						break;
+
+					case "Interview Scheduled":
+						emailSubject = `Interview Scheduled - ${job.title}`;
+						break;
+
+					case "Interview Rescheduled":
+						emailSubject = `Interview Rescheduled - ${job.title}`;
+						break;
+
+					case "Interview Reminder":
+						emailSubject = `Interview Reminder - ${job.title}`;
+						break;
+
+					case "Offer Sent":
+						emailSubject = `Job Offer - ${job.title}`;
+						break;
+
+					case "Offer Accepted":
+						emailSubject = `Offer Accepted - ${job.title}`;
+						break;
+
+					case "Offer Declined":
+						emailSubject = `Offer Status Update - ${job.title}`;
+						break;
+
+					case "Hired":
+						emailSubject = `Congratulations! You Have Been Hired - ${job.title}`;
+						break;
+
+					case "Joining Reminder":
+						emailSubject = `Joining Reminder - ${job.title}`;
+						break;
+
+					case "Onboarding":
+						emailSubject = `Onboarding Information - ${job.title}`;
+						break;
+
+					case "Important Announcement":
+						emailSubject = `Important Announcement - ${job.title}`;
+						break;
+
+					case "Platform Update":
+						emailSubject = `Platform Update - JobListener`;
+						break;
+
+					default:
+						emailSubject = subject.trim();
+				}
+
+				// Don't await — email runs in background
+				transporter
+					.sendMail({
+						from: process.env.EMAIL_USER,
+						to: candidateEmail,
+						subject: emailSubject,
+
+						html: `
+					<div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 30px; color: #333;">
+						
+						<h2 style="color: #d00000;">
+							${subject.trim()}
+						</h2>
+
+						<p>Hello ${candidateName},</p>
+
+						<p>
+							${message.trim()}
+						</p>
+
+						${
+							actionLink?.trim()
+								? `
+									<div style="margin: 25px 0;">
+										<a
+											href="${actionLink.trim()}"
+											style="
+												display: inline-block;
+												background: #d00000;
+												color: white;
+												padding: 12px 20px;
+												text-decoration: none;
+												border-radius: 6px;
+												font-weight: bold;
+											"
+										>
+											View Details
+										</a>
+									</div>
+								`
+								: ""
+						}
+
+						<p style="margin-top: 30px;">
+							Regards,<br />
+							<strong>${employer.companyName}</strong>
+						</p>
+
+						<hr style="margin-top: 30px; border: none; border-top: 1px solid #eee;" />
+
+						<p style="font-size: 12px; color: #888;">
+							This is an automated notification from JobListener.
+						</p>
+					</div>
+				`,
+					})
+					.then(() => {
+						console.log(`Email sent to ${candidateEmail}`);
+					})
+					.catch((emailError) => {
+						console.error(
+							`Failed to send email to ${candidateEmail}:`,
+							emailError.message,
+						);
+					});
+			}
+		}
+
+		// API response does NOT wait for emails
 		return res.status(201).json({
 			success: true,
 			message: `Notification sent to ${createdNotifications.length} candidate${
@@ -176,6 +320,15 @@ const createEmployerNotification = async (req, res) => {
 			count: createdNotifications.length,
 			data: createdNotifications,
 		});
+
+		// return res.status(201).json({
+		// 	success: true,
+		// 	message: `Notification sent to ${createdNotifications.length} candidate${
+		// 		createdNotifications.length > 1 ? "s" : ""
+		// 	}`,
+		// 	count: createdNotifications.length,
+		// 	data: createdNotifications,
+		// });
 	} catch (error) {
 		console.error("Create employer notification error:", error);
 
@@ -193,8 +346,12 @@ const getNotification = async (req, res) => {
 
 		let filter = {};
 
-		if (activeFilter) {
+		if (activeFilter && activeFilter !== "Unread") {
 			filter.category = activeFilter;
+		}
+
+		if (activeFilter === "Unread") {
+			filter.isRead = false;
 		}
 
 		const data = await NotificationModel.find({ userId, ...filter })

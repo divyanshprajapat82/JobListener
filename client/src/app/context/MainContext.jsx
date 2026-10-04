@@ -40,6 +40,7 @@ export const MainContext = ({ children }) => {
   const [notifications, setNotifications] = useState([])
   const [count, setCount] = useState()
   const [activeFilter, setActiveFilter] = useState(null);
+  
 
 
   // const [appliedCandidate, setAppliedCandidate] = useState([])
