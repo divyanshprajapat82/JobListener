@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { IoBriefcase } from 'react-icons/io5';
 import { FaEnvelope, FaLock, FaShieldAlt, FaEye, FaEyeSlash, FaArrowLeft } from 'react-icons/fa';
 
-export default function AdminLoginPage() {
+export default function PremiumAdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -18,114 +18,117 @@ export default function AdminLoginPage() {
     // Simulate authentication
     setTimeout(() => {
       setIsLoading(false);
-      alert("Admin authenticated. Redirecting to dashboard...");
+      alert("Admin authenticated. Initializing workspace...");
     }, 1500);
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden font-sans text-slate-800">
 
-      {/* Background Decorative Elements */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#d00] opacity-10 blur-[120px] rounded-full pointer-events-none"></div>
+      {/* --- BACKGROUND EFFECTS --- */}
+      {/* 1. Subtle Grid Pattern (Darkened slightly for light background) */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)] bg-[size:32px_32px]"></div>
+
+      {/* 2. Brand Red Glow (Softened for light theme) */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#d00] opacity-[0.04] blur-[100px] rounded-full pointer-events-none"></div>
 
       {/* Top Navigation */}
-      <div className="absolute top-6 left-6 md:top-8 md:left-8 z-10">
+      <div className="absolute top-6 left-6 md:top-8 md:left-8 z-20">
         <Link
           href="/"
-          className="flex items-center text-sm font-bold text-gray-400 hover:text-white transition-colors"
+          className="flex items-center text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors group"
         >
-          <FaArrowLeft className="mr-2" /> Return to Public Site
+          <div className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center mr-3 group-hover:bg-slate-100 transition-colors">
+            <FaArrowLeft className="text-slate-400 group-hover:text-slate-700" size={12} />
+          </div>
+          Public Portal
         </Link>
       </div>
 
-      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4">
 
-        {/* Brand Header */}
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 bg-[#1a1a1a] border border-gray-800 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
-            <IoBriefcase className="text-[#d00] text-3xl" />
+        {/* --- LOGIN CARD --- */}
+        <div className="bg-white/90 backdrop-blur-xl py-10 px-6 sm:px-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[2rem] border border-slate-100 relative overflow-hidden">
+
+          {/* Top Red Glow Accent */}
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#d00] to-transparent opacity-60"></div>
+
+          {/* Header */}
+          <div className="flex flex-col items-center mb-8">
+            <div className="w-16 h-16 bg-gradient-to-br from-white to-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center mb-5 shadow-[0_4px_20px_rgba(221,0,0,0.08)]">
+              <IoBriefcase className="text-[#d00] text-3xl" />
+            </div>
+            <h2 className="text-center text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Admin Workspace
+            </h2>
+            <p className="mt-2 text-center text-sm font-medium text-slate-600 flex items-center justify-center bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
+              <FaShieldAlt className="mr-2 text-[#d00]" size={12} /> Authorized Personnel Only
+            </p>
           </div>
-          <h2 className="text-center text-3xl font-extrabold text-white tracking-tight">
-            Admin Workspace
-          </h2>
-          <p className="mt-2 text-center text-sm font-medium text-gray-400 flex items-center justify-center">
-            <FaShieldAlt className="mr-1.5 text-[#d00]" /> Restricted Access
-          </p>
-        </div>
 
-        {/* Login Card */}
-        <div className="bg-white py-8 px-4 sm:px-10 shadow-2xl rounded-3xl relative overflow-hidden">
+          <form className="space-y-5" onSubmit={handleAdminLogin}>
 
-          {/* Top Border Accent */}
-          <div className="absolute top-0 left-0 w-full h-1.5 bg-[#d00]"></div>
-
-          <form className="space-y-6" onSubmit={handleAdminLogin}>
-
-            {/* Admin Email */}
+            {/* Email Input */}
             <div>
-              <label className="block text-sm font-bold text-gray-900 mb-2">Admin Email</label>
-              <div className="relative">
-                <FaEnvelope className="absolute left-4 top-3.5 text-gray-400" />
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Admin ID / Email</label>
+              <div className="relative group">
+                <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#d00] transition-colors duration-300" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@joblistener.com"
-                  className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-900 focus:bg-white focus:border-[#d00] focus:ring-4 focus:ring-[#d00]/10 outline-none transition-all"
+                  className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:bg-white focus:border-[#d00] focus:ring-1 focus:ring-[#d00] outline-none transition-all duration-300 shadow-sm"
                 />
               </div>
             </div>
 
-            {/* Admin Password */}
+            {/* Password Input */}
             <div>
-              <label className="block text-sm font-bold text-gray-900 mb-2">Password</label>
-              <div className="relative">
-                <FaLock className="absolute left-4 top-3.5 text-gray-400" />
+              <div className="flex justify-between items-center mb-2 ml-1 pr-1">
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">Password</label>
+                <a href="#" className="text-xs font-bold text-[#d00] hover:text-red-700 transition-colors">
+                  Reset Password?
+                </a>
+              </div>
+              <div className="relative group">
+                <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#d00] transition-colors duration-300" />
                 <input
                   type={showPassword ? "text" : "password"}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full pl-11 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-900 focus:bg-white focus:border-[#d00] focus:ring-4 focus:ring-[#d00]/10 outline-none transition-all"
+                  className="w-full pl-11 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:bg-white focus:border-[#d00] focus:ring-1 focus:ring-[#d00] outline-none transition-all duration-300 shadow-sm"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
                 >
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
                 </button>
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="flex items-center justify-between mt-2">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-[#d00] focus:ring-[#d00] border-gray-300 rounded cursor-pointer"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm font-bold text-gray-700 cursor-pointer">
-                  Remember this device
-                </label>
-              </div>
-
-              <div className="text-sm">
-                <a href="#" className="font-bold text-[#d00] hover:text-[#b00000] transition-colors">
-                  Forgot password?
-                </a>
-              </div>
+            {/* Remember Me */}
+            <div className="flex items-center pt-2 ml-1">
+              <input
+                id="remember-me"
+                type="checkbox"
+                className="h-4 w-4 text-[#d00] border-slate-300 rounded focus:ring-[#d00] focus:ring-offset-0 cursor-pointer"
+              />
+              <label htmlFor="remember-me" className="ml-2 block text-sm font-medium text-slate-600 cursor-pointer select-none">
+                Remember this terminal
+              </label>
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading || !email || !password}
-              className="w-full flex items-center justify-center bg-[#d00] hover:bg-[#b00000] text-white py-3.5 rounded-xl font-bold shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+              className="w-full flex items-center justify-center bg-[#d00] hover:bg-[#b30000] text-white py-3.5 rounded-xl font-bold shadow-[0_4px_14px_rgba(221,0,0,0.25)] hover:shadow-[0_6px_20px_rgba(221,0,0,0.35)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-6"
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">
@@ -133,7 +136,7 @@ export default function AdminLoginPage() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Authenticating...
+                  Initializing...
                 </span>
               ) : (
                 "Access Dashboard"
@@ -144,9 +147,14 @@ export default function AdminLoginPage() {
         </div>
 
         {/* Footer Warning */}
-        <p className="text-center text-xs font-medium text-gray-500 mt-6">
-          This system is for authorized personnel only. All activity is monitored.
-        </p>
+        <div className="mt-8 text-center flex flex-col items-center">
+          <p className="text-[11px] font-bold tracking-widest text-slate-400 uppercase mb-1">
+            End-to-End Encrypted
+          </p>
+          <p className="text-xs text-slate-400">
+            System activity is monitored and logged.
+          </p>
+        </div>
       </div>
     </div>
   );
