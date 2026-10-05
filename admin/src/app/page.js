@@ -27,10 +27,21 @@ export default function PremiumAdminLogin() {
 
       {/* --- BACKGROUND EFFECTS --- */}
       {/* 1. Subtle Grid Pattern (Darkened slightly for light background) */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)] bg-[size:32px_32px]"></div>
+      {/* <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)] bg-[length:32px_32px]"></div> */}
+
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, #00000008 1px, transparent 1px), linear-gradient(to bottom, #00000008 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+        }}
+      />
 
       {/* 2. Brand Red Glow (Softened for light theme) */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#d00] opacity-[0.04] blur-[100px] rounded-full pointer-events-none"></div>
+      {/* <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#d00] opacity-[0.04] blur-[100px] rounded-full pointer-events-none"></div> */}
+
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xl h-96 bg-red-600/5 blur-3xl rounded-full pointer-events-none" />
 
       {/* Top Navigation */}
       <div className="absolute top-6 left-6 md:top-8 md:left-8 z-20">
@@ -48,19 +59,23 @@ export default function PremiumAdminLogin() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4">
 
         {/* --- LOGIN CARD --- */}
-        <div className="bg-white/90 backdrop-blur-xl py-10 px-6 sm:px-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[2rem] border border-slate-100 relative overflow-hidden">
+        <div className="bg-white/90 backdrop-blur-xl py-10 px-6 sm:px-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl border border-slate-100 relative overflow-hidden">
 
           {/* Top Red Glow Accent */}
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#d00] to-transparent opacity-60"></div>
+          <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-[#d00] to-transparent opacity-60"></div>
 
           {/* Header */}
           <div className="flex flex-col items-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-white to-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center mb-5 shadow-[0_4px_20px_rgba(221,0,0,0.08)]">
+            <div className="w-16 h-16 bg-linear-to-br from-white to-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center mb-5 shadow-[0_4px_20px_rgba(221,0,0,0.08)]">
               <IoBriefcase className="text-[#d00] text-3xl" />
             </div>
             <h2 className="text-center text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
               Admin Workspace
             </h2>
+            {/* <h1 className="text-center text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Job<span className="text-red-600">Listner</span>{" "} <br/>
+              Admin Workspace
+            </h1> */}
             <p className="mt-2 text-center text-sm font-medium text-slate-600 flex items-center justify-center bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
               <FaShieldAlt className="mr-2 text-[#d00]" size={12} /> Authorized Personnel Only
             </p>
