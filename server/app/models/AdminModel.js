@@ -28,7 +28,7 @@ const adminSchema = new mongoose.Schema(
 			default: "support-agent",
 		},
 
-		avatar: {
+		logo: {
 			type: String,
 			default: null,
 		},

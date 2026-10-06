@@ -9,7 +9,9 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { useRouter } from "next/navigation";
 import Pagination from "rc-pagination";
 import "rc-pagination/assets/index.css";
-import { context } from "../context/MainContext";
+import { context } from "@/app/context/MainContext";
+// import { context } from "@/app/context/MainContext";
+// import { context } from "./context/MainContext";
 // import { useContext } from "../context/MainContext";
 
 export default function page() {
@@ -249,18 +251,16 @@ export default function page() {
                     </td>
                     <td className="px-6 py-4">
                       <span
-                        className={`px-3 py-1 rounded-full text-[11px] font-bold border flex w-max items-center gap-1.5 ${
-                          items.status === "active"
-                            ? "text-green-700 bg-green-50 border-green-200"
-                            : "text-gray-600 bg-gray-50 border-gray-200"
-                        }`}
+                        className={`px-3 py-1 rounded-full text-[11px] font-bold border flex w-max items-center gap-1.5 ${items.status === "active"
+                          ? "text-green-700 bg-green-50 border-green-200"
+                          : "text-gray-600 bg-gray-50 border-gray-200"
+                          }`}
                       >
                         <span
-                          className={`w-1.5 h-1.5 rounded-full ${
-                            items.status === "active"
-                              ? "bg-green-500"
-                              : "bg-gray-400"
-                          }`}
+                          className={`w-1.5 h-1.5 rounded-full ${items.status === "active"
+                            ? "bg-green-500"
+                            : "bg-gray-400"
+                            }`}
                         ></span>
                         {items.status}
                       </span>

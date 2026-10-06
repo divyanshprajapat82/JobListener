@@ -4,23 +4,103 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { IoBriefcase } from 'react-icons/io5';
 import { FaEnvelope, FaLock, FaShieldAlt, FaEye, FaEyeSlash, FaArrowLeft } from 'react-icons/fa';
+import { toast } from 'sonner';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 export default function PremiumAdminLogin() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // const [email, setEmail] = useState('');
+  // const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    role: "super-admin",
+    password: "",
+  });
 
-  const handleAdminLogin = (e) => {
+  const router = useRouter();
+
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleAdminLogin = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    // setIsLoading(true);
+
+
+    const data = {
+      // name: formData.firstName + " " + formData.lastName,
+      email: formData.email,
+      password: formData.password,
+      // role: formData.role
+    };
+
+    if (!formData.email.trim()) {
+      toast.error("Email is required");
+      return;
+    }
+
+    if (!formData.password.trim()) {
+      toast.error("Password is required");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_APIURL}/admin-auth/admin-login`,
+        data,
+        // {
+        //   withCredentials: true,
+        // }
+      );
+
+      if (response.data?.success) {
+        // toast.success(
+        //   response.data.message ||
+        //   "Administrator LoggedIn successfully"
+        // );
+
+        // clearForm();
+
+        setTimeout(() => {
+          router.push("/admin");
+        }, 500);
+      } else {
+        toast.error(
+          response.data?.message ||
+          "Failed to create administrator"
+        );
+      }
+    } catch (error) {
+      // console.error("Create admin error:", error);
+
+      toast.error(
+        error.response?.data?.message ||
+        "Something went wrong while Login"
+      );
+    } finally {
+      setIsLoading(false);
+    }
 
     // Simulate authentication
-    setTimeout(() => {
-      setIsLoading(false);
-      alert("Admin authenticated. Initializing workspace...");
-    }, 1500);
+    // setTimeout(() => {
+    //   setIsLoading(false);
+    //   alert("Admin authenticated. Initializing workspace...");
+    // }, 1500);
   };
+
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden font-sans text-slate-800">
@@ -91,8 +171,9 @@ export default function PremiumAdminLogin() {
                 <input
                   type="email"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   placeholder="admin@joblistener.com"
                   className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:bg-white focus:border-[#d00] focus:ring-1 focus:ring-[#d00] outline-none transition-all duration-300 shadow-sm"
                 />
@@ -112,8 +193,9 @@ export default function PremiumAdminLogin() {
                 <input
                   type={showPassword ? "text" : "password"}
                   required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
                   placeholder="••••••••••••"
                   className="w-full pl-11 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:bg-white focus:border-[#d00] focus:ring-1 focus:ring-[#d00] outline-none transition-all duration-300 shadow-sm"
                 />
@@ -142,7 +224,7 @@ export default function PremiumAdminLogin() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isLoading || !email || !password}
+              disabled={isLoading || !formData.email || !formData.password}
               className="w-full flex items-center justify-center bg-[#d00] hover:bg-[#b30000] text-white py-3.5 rounded-xl font-bold shadow-[0_4px_14px_rgba(221,0,0,0.25)] hover:shadow-[0_6px_20px_rgba(221,0,0,0.35)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-6"
             >
               {isLoading ? (

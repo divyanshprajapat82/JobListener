@@ -51,7 +51,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <MainContext>
-          <Toaster />
+          <Toaster richColors />
           {children}
         </MainContext>
       </body>
