@@ -1,4 +1,5 @@
 import React from "react";
+import { FaBell } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { IoMdNotificationsOutline } from "react-icons/io";
 
@@ -32,25 +33,18 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          <button className="relative p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-gray-100 cursor-pointer">
+          {/* <button className="relative p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-gray-100 cursor-pointer">
             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
             <IoMdNotificationsOutline className="text-2xl" />
-          </button>
+          </button> */}
+          <div className="relative cursor-pointer">
+            <div className="w-10 h-10 bg-gray-50 border border-gray-200 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors">
+              <FaBell size={18} />
+            </div>
+            <span className="absolute top-0 right-0 w-3 h-3 bg-[#d00] border-2 border-white rounded-full"></span>
+          </div>
           <button className="bg-red-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-red-700 hover:shadow-lg hover:shadow-red-500/30 transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
             <FaPlus />
-            {/* <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 4v16m8-8H4"
-              ></path>
-            </svg> */}
             Add Category
           </button>
         </div>

@@ -3,10 +3,11 @@ import { useEffect } from "react";
 // import { context } from "./context/MainContext";
 import CountUp from "react-countup";
 import { context } from "../context/MainContext";
+import axios from "axios";
 
 export default function Home() {
 
-  const { geCategorytData, categoryData } = context();
+  const { geCategorytData, categoryData, jobs, users } = context();
 
   // status ? item.status == status : true
   // console.log();
@@ -14,11 +15,70 @@ export default function Home() {
   const filteredData = categoryData.filter((item) =>
     item.status === "active"
   )
-  console.log(filteredData);
 
-  // useEffect(()=>{
+  const getLocalTimeAgo = (date) => {
+    const now = new Date();
+    const posted = new Date(date);
 
-  // },[])
+    const seconds = Math.floor((now - posted) / 1000);
+
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (seconds < 60) {
+      return "Just now";
+    }
+
+    if (minutes < 60) {
+      return `${minutes} min ago`;
+    }
+
+    if (hours < 24) {
+      return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+    }
+
+    if (days === 1) {
+      return "Yesterday";
+    }
+
+    if (days < 7) {
+      return `${days} days ago`;
+    }
+
+    return posted.toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_APIURL}/admin-auth/me`,
+          {
+            withCredentials: true,
+          },
+        );
+
+        if (response.data.success) {
+          // setAuthenticated(true);
+          // console.log("Data", response.data);
+
+        } else {
+          // router.replace("/");
+        }
+      } catch (error) {
+        // router.replace("/");
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    checkAdmin();
+  }, []);
 
   return (
     <div className="bg-gray-50/50 p-8">
@@ -31,9 +91,9 @@ export default function Home() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {[
-          { title: "Total Registered Users", value: `${12, 450}`, trend: "+142 this week", isUp: true },
+          { title: "Total Registered Users", value: `${users.length}`, trend: "+142 this week", isUp: true },
           { title: "Active Job Categories", value: `${filteredData.length}`, trend: "2 added recently", isUp: true },
-          { title: "Total Platform Jobs", value: `${4, 821}`, trend: "+5.2% this month", isUp: true },
+          { title: "Total Platform Jobs", value: `${jobs.length}`, trend: "+5.2% this month", isUp: true },
         ].map((stat, idx) => (
           <div
             key={idx}
@@ -70,7 +130,7 @@ export default function Home() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-200 shadow-[0_1px_2px_rgba(0,0,0,0.04)] overflow-hidden">
           <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-white">
-            <h3 className="text-lg font-bold text-gray-900">Job Categories</h3>
+            <h3 className="text-lg font-bold text-gray-900">Recent Job Postings</h3>
             <button className="text-sm font-semibold text-gray-600 bg-white border border-gray-200 rounded-lg px-4 py-2 hover:bg-gray-50 hover:text-gray-900 transition-all shadow-sm">
               Manage All
             </button>
@@ -80,58 +140,59 @@ export default function Home() {
             <table className="w-full text-left text-sm text-gray-600">
               <thead className="bg-gray-50/80 text-gray-500 uppercase tracking-wider text-xs font-semibold border-b border-gray-100">
                 <tr>
-                  <th className="px-6 py-4">Category Name</th>
-                  <th className="px-6 py-4">Jobs Count</th>
+                  <th className="px-6 py-4">Job Details</th>
+                  <th className="px-6 py-4">Company</th>
                   <th className="px-6 py-4">Status</th>
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-gray-100 bg-white">
-                {[
-                  { name: "Frontend Development", slug: "frontend-development", count: 1240, status: "Active" },
-                  { name: "Backend Engineering", slug: "backend-engineering", count: 985, status: "Active" },
-                  { name: "UI/UX Design", slug: "ui-ux-design", count: 432, status: "Active" },
-                  { name: "Data Science", slug: "data-science", count: 0, status: "Draft" },
-                ].map((cat, idx) => (
-                  <tr key={idx} className="hover:bg-gray-50/80 transition-colors group">
-                    <td className="px-6 py-4">
-                      <p className="font-bold text-gray-900 group-hover:text-red-600 transition-colors">
-                        {cat.name}
-                      </p>
-                      <p className="text-gray-400 text-xs mt-0.5">/{cat.slug}</p>
-                    </td>
+                {
+                  // [
+                  //   { name: "Frontend Development", slug: "frontend-development", count: 1240, status: "Active" },
+                  //   { name: "Backend Engineering", slug: "backend-engineering", count: 985, status: "Active" },
+                  //   { name: "UI/UX Design", slug: "ui-ux-design", count: 432, status: "Active" },
+                  //   { name: "Data Science", slug: "data-science", count: 0, status: "Draft" },
+                  // ]
+                  jobs.map((job, idx) => (
+                    <tr key={idx} className="hover:bg-gray-50/80 transition-colors group">
+                      <td className="px-6 py-4">
+                        <p className="font-bold text-gray-900 group-hover:text-red-600 transition-colors">
+                          {job.title}
+                        </p>
+                        <p className="text-gray-400 text-xs mt-0.5">{getLocalTimeAgo(job.createdAt)}</p>
+                      </td>
 
-                    <td className="px-6 py-4 font-medium text-gray-900">{cat.count} jobs</td>
+                      <td className="px-6 py-4 font-medium text-gray-900">{job.employer?.companyName}</td>
 
-                    <td className="px-6 py-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-bold border ${cat.status === "Active"
-                          ? "text-green-700 bg-green-50 border-green-200"
-                          : "text-gray-600 bg-gray-100 border-gray-200"
-                          }`}
-                      >
-                        {cat.status}
-                      </span>
-                    </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-bold border ${job.status === "Active"
+                            ? "text-green-700 bg-green-50 border-green-200" : job.status === "Closed" ? "text-red-700 bg-red-50 border-red-200" : "text-gray-600 bg-gray-100 border-gray-200"
+                            }`}
+                        >
+                          {job.status}
+                        </span>
+                      </td>
 
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex justify-end gap-2">
-                        <button className="text-gray-400 hover:text-blue-600 transition-colors p-1.5 hover:bg-blue-50 rounded-md">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                          </svg>
-                        </button>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex justify-end gap-2">
+                          <button className="text-gray-400 hover:text-blue-600 transition-colors p-1.5 hover:bg-blue-50 rounded-md">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                          </button>
 
-                        <button className="text-gray-400 hover:text-red-600 transition-colors p-1.5 hover:bg-red-50 rounded-md">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                          </svg>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                          <button className="text-gray-400 hover:text-red-600 transition-colors p-1.5 hover:bg-red-50 rounded-md">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -144,30 +205,32 @@ export default function Home() {
 
           <div className="p-4 flex-1">
             <div className="space-y-4">
-              {[
-                { name: "Sarah Jenkins", role: "Candidate", time: "2 hours ago" },
-                { name: "TechVision Corp", role: "Employer", time: "5 hours ago" },
-                { name: "Mike Ross", role: "Candidate", time: "1 day ago" },
-                { name: "Innovate Solutions", role: "Employer", time: "1 day ago" },
-              ].map((user, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-xl transition-colors border border-transparent hover:border-gray-100"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-bold text-sm">
-                      {user.name.charAt(0)}
+              {
+                // [
+                //   { name: "Sarah Jenkins", role: "Candidate", time: "2 hours ago" },
+                //   { name: "TechVision Corp", role: "Employer", time: "5 hours ago" },
+                //   { name: "Mike Ross", role: "Candidate", time: "1 day ago" },
+                //   { name: "Innovate Solutions", role: "Employer", time: "1 day ago" },
+                // ]
+                users.map((user, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-xl transition-colors border border-transparent hover:border-gray-100"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-bold text-sm">
+                        {user.name.charAt(0)}
+                      </div>
+
+                      <div>
+                        <p className="font-bold text-sm text-gray-900">{user.name}</p>
+                        <p className="text-xs text-gray-500">{user.role}</p>
+                      </div>
                     </div>
 
-                    <div>
-                      <p className="font-bold text-sm text-gray-900">{user.name}</p>
-                      <p className="text-xs text-gray-500">{user.role}</p>
-                    </div>
+                    <span className="text-xs text-gray-400">{getLocalTimeAgo(user.createdAt)}</span>
                   </div>
-
-                  <span className="text-xs text-gray-400">{user.time}</span>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
 
@@ -178,6 +241,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

@@ -14,7 +14,7 @@ const AdminAuth = ({ children }) => {
         const checkAdmin = async () => {
             try {
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_APIURL}/dmin-auth/me`,
+                    `${process.env.NEXT_PUBLIC_APIURL}/admin-auth/me`,
                     {
                         withCredentials: true,
                     },

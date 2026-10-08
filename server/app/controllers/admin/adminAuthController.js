@@ -157,7 +157,8 @@ const adminLogin = async (req, res) => {
 		// Store JWT in httpOnly cookie
 		res.cookie("adminToken", token, {
 			httpOnly: true,
-			secure: process.env.NODE_ENV === "production",
+			// secure: process.env.NODE_ENV === "production",
+			secure: false,
 			sameSite: "lax",
 			maxAge: 24 * 60 * 60 * 1000,
 		});
@@ -198,7 +199,7 @@ const getMe = async (req, res) => {
 
 		return res.status(200).json({
 			success: true,
-			admin,
+			data: admin,
 		});
 	} catch (error) {
 		console.error("Get Admin Error:", error);

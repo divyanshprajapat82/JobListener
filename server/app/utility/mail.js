@@ -2,12 +2,20 @@ const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD
-  }
-})
+	service: "gmail",
+	auth: {
+		user: process.env.EMAIL_USER,
+		pass: process.env.EMAIL_PASSWORD,
+	},
+});
+
+// transporter.verify((error, success) => {
+// 	if (error) {
+// 		console.error("SMTP connection failed:", error);
+// 	} else {
+// 		console.log("SMTP server is ready");
+// 	}
+// });
 
 // transporter.verify((error, success) => {
 //   if (error) {
@@ -18,4 +26,4 @@ const transporter = nodemailer.createTransport({
 //   }
 // });
 
-module.exports = {transporter}
+module.exports = { transporter };

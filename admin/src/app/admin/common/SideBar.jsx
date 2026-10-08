@@ -6,9 +6,13 @@ import { LuGalleryVerticalEnd, LuUsers } from "react-icons/lu";
 import { FaRegFolder } from "react-icons/fa6";
 import { BsBriefcase } from "react-icons/bs";
 import { usePathname } from "next/navigation";
+import { context } from "@/app/context/MainContext";
 
 export default function SideBar() {
   const pathName = usePathname();
+  const { admin } = context()
+  console.log("admin", admin);
+
   return (
     <>
       <div className="h-full hidden md:block">
@@ -88,8 +92,8 @@ export default function SideBar() {
                 AD
               </div>
               <div>
-                <p className="text-sm font-bold text-gray-900">Admin User</p>
-                <p className="text-xs text-gray-500">Super Administrator</p>
+                <p className="text-sm font-bold text-gray-900">{admin?.name}</p>
+                <p className="text-xs text-gray-500">{admin?.role == "super-admin" && "Super Admin" || admin?.role == "job-moderator" && "Job Moderator" || admin?.role == "support-agent" && "Support Agent"}</p>
               </div>
             </div>
           </div>

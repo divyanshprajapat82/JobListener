@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { IoBriefcase } from 'react-icons/io5';
 import { FaEnvelope, FaLock, FaShieldAlt, FaEye, FaEyeSlash, FaArrowLeft } from 'react-icons/fa';
@@ -61,9 +61,9 @@ export default function PremiumAdminLogin() {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_APIURL}/admin-auth/admin-login`,
         data,
-        // {
-        //   withCredentials: true,
-        // }
+        {
+          withCredentials: true,
+        }
       );
 
       if (response.data?.success) {
@@ -100,6 +100,31 @@ export default function PremiumAdminLogin() {
     //   alert("Admin authenticated. Initializing workspace...");
     // }, 1500);
   };
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_APIURL}/admin-auth/me`,
+          {
+            withCredentials: true,
+          },
+        );
+
+        if (response.data.success) {
+          router.replace("/admin");
+          return;
+        }
+      } catch (error) {
+        // router.replace("/");
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    checkAdmin();
+  }, []);
+
 
 
   return (
