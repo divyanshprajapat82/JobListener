@@ -47,6 +47,16 @@ const adminSchema = new mongoose.Schema(
 			type: Date,
 			default: null,
 		},
+
+		otp: {
+			type: String,
+			default: null,
+		},
+
+		otpExpiresAt: {
+			type: Date,
+			default: null,
+		},
 	},
 	{
 		timestamps: true,

@@ -209,9 +209,9 @@ export default function PremiumAdminLogin() {
             <div>
               <div className="flex justify-between items-center mb-2 ml-1 pr-1">
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">Password</label>
-                <a href="#" className="text-xs font-bold text-[#d00] hover:text-red-700 transition-colors">
+                <Link href={"/reset-password"} className="text-xs font-bold text-[#d00] hover:text-red-700 transition-colors">
                   Reset Password?
-                </a>
+                </Link>
               </div>
               <div className="relative group">
                 <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#d00] transition-colors duration-300" />
