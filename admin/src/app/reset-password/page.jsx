@@ -156,7 +156,7 @@ export default function ResetPassword() {
                         //     </button>
                         // </div>
                         <div className='w-full'>
-                            <AdminOTP />
+                            <AdminOTP email={email} />
                         </div>
                     )}
                 </div>
