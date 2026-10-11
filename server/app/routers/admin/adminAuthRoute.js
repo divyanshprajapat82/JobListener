@@ -7,6 +7,7 @@ const {
 	sendOTP,
 	resendOTP,
 	verifyOTP,
+	resetPassword,
 } = require("../../controllers/admin/adminAuthController");
 const { adminMiddleware } = require("../../middleware/adminMiddlewere");
 
@@ -18,5 +19,6 @@ adminAuthRoute.get("/me", adminMiddleware, getMe);
 adminAuthRoute.post("/send-otp", sendOTP);
 adminAuthRoute.post("/resend-otp", resendOTP);
 adminAuthRoute.post("/verify-otp", verifyOTP);
+adminAuthRoute.post("/reset-password", resetPassword);
 
 module.exports = { adminAuthRoute };

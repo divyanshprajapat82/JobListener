@@ -12,6 +12,8 @@ export default function ResetPassword() {
     const [email, setEmail] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [isSent, setIsSent] = useState(false);
+    const [error, setError] = useState(null)
+
 
     const router = useRouter();
 
@@ -22,7 +24,7 @@ export default function ResetPassword() {
         e.preventDefault();
 
         if (!email.trim()) {
-            toast.error("Email is required");
+            setError("Email is required");
             return;
         }
 
@@ -37,12 +39,12 @@ export default function ResetPassword() {
 
             if (response.data?.success) {
                 setIsSent(true);
-                toast.success(response.data.message || "Reset link sent to your email.");
+                setError(response.data.message || "Reset link sent to your email.");
             } else {
-                toast.error(response.data?.message || "Failed to process reset request.");
+                setError(response.data?.message || "Failed to process reset request.");
             }
         } catch (error) {
-            toast.error(
+            setError(
                 error.response?.data?.message || "Something went wrong while requesting reset."
             );
         } finally {
@@ -87,7 +89,7 @@ export default function ResetPassword() {
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#d00] to-transparent opacity-60"></div>
 
                     {/* Header */}
-                    {isSent ? (
+                    {!isSent ? (
                         <>
                             <div className="flex flex-col items-center mb-8">
                                 <div className="w-16 h-16 bg-gradient-to-br from-white to-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center mb-5 shadow-[0_4px_20px_rgba(221,0,0,0.08)]">
@@ -118,6 +120,12 @@ export default function ResetPassword() {
                                             className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:bg-white focus:border-[#d00] focus:ring-1 focus:ring-[#d00] outline-none transition-all duration-300 shadow-sm"
                                         />
                                     </div>
+                                    {error && (
+                                        <p className="mt-3 text-sm text-red-600" role="alert">
+                                            {error}
+                                            {/* Invalid or expired OTP */}
+                                        </p>
+                                    )}
                                 </div>
 
                                 {/* Submit Button */}

@@ -14,6 +14,7 @@ export default function AdminOTP({ email }) {
     const [countdown, setCountdown] = useState(10 * 60);
     const [canResend, setCanResend] = useState(false);
     const [isVerified, setIsVerified] = useState(false)
+    const [error, setError] = useState(null)
 
     const inputRefs = useRef([]);
     const router = useRouter();
@@ -91,16 +92,21 @@ export default function AdminOTP({ email }) {
             );
 
             if (response.data?.success) {
+                sessionStorage.setItem(
+                    "resetToken",
+                    response.data.resetToken
+                );
                 toast.success("Verification successful!");
                 setIsVerified(true)
                 // setTimeout(() => {
                 //     router.push("/admin/reset-password"); // Or wherever they go next
                 // }, 500);
             } else {
-                toast.error(response.data?.message || "Invalid or expired OTP");
+                setError(response.data?.message || "Invalid or expired OTP")
+                // toast.error(response.data?.message || "Invalid or expired OTP");
             }
         } catch (error) {
-            toast.error(
+            setError(
                 error.response?.data?.message || "Verification failed. Please try again."
             );
         } finally {
@@ -133,7 +139,7 @@ export default function AdminOTP({ email }) {
 
     return (
         <>
-            {isVerified ?
+            {!isVerified ?
                 <div className="w-full flex flex-col justify-center relative overflow-hidden font-sans text-slate-800">
                     <div >
                         <button
@@ -168,25 +174,33 @@ export default function AdminOTP({ email }) {
                             <p className='mt-1'>{email}</p>
                         </div>
 
-                        <form className="space-y-8" onSubmit={handleVerifyOTP}>
+                        <form className="space-y-5" onSubmit={handleVerifyOTP}>
                             {/* OTP Input Fields */}
-                            <div className="flex justify-between items-center gap-1 sm:gap-2">
-                                {otp.map((data, index) => (
-                                    <input
-                                        key={index}
-                                        type="text"
-                                        name="otp"
-                                        maxLength="1"
-                                        ref={(el) => (inputRefs.current[index] = el)}
-                                        value={data}
-                                        onChange={(e) => handleChange(e, index)}
-                                        onKeyDown={(e) => handleKeyDown(e, index)}
-                                        onPaste={handlePaste}
-                                        className="w-11 h-14 sm:w-12 sm:h-16 text-center text-xl sm:text-2xl font-bold bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-[#d00] focus:ring-2 focus:ring-[#d00]/20 outline-none transition-all duration-300 shadow-sm"
-                                        autoFocus={index === 0}
-                                    />
-                                ))}
+                            <div>
+                                <div className="flex justify-between items-center gap-1 sm:gap-2">
+                                    {otp.map((data, index) => (
+                                        <input
+                                            key={index}
+                                            type="text"
+                                            name="otp"
+                                            maxLength="1"
+                                            ref={(el) => (inputRefs.current[index] = el)}
+                                            value={data}
+                                            onChange={(e) => handleChange(e, index)}
+                                            onKeyDown={(e) => handleKeyDown(e, index)}
+                                            onPaste={handlePaste}
+                                            className="w-11 h-14 sm:w-12 sm:h-16 text-center text-xl sm:text-2xl font-bold bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:border-[#d00] focus:ring-2 focus:ring-[#d00]/20 outline-none transition-all duration-300 shadow-sm"
+                                            autoFocus={index === 0}
+                                        />
+                                    ))}
+                                </div>
+                                {error && (
+                                    <p className="mt-3 text-sm text-red-600" role="alert">
+                                        {error}
+                                    </p>
+                                )}
                             </div>
+
 
                             {/* Submit Button */}
                             <button

@@ -5,6 +5,7 @@ const { adminWelcomEmail } = require("../../config/adminWelcomEmail");
 const { hashOTP, generateOTP } = require("../../utility/otp");
 const { transporter } = require("../../utility/mail");
 const { mailOTP } = require("../../config/mailOTP");
+const crypto = require("crypto");
 
 // CREATE ADMIN
 const createAdmin = async (req, res) => {
@@ -676,7 +677,70 @@ const resendOTP = async (req, res) => {
 	}
 };
 
-// VERIFY OTP
+// const verifyOTP = async (req, res) => {
+// 	try {
+// 		const { email, otp } = req.body;
+
+// 		if (!email || !otp) {
+// 			return res.status(400).json({
+// 				success: false,
+// 				message: "Email and OTP are required",
+// 			});
+// 		}
+
+// 		if (!/^\d{6}$/.test(String(otp))) {
+// 			return res.status(400).json({
+// 				success: false,
+// 				message: "Please enter a valid 6-digit OTP",
+// 			});
+// 		}
+
+// 		const admin = await AdminModel.findOne({
+// 			email: email.toLowerCase().trim(),
+// 		});
+
+// 		if (!admin || !admin.isActive) {
+// 			return res.status(400).json({
+// 				success: false,
+// 				message: "Invalid or expired OTP",
+// 			});
+// 		}
+
+// 		// Check whether OTP exists and has not expired
+// 		if (!admin.otp || !admin.otpExpiresAt || admin.otpExpiresAt <= new Date()) {
+// 			return res.status(400).json({
+// 				success: false,
+// 				message: "OTP has expired. Please request a new one",
+// 			});
+// 		}
+
+// 		// Compare the hashed OTP
+// 		if (hashOTP(String(otp)) !== admin.otp) {
+// 			return res.status(400).json({
+// 				success: false,
+// 				message: "Incorrect OTP",
+// 			});
+// 		}
+
+// 		// OTP verified: invalidate it to prevent reuse
+// 		admin.otp = null;
+// 		admin.otpExpiresAt = null;
+// 		await admin.save();
+
+// 		return res.status(200).json({
+// 			success: true,
+// 			message: "OTP verified successfully",
+// 		});
+// 	} catch (error) {
+// 		console.error("Verify OTP Error:", error);
+
+// 		return res.status(500).json({
+// 			success: false,
+// 			message: "Failed to verify OTP",
+// 		});
+// 	}
+// };
+
 const verifyOTP = async (req, res) => {
 	try {
 		const { email, otp } = req.body;
@@ -722,14 +786,28 @@ const verifyOTP = async (req, res) => {
 			});
 		}
 
-		// OTP verified: invalidate it to prevent reuse
+		// Generate a secure reset token
+		const resetToken = crypto.randomBytes(32).toString("hex");
+
+		// Store only the hashed reset token
+		admin.resetPasswordToken = crypto
+			.createHash("sha256")
+			.update(resetToken)
+			.digest("hex");
+
+		// Token expires in 10 minutes
+		admin.resetPasswordExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+		// Invalidate OTP
 		admin.otp = null;
 		admin.otpExpiresAt = null;
+
 		await admin.save();
 
 		return res.status(200).json({
 			success: true,
 			message: "OTP verified successfully",
+			resetToken,
 		});
 	} catch (error) {
 		console.error("Verify OTP Error:", error);
@@ -737,6 +815,72 @@ const verifyOTP = async (req, res) => {
 		return res.status(500).json({
 			success: false,
 			message: "Failed to verify OTP",
+		});
+	}
+};
+
+const resetPassword = async (req, res) => {
+	try {
+		const { resetToken, password, confirmPassword } = req.body;
+
+		if (!resetToken || !password || !confirmPassword) {
+			return res.status(400).json({
+				success: false,
+				message: "All fields are required",
+			});
+		}
+
+		if (password.length < 8) {
+			return res.status(400).json({
+				success: false,
+				message: "Password must be at least 8 characters long",
+			});
+		}
+
+		if (password !== confirmPassword) {
+			return res.status(400).json({
+				success: false,
+				message: "Passwords do not match",
+			});
+		}
+
+		const hashedToken = crypto
+			.createHash("sha256")
+			.update(resetToken)
+			.digest("hex");
+
+		const admin = await AdminModel.findOne({
+			resetPasswordToken: hashedToken,
+			resetPasswordExpiresAt: { $gt: new Date() },
+			isActive: true,
+		});
+
+		if (!admin) {
+			return res.status(400).json({
+				success: false,
+				message: "Reset session is invalid or expired. Verify your OTP again.",
+			});
+		}
+
+		// Hash the new password
+		admin.password = await bcrypt.hash(password, 12);
+
+		// Invalidate the reset token
+		admin.resetPasswordToken = null;
+		admin.resetPasswordExpiresAt = null;
+
+		await admin.save();
+
+		return res.status(200).json({
+			success: true,
+			message: "Password reset successfully",
+		});
+	} catch (error) {
+		console.error("Reset Password Error:", error);
+
+		return res.status(500).json({
+			success: false,
+			message: "Failed to reset password",
 		});
 	}
 };
@@ -753,4 +897,5 @@ module.exports = {
 	sendOTP,
 	resendOTP,
 	verifyOTP,
+	resetPassword,
 };

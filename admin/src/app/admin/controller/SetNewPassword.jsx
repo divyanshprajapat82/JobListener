@@ -15,6 +15,8 @@ export default function SetNewPassword() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null)
+
 
     const router = useRouter();
     // If you are passing a token via URL: /admin/reset-password?token=xyz
@@ -37,19 +39,23 @@ export default function SetNewPassword() {
             return;
         }
 
-        if (formData.password !== formData.confirmPassword) {
-            toast.error("Passwords do not match");
-            return;
-        }
+        // if (formData.password !== formData.confirmPassword) {
+        //     toast.error("Passwords do not match");
+        //     return;
+        // }
+        const resetToken = sessionStorage.getItem("resetToken");
 
         try {
             setIsLoading(true);
 
             // Adjust endpoint and payload based on your backend (e.g., passing token or relying on session)
             const response = await axios.post(
-                `${process.env.NEXT_PUBLIC_APIURL}/admin-auth/set-new-password`,
+                `${process.env.NEXT_PUBLIC_APIURL}/admin-auth/reset-password`,
                 {
                     password: formData.password,
+                    confirmPassword: formData.confirmPassword,
+                    // formData,
+                    resetToken
                     // token: token 
                 },
                 { withCredentials: true }
@@ -58,13 +64,13 @@ export default function SetNewPassword() {
             if (response.data?.success) {
                 toast.success("Password updated successfully!");
                 setTimeout(() => {
-                    router.push("/admin/login");
+                    router.push("/");
                 }, 1000);
             } else {
-                toast.error(response.data?.message || "Failed to reset password");
+                setError(response.data?.message || "Failed to reset password");
             }
         } catch (error) {
-            toast.error(
+            setError(
                 error.response?.data?.message || "Something went wrong while resetting password"
             );
         } finally {
@@ -115,7 +121,7 @@ export default function SetNewPassword() {
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1 cursor-pointer"
                                 >
                                     {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
                                 </button>
@@ -144,7 +150,7 @@ export default function SetNewPassword() {
                                 <button
                                     type="button"
                                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1 cursor-pointer"
                                 >
                                     {showConfirmPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
                                 </button>
@@ -154,13 +160,20 @@ export default function SetNewPassword() {
                                     Passwords do not match
                                 </p>
                             )}
+                            {error && (
+                                <p className="mt-3 text-sm text-red-600" role="alert">
+                                    {error}
+                                    {/* Invalid or expired OTP */}
+                                </p>
+                            )}
                         </div>
+
 
                         {/* Submit Button */}
                         <button
                             type="submit"
                             disabled={isLoading || !formData.password || !formData.confirmPassword || formData.password !== formData.confirmPassword}
-                            className="w-full flex items-center justify-center bg-[#d00] hover:bg-[#b30000] text-white py-3.5 rounded-xl font-bold shadow-[0_4px_14px_rgba(221,0,0,0.25)] hover:shadow-[0_6px_20px_rgba(221,0,0,0.35)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-8"
+                            className="w-full flex items-center justify-center bg-[#d00] hover:bg-[#b30000] text-white py-3.5 rounded-xl font-bold shadow-[0_4px_14px_rgba(221,0,0,0.25)] hover:shadow-[0_6px_20px_rgba(221,0,0,0.35)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-8 cursor-pointer"
                         >
                             {isLoading ? (
                                 <span className="flex items-center gap-2">
