@@ -7,6 +7,7 @@ import { FaRegFolder } from "react-icons/fa6";
 import { BsBriefcase } from "react-icons/bs";
 import { usePathname } from "next/navigation";
 import { context } from "@/app/context/MainContext";
+import { PiUsersFourLight } from "react-icons/pi";
 
 export default function SideBar() {
   const pathName = usePathname();
@@ -39,7 +40,29 @@ export default function SideBar() {
                   <div className="absolute left-0 w-1 h-6 bg-red-600 rounded-r-full"></div>
                 )}
                 <AiOutlineAppstore className="w-5 h-5 transition-colors group-hover:text-red-500" />
-                <span className="hidden md:block">Overview</span>
+                <span className="hidden md:block">Dashboard</span>
+              </Link>
+
+              <Link
+                href="/admin/users"
+                className={`flex items-center space-x-3 px-4 py-3 ${pathName == "/admin/users" ? "bg-red-50 text-red-700" : " text-gray-500 hover:bg-gray-50 hover:text-gray-900"}  rounded-xl font-medium transition-all group relative`}
+              >
+                {pathName == "/admin/users" && (
+                  <div className="absolute left-0 w-1 h-6 bg-red-600 rounded-r-full"></div>
+                )}
+                <PiUsersFourLight className="w-5 h-5 transition-colors group-hover:text-red-500" />
+                <span className="hidden md:block">Users</span>
+              </Link>
+              <Link
+
+                href="/admin/employers"
+                className={`flex items-center space-x-3 px-4 py-3 ${pathName == "/admin/employers" ? "bg-red-50 text-red-700" : " text-gray-500 hover:bg-gray-50 hover:text-gray-900"}  rounded-xl font-medium transition-all group relative`}
+              >
+                {pathName == "/admin/employers" && (
+                  <div className="absolute left-0 w-1 h-6 bg-red-600 rounded-r-full"></div>
+                )}
+                <PiUsersFourLight className="w-5 h-5 transition-colors group-hover:text-red-500" />
+                <span className="hidden md:block">Employers</span>
               </Link>
 
               <Link
@@ -82,7 +105,8 @@ export default function SideBar() {
                 className="flex items-center space-x-3 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-900 rounded-xl font-medium transition-all group relative"
               >
                 <LuGalleryVerticalEnd className="w-4.5 h-4.5 transition-colors group-hover:text-red-500" />
-                <span>All Platform Jobs</span>
+                {/* <span>All Platform Jobs</span> */}
+                <span>Notifications</span>
               </a>
             </div>
 
