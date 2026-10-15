@@ -1,7 +1,9 @@
 "use client";
+import axios from "axios";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
+import { toast } from "sonner";
 
 export default function AdminPage() {
   // Mock data for platform administrators
@@ -42,6 +44,39 @@ export default function AdminPage() {
       status: "active",
     },
   ];
+
+  const [admins, setAdmins] = useState([])
+
+  const ADMIN_APIURL = process.env.NEXT_PUBLIC_APIURL;
+
+
+  const getAdmins = () => {
+    // setLoading(true);
+    axios
+      .get(`${ADMIN_APIURL}/admin-auth/get-admins`)
+      .then((res) => res.data)
+      .then((finalData) => {
+        if (finalData.success) {
+          setAdmins(finalData.data);
+        } else {
+          toast.error(finalData.message);
+        }
+      })
+      .catch((err) => {
+        if (err.response) {
+          toast.error(err.response.finalData.message);
+        } else {
+          toast.error("Something went wrong");
+        }
+      })
+    // .finally(() => {
+    //   setLoading(false);
+    // });
+  };
+
+  useEffect(() => {
+    getAdmins()
+  }, [])
 
   return (
     <div className="flex-1 overflow-y-auto p-8 bg-[#fafafa]">
@@ -131,7 +166,7 @@ export default function AdminPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {platformAdmins.map((admin) => (
+              {admins.map((admin) => (
                 <tr
                   key={admin.id}
                   className="hover:bg-gray-50/30 transition-colors group"
@@ -157,13 +192,12 @@ export default function AdminPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span
-                      className={`px-3 py-1 rounded-full text-[11px] font-bold border flex w-max items-center gap-1.5 ${
-                        admin.status === "active"
-                          ? "text-green-700 bg-green-50 border-green-200"
-                          : admin.status === "Pending Review"
-                            ? "text-amber-700 bg-amber-50 border-amber-200"
-                            : "text-gray-600 bg-gray-50 border-gray-200"
-                      }`}
+                      className={`px-3 py-1 rounded-full text-[11px] font-bold border flex w-max items-center gap-1.5 ${admin.status === "active"
+                        ? "text-green-700 bg-green-50 border-green-200"
+                        : admin.status === "Pending Review"
+                          ? "text-amber-700 bg-amber-50 border-amber-200"
+                          : "text-gray-600 bg-gray-50 border-gray-200"
+                        }`}
                     >
                       <span
                         className={`w-1.5 h-1.5 rounded-full ${admin.status === "active" ? "bg-green-500" : admin.status === "inActive Review" ? "bg-amber-500" : "bg-gray-400"}`}

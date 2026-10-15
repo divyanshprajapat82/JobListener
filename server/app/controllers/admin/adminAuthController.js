@@ -187,6 +187,24 @@ const adminLogin = async (req, res) => {
 	}
 };
 
+const getAdmins = async (req, res) => {
+	try {
+		const admin = await AdminModel.find().select("-password");
+
+		return res.status(200).json({
+			success: true,
+			data: admin,
+		});
+	} catch (error) {
+		console.error("Get Admin Error:", error);
+
+		return res.status(500).json({
+			success: false,
+			message: "Failed to get admin",
+		});
+	}
+};
+
 // GET CURRENT ADMIN
 const getMe = async (req, res) => {
 	try {
@@ -892,6 +910,7 @@ const resetPassword = async (req, res) => {
 module.exports = {
 	createAdmin,
 	adminLogin,
+	getAdmins,
 	getMe,
 	adminLogout,
 	sendOTP,
