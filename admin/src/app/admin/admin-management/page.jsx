@@ -74,6 +74,43 @@ export default function AdminPage() {
     // });
   };
 
+  const getLocalTimeAgo = (date) => {
+    const now = new Date();
+    const posted = new Date(date);
+
+    const seconds = Math.floor((now - posted) / 1000);
+
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (seconds < 60) {
+      return "Just now";
+    }
+
+    if (minutes < 60) {
+      return `${minutes} min ago`;
+    }
+
+    if (hours < 24) {
+      return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+    }
+
+    if (days === 1) {
+      return "Yesterday";
+    }
+
+    if (days < 7) {
+      return `${days} days ago`;
+    }
+
+    return posted.toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
   useEffect(() => {
     getAdmins()
   }, [])
@@ -184,11 +221,13 @@ export default function AdminPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span className="bg-gray-100 text-gray-600 px-2.5 py-1 rounded-md text-xs font-semibold border border-gray-200 ">
-                      {admin.role}
+                      {admin?.role == "super-admin" && "Super Admin" || admin?.role == "job-moderator" && "Job Moderator" || admin?.role == "support-agent" && "Support Agent"}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <p className="line-clamp-1">{admin.email}</p>
+                    <p className="text-gray-400 text-xs mt-0.5">{getLocalTimeAgo(admin.createdAt)}</p>
+
                   </td>
                   <td className="px-6 py-4">
                     <span
@@ -200,9 +239,9 @@ export default function AdminPage() {
                         }`}
                     >
                       <span
-                        className={`w-1.5 h-1.5 rounded-full ${admin.status === "active" ? "bg-green-500" : admin.status === "inActive Review" ? "bg-amber-500" : "bg-gray-400"}`}
+                        className={`w-1.5 h-1.5 rounded-full ${admin.isActive == true ? "bg-green-500" : "bg-gray-400"}`}
                       ></span>
-                      {admin.status}
+                      {admin.isActive ? "Active" : "inActive"}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">

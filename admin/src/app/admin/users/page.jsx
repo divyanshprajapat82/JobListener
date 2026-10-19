@@ -14,33 +14,36 @@ import {
     FaUserCircle
 } from 'react-icons/fa';
 import { toast } from 'sonner';
+import { context } from '@/app/context/MainContext';
 
 // Mock Data for demonstration
-const mockUsers = [
-    { id: 1, name: "Alex Carter", email: "alex@joblistener.com", role: "Admin", status: "Active", joined: "Oct 12, 2026" },
-    { id: 2, name: "Sarah Jenkins", email: "sarah.j@example.com", role: "User", status: "Active", joined: "Oct 10, 2026" },
-    { id: 3, name: "Michael Chen", email: "m.chen@example.com", role: "User", status: "Inactive", joined: "Sep 28, 2026" },
-    { id: 4, name: "Emma Wilson", email: "emma.w@example.com", role: "Moderator", status: "Active", joined: "Sep 15, 2026" },
-    { id: 5, name: "James Rodriguez", email: "james.r@example.com", role: "User", status: "Suspended", joined: "Aug 02, 2026" },
-];
+// const mockUsers = [
+//     { id: 1, name: "Alex Carter", email: "alex@joblistener.com", role: "Admin", status: "Active", joined: "Oct 12, 2026" },
+//     { id: 2, name: "Sarah Jenkins", email: "sarah.j@example.com", role: "User", status: "Active", joined: "Oct 10, 2026" },
+//     { id: 3, name: "Michael Chen", email: "m.chen@example.com", role: "User", status: "Inactive", joined: "Sep 28, 2026" },
+//     { id: 4, name: "Emma Wilson", email: "emma.w@example.com", role: "Moderator", status: "Active", joined: "Sep 15, 2026" },
+//     { id: 5, name: "James Rodriguez", email: "james.r@example.com", role: "User", status: "Suspended", joined: "Aug 02, 2026" },
+// ];
 
-export default function PremiumAdminUsers() {
-    const [users, setUsers] = useState([]);
+export default function Users() {
+    // const [users, setUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const [isLoading, setIsLoading] = useState(true);
+    // const [isLoading, setIsLoading] = useState(true);
+    const { users, isUserLoading } = context();
+
 
     // Simulate API load
-    useEffect(() => {
-        const fetchUsers = async () => {
-            setIsLoading(true);
-            // Simulate network delay
-            setTimeout(() => {
-                setUsers(mockUsers);
-                setIsLoading(false);
-            }, 800);
-        };
-        fetchUsers();
-    }, []);
+    // useEffect(() => {
+    //     const fetchUsers = async () => {
+    //         setIsLoading(true);
+    //         // Simulate network delay
+    //         setTimeout(() => {
+    //             setUsers(mockUsers);
+    //             setIsLoading(false);
+    //         }, 800);
+    //     };
+    //     fetchUsers();
+    // }, []);
 
     const handleDelete = (id, name) => {
         if (window.confirm(`Are you sure you want to delete ${name}?`)) {
@@ -53,6 +56,43 @@ export default function PremiumAdminUsers() {
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const getLocalTimeAgo = (date) => {
+        const now = new Date();
+        const posted = new Date(date);
+
+        const seconds = Math.floor((now - posted) / 1000);
+
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+
+        if (seconds < 60) {
+            return "Just now";
+        }
+
+        if (minutes < 60) {
+            return `${minutes} min ago`;
+        }
+
+        if (hours < 24) {
+            return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+        }
+
+        if (days === 1) {
+            return "Yesterday";
+        }
+
+        if (days < 7) {
+            return `${days} days ago`;
+        }
+
+        return posted.toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+        });
+    };
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-800 pb-12">
@@ -119,13 +159,14 @@ export default function PremiumAdminUsers() {
                                 <tr className="bg-slate-50/50 border-b border-slate-100">
                                     <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">User</th>
                                     <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Role</th>
-                                    <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                                    {/* <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th> */}
+                                    <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Updated Date</th>
                                     <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Joined Date</th>
                                     <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
-                                {isLoading ? (
+                                {isUserLoading ? (
                                     /* Loading State */
                                     [...Array(4)].map((_, i) => (
                                         <tr key={i} className="animate-pulse">
@@ -170,7 +211,7 @@ export default function PremiumAdminUsers() {
                                                     {user.role}
                                                 </span>
                                             </td>
-                                            <td className="py-4 px-6">
+                                            {/* <td className="py-4 px-6">
                                                 <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${user.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
                                                     user.status === 'Suspended' ? 'bg-rose-50 text-rose-700 border border-rose-200' :
                                                         'bg-slate-100 text-slate-600 border border-slate-200'
@@ -181,15 +222,20 @@ export default function PremiumAdminUsers() {
                                                         }`}></span>
                                                     {user.status}
                                                 </span>
+                                            </td> */}
+                                            <td className="py-4 px-6 text-sm font-medium text-slate-500">
+                                                {/* {user.joined} */}
+                                                {getLocalTimeAgo(user.createdAt)}
                                             </td>
                                             <td className="py-4 px-6 text-sm font-medium text-slate-500">
-                                                {user.joined}
+                                                {/* {user.joined} */}
+                                                {getLocalTimeAgo(user.updatedAt)}
                                             </td>
                                             <td className="py-4 px-6 text-right">
                                                 <div className="flex items-center justify-end gap-2">
-                                                    <button className="p-2 text-slate-400 hover:text-[#d00] hover:bg-red-50 rounded-lg transition-colors" title="Edit User">
+                                                    {/* <button className="p-2 text-slate-400 hover:text-[#d00] hover:bg-red-50 rounded-lg transition-colors" title="Edit User">
                                                         <FaEdit size={16} />
-                                                    </button>
+                                                    </button> */}
                                                     <button
                                                         onClick={() => handleDelete(user.id, user.name)}
                                                         className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"

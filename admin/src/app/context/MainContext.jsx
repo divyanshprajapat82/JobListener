@@ -10,6 +10,7 @@ export const MainContext = ({ children }) => {
   const [admin, setAdmin] = useState(null)
   const [jobs, setJobs] = useState([]);
   const [users, setUsers] = useState([]);
+  const [isUserLoading, setIsUserLoading] = useState(true);
 
 
   const ADMIN_APIURL = process.env.NEXT_PUBLIC_APIURL;
@@ -59,6 +60,7 @@ export const MainContext = ({ children }) => {
 
   const getUsers = () => {
     // setLoading(true);
+    setIsUserLoading(true)
     axios
       .get(`${APIURL}/auth/view`, {
         // params: {
@@ -83,6 +85,7 @@ export const MainContext = ({ children }) => {
       .then((finalData) => {
         if (finalData.success) {
           setUsers(finalData.data);
+          setIsUserLoading(false)
         } else {
           toast.error(finalData.message);
         }
@@ -157,7 +160,7 @@ export const MainContext = ({ children }) => {
     getUsers()
   }, []);
   return (
-    <Context.Provider value={{ admin, geCategorytData, categoryData, users, jobs }}>
+    <Context.Provider value={{ admin, geCategorytData, categoryData, users, jobs, isUserLoading }}>
       {children}
     </Context.Provider>
   );
