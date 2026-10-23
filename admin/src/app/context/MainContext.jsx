@@ -11,10 +11,23 @@ export const MainContext = ({ children }) => {
   const [jobs, setJobs] = useState([]);
   const [users, setUsers] = useState([]);
   const [isUserLoading, setIsUserLoading] = useState(true);
+  const [userRoleFilter, setUserRoleFilter] = useState("")
+  const [userSearchFilter, setUserSearchFilter] = useState("");
+  const [search, setSearch] = useState("")
+  const [categoryFilter, setCategoryFilter] = useState("")
+  const [status, setStatus] = useState("")
+  const [isJobLoading, setIsJobLoading] = useState(true)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalJobs, setTotalJobs] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
 
 
   const ADMIN_APIURL = process.env.NEXT_PUBLIC_APIURL;
   const APIURL = process.env.NEXT_PUBLIC_CLIENT_APIURL;
+
+
 
   const geCategorytData = () => {
     axios
@@ -63,23 +76,10 @@ export const MainContext = ({ children }) => {
     setIsUserLoading(true)
     axios
       .get(`${APIURL}/auth/view`, {
-        // params: {
-        //   search,
-        //   location,
-        //   categoryFilter,
-        //   jobType,
-        //   status,
-        //   workPlace,
-        //   experienceFilter,
-        //   datePostedFilter,
-        //   minSalary,
-        //   maxSalary,
-        //   tag,
-        //   sortBy,
-        //   page: currentPage,
-        //   limit: limit,
-        //   // jobType: jobType ? true : "",
-        // }
+        params: {
+          userRoleFilter,
+          userSearchFilter
+        }
       })
       .then((res) => res.data)
       .then((finalData) => {
@@ -103,36 +103,23 @@ export const MainContext = ({ children }) => {
   };
 
   const getjob = () => {
-    // setLoading(true);
+    setIsJobLoading(true);
     axios
       .get(`${APIURL}/job/view-job`, {
-        // params: {
-        //   search,
-        //   location,
-        //   categoryFilter,
-        //   jobType,
-        //   status,
-        //   workPlace,
-        //   experienceFilter,
-        //   datePostedFilter,
-        //   minSalary,
-        //   maxSalary,
-        //   tag,
-        //   sortBy,
-        //   page: currentPage,
-        //   limit: limit,
-        //   // jobType: jobType ? true : "",
-        // }
+        params: {
+          search,
+          categoryFilter,
+          status,
+          view: "admin",
+        }
       })
       .then((res) => res.data)
       .then((finalData) => {
         if (finalData.success) {
           setJobs(finalData.data);
-
-          // setCurrentPage(finalData.pagination.currentPage);
-          // setTotalJobs(finalData.pagination.totalJobs);
-          // setTotalPages(finalData.pagination.totalPages);
-          console.log(finalData.data);
+          setCurrentPage(finalData.pagination.currentPage);
+          setTotalJobs(finalData.pagination.totalJobs);
+          setTotalPages(finalData.pagination.totalPages);
         } else {
           toast.error(finalData.message);
         }
@@ -144,9 +131,9 @@ export const MainContext = ({ children }) => {
           toast.error("Something went wrong");
         }
       })
-    // .finally(() => {
-    //   setLoading(false);
-    // });
+      .finally(() => {
+        setIsJobLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -156,11 +143,39 @@ export const MainContext = ({ children }) => {
 
   useEffect(() => {
     geCategorytData();
-    getjob()
-    getUsers()
+    // getjob()
+    // console.log("userRoleFilter", userRoleFilter);
+
   }, []);
+
+  useEffect(() => {
+    getjob()
+  }, [search, categoryFilter, status, currentPage])
+
+  useEffect(() => {
+    getUsers()
+  }, [userRoleFilter, userSearchFilter])
+
   return (
-    <Context.Provider value={{ admin, geCategorytData, categoryData, users, jobs, isUserLoading }}>
+    <Context.Provider
+      value={{
+        admin,
+        geCategorytData,
+        categoryData,
+        users,
+        jobs,
+        isUserLoading,
+        userRoleFilter, setUserRoleFilter,
+        userSearchFilter, setUserSearchFilter,
+        isJobLoading,
+        search, setSearch,
+        categoryFilter, setCategoryFilter,
+        status, setStatus,
+        currentPage, setCurrentPage,
+        limit, setLimit,
+        totalJobs,
+        totalPages,
+      }}>
       {children}
     </Context.Provider>
   );

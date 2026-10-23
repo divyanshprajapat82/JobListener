@@ -40,7 +40,7 @@ export const MainContext = ({ children }) => {
   const [notifications, setNotifications] = useState([])
   const [count, setCount] = useState()
   const [activeFilter, setActiveFilter] = useState(null);
-  
+
 
 
   // const [appliedCandidate, setAppliedCandidate] = useState([])
@@ -244,6 +244,7 @@ export const MainContext = ({ children }) => {
           sortBy,
           page: currentPage,
           limit: limit,
+          view: "client",
           // jobType: jobType ? true : "",
         }
       })

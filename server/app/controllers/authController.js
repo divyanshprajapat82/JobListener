@@ -69,24 +69,42 @@ let register = async (req, res) => {
 	}
 };
 
-let UserView = async (req, res) => {
+const UserView = async (req, res) => {
 	try {
-		const data = await UserModel.aggregate([
-			{
-				$addFields: {
-					latestActivity: {
-						$max: ["$createdAt", "$updatedAt"],
+		const { userRoleFilter, userSearchFilter } = req.query;
+
+		const filter = {};
+
+		if (userSearchFilter) {
+			filter.$or = [
+				{
+					name: {
+						$regex: userSearchFilter,
+						$options: "i",
 					},
 				},
-			},
-			{ $sort: { latestActivity: -1 } },
-			{
-				$project: {
-					password: 0,
+				{
+					email: {
+						$regex: userSearchFilter,
+						$options: "i",
+					},
 				},
-			},
-		]);
-		res.send({ success: true, message: "Users", data });
+			];
+		}
+
+		if (userRoleFilter) {
+			filter.role = userRoleFilter;
+		}
+
+		const data = await UserModel.find(filter)
+			.sort({ createdAt: -1 })
+			.select("-password");
+
+		res.status(200).json({
+			success: true,
+			message: "Users fetched successfully",
+			data,
+		});
 	} catch (error) {
 		res.status(500).json({
 			success: false,

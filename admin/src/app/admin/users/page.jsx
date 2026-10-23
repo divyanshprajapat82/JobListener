@@ -29,7 +29,7 @@ export default function Users() {
     // const [users, setUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     // const [isLoading, setIsLoading] = useState(true);
-    const { users, isUserLoading } = context();
+    const { users, isUserLoading, userRoleFilter, setUserRoleFilter, userSearchFilter, setUserSearchFilter } = context();
 
 
     // Simulate API load
@@ -52,10 +52,10 @@ export default function Users() {
         }
     };
 
-    const filteredUsers = users.filter(user =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // const filteredUsers = users.filter(user =>
+    //     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //     user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    // );
 
     const getLocalTimeAgo = (date) => {
         const now = new Date();
@@ -94,19 +94,22 @@ export default function Users() {
         });
     };
 
+    // console.log("userRoleFilter", userRoleFilter);
+
+
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-800 pb-12">
 
             {/* --- BACKGROUND EFFECTS --- */}
-            <div
+            {/* <div
                 className="fixed inset-0 z-0 pointer-events-none"
                 style={{
                     backgroundImage:
                         "linear-gradient(to right, #00000005 1px, transparent 1px), linear-gradient(to bottom, #00000005 1px, transparent 1px)",
                     backgroundSize: "32px 32px",
                 }}
-            />
-            <div className="fixed top-0 right-0 w-full max-w-3xl h-96 bg-red-600/5 blur-3xl rounded-full pointer-events-none" />
+            /> */}
+            {/* <div className="fixed top-0 right-0 w-full max-w-3xl h-96 bg-red-600/5 blur-3xl rounded-full pointer-events-none" /> */}
 
             {/* --- DASHBOARD CONTENT --- */}
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
@@ -121,10 +124,10 @@ export default function Users() {
                             View, manage, and assign roles to system users.
                         </p>
                     </div>
-                    <button className="flex items-center justify-center gap-2 bg-[#d00] hover:bg-[#b30000] text-white py-2.5 px-5 rounded-xl font-bold shadow-[0_4px_14px_rgba(221,0,0,0.25)] hover:shadow-[0_6px_20px_rgba(221,0,0,0.35)] transition-all duration-300">
+                    {/* <button className="flex items-center justify-center gap-2 bg-[#d00] hover:bg-[#b30000] text-white py-2.5 px-5 rounded-xl font-bold shadow-[0_4px_14px_rgba(221,0,0,0.25)] hover:shadow-[0_6px_20px_rgba(221,0,0,0.35)] transition-all duration-300">
                         <FaUserPlus size={16} />
                         Add New User
-                    </button>
+                    </button> */}
                 </div>
 
                 {/* --- MAIN CARD --- */}
@@ -139,17 +142,33 @@ export default function Users() {
                             <input
                                 type="text"
                                 placeholder="Search users by name or email..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
+                                value={userSearchFilter}
+                                onChange={(e) => setUserSearchFilter(e.target.value)}
                                 className="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:bg-white focus:border-[#d00] focus:ring-1 focus:ring-[#d00] outline-none transition-all duration-300 shadow-sm"
                             />
                         </div>
 
                         {/* Filter Button */}
-                        <button className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 py-2.5 px-4 rounded-xl font-semibold transition-all duration-300 shadow-sm">
+                        {/* <button className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 py-2.5 px-4 rounded-xl font-semibold transition-all duration-300 shadow-sm">
                             <FaFilter size={14} className="text-slate-400" />
                             Filters
-                        </button>
+                        </button> */}
+                        {/* <div className="flex flex-wrap gap-3 w-full lg:w-auto">
+                            <select className="bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-lg focus:ring-red-500 focus:border-red-500 p-2.5 outline-none cursor-pointer flex-1 sm:flex-none">
+                                <option>All Categories</option>
+                                <option>Frontend Dev</option>
+                                <option>Backend Eng</option>
+                                <option>UI/UX Design</option>
+                            </select> */}
+                        <select value={userRoleFilter} onChange={(e) => setUserRoleFilter(e.target.value)} className="bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-lg focus:ring-red-500 focus:border-red-500 p-2.5 outline-none cursor-pointer flex-1 sm:flex-none">
+                            <option value="">All Roles</option>
+                            <option value="jobseeker">Jobseeker</option>
+                            <option value="employer">Employer</option>
+                            {/* <option>Pending Review</option>
+                            <option>Closed</option> */}
+                        </select>
+                        {/* </div> */}
+                        {/* </div> */}
                     </div>
 
                     {/* Table Container */}
@@ -160,8 +179,8 @@ export default function Users() {
                                     <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">User</th>
                                     <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Role</th>
                                     {/* <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th> */}
-                                    <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Updated Date</th>
                                     <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Joined Date</th>
+                                    <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Updated Date</th>
                                     <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
                                 </tr>
                             </thead>
@@ -177,19 +196,19 @@ export default function Users() {
                                             <td className="py-4 px-6 text-right"><div className="h-8 w-16 bg-slate-100 rounded-lg ml-auto"></div></td>
                                         </tr>
                                     ))
-                                ) : filteredUsers.length === 0 ? (
+                                ) : users.length === 0 ? (
                                     /* Empty State */
                                     <tr>
                                         <td colSpan="5" className="py-12 text-center">
                                             <div className="flex flex-col items-center justify-center text-slate-400">
                                                 <FaSearch size={32} className="mb-3 text-slate-300" />
-                                                <p className="text-sm font-medium">No users found matching "{searchTerm}"</p>
+                                                <p className="text-sm font-medium">No users found matching "{userSearchFilter}"</p>
                                             </div>
                                         </td>
                                     </tr>
                                 ) : (
                                     /* Data Rows */
-                                    filteredUsers.map((user) => (
+                                    users.map((user) => (
                                         <tr key={user.id} className="hover:bg-slate-50/80 transition-colors group">
                                             <td className="py-4 px-6">
                                                 <div className="flex items-center gap-3">
@@ -255,7 +274,7 @@ export default function Users() {
                     {/* Pagination */}
                     <div className="p-4 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
                         <p className="text-xs font-medium text-slate-500">
-                            Showing <span className="font-bold text-slate-900">{filteredUsers.length}</span> of <span className="font-bold text-slate-900">{users.length}</span> results
+                            Showing <span className="font-bold text-slate-900">{users.length}</span> of <span className="font-bold text-slate-900">{users.length}</span> results
                         </p>
                         <div className="flex items-center gap-1">
                             <button className="p-2 border border-slate-200 rounded-lg text-slate-400 hover:bg-white hover:text-slate-700 transition-colors disabled:opacity-50" disabled>
@@ -276,6 +295,6 @@ export default function Users() {
                 </div>
 
             </div>
-        </div>
+        </div >
     );
 }

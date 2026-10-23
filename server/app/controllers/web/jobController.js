@@ -78,165 +78,387 @@ const addjob = async (req, res) => {
 	}
 };
 
+// const getJob = async (req, res) => {
+// 	const {
+// 		search,
+// 		location,
+// 		categoryFilter,
+// 		status,
+// 		jobType,
+// 		workPlace,
+// 		experienceFilter,
+// 		datePostedFilter,
+// 		minSalary,
+// 		maxSalary,
+// 		tag,
+// 		sortBy,
+// 		page = 1,
+// 		limit = 5,
+// 	} = req.query;
+
+// 	let filter = {};
+
+// 	if (search) {
+// 		filter.title = {
+// 			$regex: search,
+// 			$options: "i",
+// 		};
+// 	}
+
+// 	if (location) {
+// 		filter.location = {
+// 			$regex: location,
+// 			$options: "i",
+// 		};
+// 	}
+
+// 	if (categoryFilter) {
+// 		filter.category = categoryFilter;
+// 	}
+
+// 	if (status) {
+// 		filter.status = status;
+// 	}
+
+// 	if (jobType) {
+// 		filter.jobType = jobType;
+// 	}
+
+// 	if (workPlace) {
+// 		filter.workPlace = workPlace;
+// 	}
+
+// 	if (experienceFilter) {
+// 		filter.expLevel = experienceFilter;
+// 	}
+
+// 	if (datePostedFilter) {
+// 		const now = new Date();
+// 		let startDate = new Date();
+
+// 		if (datePostedFilter === "Today") {
+// 			startDate.setHours(0, 0, 0, 0);
+// 		}
+
+// 		if (datePostedFilter === "Last 3 days") {
+// 			startDate.setDate(now.getDate() - 3);
+// 		}
+
+// 		if (datePostedFilter === "Last 7 days") {
+// 			startDate.setDate(now.getDate() - 7);
+// 		}
+
+// 		if (datePostedFilter === "Last 30 days") {
+// 			startDate.setDate(now.getDate() - 40);
+// 		}
+
+// 		if (datePostedFilter === "Last 90 days") {
+// 			startDate.setDate(now.getDate() - 40);
+// 		}
+// 	}
+
+// 	if (minSalary || maxSalary) {
+// 		filter.minSalary = {};
+
+// 		if (minSalary) {
+// 			filter.minSalary.$gte = Number(minSalary);
+// 		}
+
+// 		if (maxSalary) {
+// 			filter.minSalary.$lte = Number(maxSalary);
+// 		}
+// 	}
+
+// 	// if (tag) {
+// 	// 	filter.tags = tag;
+// 	// 	filter.skills = tag;
+// 	// }
+
+// 	if (tag) {
+// 		filter.$or = [{ tags: tag }, { technicalSkills: tag }];
+// 	}
+
+// 	// filter.status = { $ne: ["Draft", "Closed"] };
+// 	// filter.status = { $ne: "Closed" };
+
+// 	filter.status = { $nin: ["Draft", "Closed"] };
+
+// 	let sort = { createdAt: -1 };
+
+// 	if (sortBy === "oldest") {
+// 		sort = { createdAt: 1 };
+// 	}
+
+// 	if (sortBy === "salary-high") {
+// 		sort = { maxSalary: -1 };
+// 	}
+
+// 	if (sortBy === "salary-low") {
+// 		sort = { minSalary: 1 };
+// 	}
+
+// 	if (sortBy === "newest") {
+// 		sort = { createdAt: -1 };
+// 	}
+
+// 	//  if(search && search.trim()){
+// 	//   filter.title = {
+// 	//     $regex: search.trim(),
+// 	//     $options: "i",
+// 	//   }
+// 	// }
+
+// 	const currentPage = Math.max(Number(page) || 1, 1);
+// 	const itemsPerPage = Math.max(Number(limit) || 5, 1);
+
+// 	const skip = (currentPage - 1) * itemsPerPage;
+
+// 	// Total jobs after filters
+// 	const totalJobs = await JobModel.countDocuments(filter);
+
+// 	const totalPages = Math.ceil(totalJobs / itemsPerPage);
+
+// 	const data = await JobModel.find(filter)
+// 		// .sort({ createdAt: -1 })
+// 		.sort(sort)
+// 		.skip(skip)
+// 		.limit(itemsPerPage)
+// 		.populate("userId")
+// 		.populate("employer")
+// 		.populate("category");
+// 	res.json({
+// 		success: true,
+// 		message: "Jobs",
+// 		data,
+// 		pagination: {
+// 			currentPage,
+// 			limit: itemsPerPage,
+// 			totalJobs,
+// 			totalPages,
+// 		},
+// 	});
+// };
+
 const getJob = async (req, res) => {
-	const {
-		search,
-		location,
-		categoryFilter,
-		status,
-		jobType,
-		workPlace,
-		experienceFilter,
-		datePostedFilter,
-		minSalary,
-		maxSalary,
-		tag,
-		sortBy,
-		page = 1,
-		limit = 5,
-	} = req.query;
+	try {
+		const {
+			search,
+			location,
+			categoryFilter,
+			status,
+			jobType,
+			workPlace,
+			experienceFilter,
+			datePostedFilter,
+			minSalary,
+			maxSalary,
+			tag,
+			sortBy,
+			page = 1,
+			limit = 5,
+		} = req.query;
 
-	let filter = {};
+		const filter = {};
 
-	if (search) {
-		filter.title = {
-			$regex: search,
-			$options: "i",
-		};
-	}
-
-	if (location) {
-		filter.location = {
-			$regex: location,
-			$options: "i",
-		};
-	}
-
-	if (categoryFilter) {
-		filter.category = categoryFilter;
-	}
-
-	if (status) {
-		filter.status = status;
-	}
-
-	if (jobType) {
-		filter.jobType = jobType;
-	}
-
-	if (workPlace) {
-		filter.workPlace = workPlace;
-	}
-
-	if (experienceFilter) {
-		filter.expLevel = experienceFilter;
-	}
-
-	if (datePostedFilter) {
-		const now = new Date();
-		let startDate = new Date();
-
-		if (datePostedFilter === "Today") {
-			startDate.setHours(0, 0, 0, 0);
+		// Search by job title
+		if (search?.trim()) {
+			filter.title = {
+				$regex: search.trim(),
+				$options: "i",
+			};
 		}
 
-		if (datePostedFilter === "Last 3 days") {
-			startDate.setDate(now.getDate() - 3);
+		// Filter by location
+		if (location?.trim()) {
+			filter.location = {
+				$regex: location.trim(),
+				$options: "i",
+			};
 		}
 
-		if (datePostedFilter === "Last 7 days") {
-			startDate.setDate(now.getDate() - 7);
+		// Filter by category
+		if (categoryFilter) {
+			filter.category = categoryFilter;
 		}
 
-		if (datePostedFilter === "Last 30 days") {
-			startDate.setDate(now.getDate() - 40);
+		// Filter by status
+		// If status is selected, use that status.
+		// Otherwise, hide Draft and Closed jobs.
+		// if (status) {
+		// 	filter.status = status;
+		// } else {
+		// 	filter.status = {
+		// 		$nin: ["Draft", "Closed"],
+		// 	};
+		// }
+
+		const { view } = req.query;
+
+		// Admin: show all jobs by default.
+		// Client: show only Active jobs by default.
+		if (status) {
+			filter.status = status;
+		} else if (view === "admin") {
+			// No status filter: admin can see all jobs.
+		} else {
+			filter.status = "Active";
 		}
 
-		if (datePostedFilter === "Last 90 days") {
-			startDate.setDate(now.getDate() - 40);
-		}
-	}
-
-	if (minSalary || maxSalary) {
-		filter.minSalary = {};
-
-		if (minSalary) {
-			filter.minSalary.$gte = Number(minSalary);
+		// Filter by job type
+		if (jobType) {
+			filter.jobType = jobType;
 		}
 
-		if (maxSalary) {
-			filter.minSalary.$lte = Number(maxSalary);
+		// Filter by workplace
+		if (workPlace) {
+			filter.workPlace = workPlace;
 		}
+
+		// Filter by experience level
+		if (experienceFilter) {
+			filter.expLevel = experienceFilter;
+		}
+
+		// Filter by date posted
+		if (datePostedFilter) {
+			const now = new Date();
+			let startDate = null;
+
+			switch (datePostedFilter) {
+				case "Today":
+					startDate = new Date(now);
+					startDate.setHours(0, 0, 0, 0);
+					break;
+
+				case "Last 3 days":
+					startDate = new Date(now);
+					startDate.setDate(startDate.getDate() - 3);
+					break;
+
+				case "Last 7 days":
+					startDate = new Date(now);
+					startDate.setDate(startDate.getDate() - 7);
+					break;
+
+				case "Last 30 days":
+					startDate = new Date(now);
+					startDate.setDate(startDate.getDate() - 30);
+					break;
+
+				case "Last 90 days":
+					startDate = new Date(now);
+					startDate.setDate(startDate.getDate() - 90);
+					break;
+
+				default:
+					break;
+			}
+
+			if (startDate) {
+				filter.createdAt = {
+					$gte: startDate,
+					$lte: now,
+				};
+			}
+		}
+
+		// Filter by salary range
+		const salaryMin =
+			minSalary !== undefined && minSalary !== "" ? Number(minSalary) : null;
+
+		const salaryMax =
+			maxSalary !== undefined && maxSalary !== "" ? Number(maxSalary) : null;
+
+		if (
+			(salaryMin !== null && Number.isFinite(salaryMin)) ||
+			(salaryMax !== null && Number.isFinite(salaryMax))
+		) {
+			filter.minSalary = {};
+
+			if (salaryMin !== null && Number.isFinite(salaryMin)) {
+				filter.minSalary.$gte = salaryMin;
+			}
+
+			if (salaryMax !== null && Number.isFinite(salaryMax)) {
+				filter.minSalary.$lte = salaryMax;
+			}
+		}
+
+		// Filter by tag or technical skill
+		if (tag?.trim()) {
+			filter.$or = [{ tags: tag.trim() }, { technicalSkills: tag.trim() }];
+		}
+
+		// Sorting
+		let sort = { createdAt: -1 };
+
+		switch (sortBy) {
+			case "oldest":
+				sort = { createdAt: 1 };
+				break;
+
+			case "salary-high":
+				sort = { maxSalary: -1 };
+				break;
+
+			case "salary-low":
+				sort = { minSalary: 1 };
+				break;
+
+			case "newest":
+			default:
+				sort = { createdAt: -1 };
+				break;
+		}
+
+		// Pagination
+		// const currentPage = Math.max(parseInt(page, 10) || 1, 1);
+
+		// const itemsPerPage = Math.min(Math.max(parseInt(limit, 10) || 5, 1), 100);
+
+		// const skip = (currentPage - 1) * itemsPerPage;
+
+		const currentPage = Math.max(parseInt(page, 10) || 1, 1);
+
+		const itemsPerPage =
+			req.query.view === "admin"
+				? 1000
+				: Math.min(Math.max(parseInt(limit, 10) || 5, 1), 100);
+
+		const skip = (currentPage - 1) * itemsPerPage;
+
+		// Count filtered jobs
+		const totalJobs = await JobModel.countDocuments(filter);
+		const totalPages = Math.ceil(totalJobs / itemsPerPage);
+
+		// Fetch jobs
+		const data = await JobModel.find(filter)
+			.sort(sort)
+			.skip(skip)
+			.limit(itemsPerPage)
+			.populate("userId")
+			.populate("employer")
+			.populate("category");
+
+		return res.status(200).json({
+			success: true,
+			message: "Jobs fetched successfully",
+			data,
+			pagination: {
+				currentPage,
+				limit: itemsPerPage,
+				totalJobs,
+				totalPages,
+			},
+		});
+	} catch (error) {
+		console.error("getJob error:", error);
+
+		return res.status(500).json({
+			success: false,
+			message: "Failed to fetch jobs",
+		});
 	}
-
-	// if (tag) {
-	// 	filter.tags = tag;
-	// 	filter.skills = tag;
-	// }
-
-	if (tag) {
-		filter.$or = [{ tags: tag }, { technicalSkills: tag }];
-	}
-
-	// filter.status = { $ne: ["Draft", "Closed"] };
-	// filter.status = { $ne: "Closed" };
-
-	filter.status = { $nin: ["Draft", "Closed"] };
-
-	let sort = { createdAt: -1 };
-
-	if (sortBy === "oldest") {
-		sort = { createdAt: 1 };
-	}
-
-	if (sortBy === "salary-high") {
-		sort = { maxSalary: -1 };
-	}
-
-	if (sortBy === "salary-low") {
-		sort = { minSalary: 1 };
-	}
-
-	if (sortBy === "newest") {
-		sort = { createdAt: -1 };
-	}
-
-	//  if(search && search.trim()){
-	//   filter.title = {
-	//     $regex: search.trim(),
-	//     $options: "i",
-	//   }
-	// }
-
-	const currentPage = Math.max(Number(page) || 1, 1);
-	const itemsPerPage = Math.max(Number(limit) || 5, 1);
-
-	const skip = (currentPage - 1) * itemsPerPage;
-
-	// Total jobs after filters
-	const totalJobs = await JobModel.countDocuments(filter);
-
-	const totalPages = Math.ceil(totalJobs / itemsPerPage);
-
-	const data = await JobModel.find(filter)
-		// .sort({ createdAt: -1 })
-		.sort(sort)
-		.skip(skip)
-		.limit(itemsPerPage)
-		.populate("userId")
-		.populate("employer")
-		.populate("category");
-	res.json({
-		success: true,
-		message: "Jobs",
-		data,
-		pagination: {
-			currentPage,
-			limit: itemsPerPage,
-			totalJobs,
-			totalPages,
-		},
-	});
 };
 
 const getSingleJob = async (req, res) => {

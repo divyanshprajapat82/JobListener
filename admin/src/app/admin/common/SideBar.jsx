@@ -12,7 +12,6 @@ import { PiUsersFourLight } from "react-icons/pi";
 export default function SideBar() {
   const pathName = usePathname();
   const { admin } = context()
-  console.log("admin", admin);
 
   return (
     <>
