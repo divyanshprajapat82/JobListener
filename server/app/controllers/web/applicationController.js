@@ -5,6 +5,14 @@ const { UserModel } = require("../../models/UserModel");
 const path = require("path");
 const fs = require("fs");
 
+const { EmployerModel } = require("../../models/EmployerModel");
+const { transporter } = require("../../utility/mail");
+const generateOfferLetterHTML = require("../../templates/offerLetter");
+const OfferModel = require("../../models/OfferModel");
+const { createOfferLetterPDF } = require("../../config/offerLetterService");
+const { cloudinary } = require("../../config/cloudinary");
+const NotificationModel = require("../../models/NotificationModel");
+
 // const applyJob = async (req, res) => {
 //   try {
 //     const { jobId, coverLetter } = req.body;
@@ -282,14 +290,6 @@ const checkApplication = async (req, res) => {
 //     });
 //   }
 // };
-
-const { EmployerModel } = require("../../models/EmployerModel");
-const { transporter } = require("../../utility/mail");
-const generateOfferLetterHTML = require("../../templates/offerLetter");
-const OfferModel = require("../../models/OfferModel");
-const { createOfferLetterPDF } = require("../../config/offerLetterService");
-const { cloudinary } = require("../../config/cloudinary");
-const NotificationModel = require("../../models/NotificationModel");
 
 const appliedCandidat = async (req, res) => {
 	try {

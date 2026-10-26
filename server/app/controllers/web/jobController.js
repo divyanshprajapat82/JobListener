@@ -782,8 +782,6 @@ const getEditJob = async (req, res) => {
 			data: job,
 		});
 	} catch (error) {
-		console.log("Update Job Error:", error);
-
 		return res.status(500).json({
 			success: false,
 			message: error.message,

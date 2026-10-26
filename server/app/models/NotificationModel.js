@@ -62,6 +62,8 @@ const notificationSchema = new mongoose.Schema(
 				"Onboarding",
 
 				// General / Announcement
+				"Success",
+				"Alert",
 				"General",
 				"Important Announcement",
 				"Platform Update",

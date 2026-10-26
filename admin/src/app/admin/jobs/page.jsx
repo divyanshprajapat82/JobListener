@@ -1,15 +1,17 @@
 "use client";
 import { context } from "@/app/context/MainContext";
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { BsDownload } from "react-icons/bs";
 import { FaChevronLeft, FaChevronRight, FaSearch } from "react-icons/fa";
 import { GrEdit } from "react-icons/gr";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { RiDeleteBin6Line, RiDraftLine } from "react-icons/ri";
+import { toast } from "sonner";
 
 export default function page() {
   // Mock data for platform jobs
   const {
+    getjob,
     jobs,
     isJobLoading,
     search, setSearch,
@@ -67,6 +69,9 @@ export default function page() {
   // ];
 
   const APIURL = process.env.NEXT_PUBLIC_CLIENT_APIURL;
+  const ADMIN_APIURL = process.env.NEXT_PUBLIC_APIURL;
+
+  const [jobStatus, setJobStatus] = useState("")
 
 
   const handleExportCSV = async () => {
@@ -224,6 +229,25 @@ export default function page() {
       top: 0,
       behavior: "smooth",
     });
+  };
+
+  const handleChangeStatus = async (jobId, status) => {
+    try {
+      const res = await axios.put(
+        `${ADMIN_APIURL}/admin-jobs/job-status/${jobId}`,
+        { status },
+        { withCredentials: true }
+      );
+
+      if (res.data.success) {
+        toast.success(`Job ${jobStatus} successfully`);
+        getjob();
+      }
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to Change Status"
+      );
+    }
   };
 
   const getLocalTimeAgo = (date) => {
@@ -442,15 +466,16 @@ export default function page() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end gap-2 items-center">
-                        <button
+                        {/* <button
                           className="text-gray-400 hover:text-blue-600 transition-colors p-1.5 hover:bg-blue-50 rounded-md cursor-pointer"
                           title="View/Edit Job"
                         >
                           <GrEdit />
-                        </button>
-                        {job.status === "Pending Review" && (
+                        </button> */}
+                        {job.status === "Draft" && (
                           <button
-                            className="text-gray-400 hover:text-green-600 transition-colors p-1.5 hover:bg-green-50 rounded-md"
+                            onClick={() => { handleChangeStatus(job._id, "Active"), setJobStatus(job.status) }}
+                            className="text-gray-400 hover:text-green-600 transition-colors p-1.5 hover:bg-green-50 rounded-md cursor-pointer"
                             title="Approve Job"
                           >
                             <svg
@@ -468,12 +493,21 @@ export default function page() {
                             </svg>
                           </button>
                         )}
-                        <button
+                        {job.status === "Active" && (
+                          <button
+                            onClick={() => { handleChangeStatus(job._id, "Draft"), setJobStatus(job.status) }}
+                            className="text-gray-400 hover:text-red-600 transition-colors p-1.5 hover:bg-red-50 rounded-md cursor-pointer"
+                            title="Draft Job"
+                          >
+                            <RiDraftLine />
+                          </button>
+                        )}
+                        {/* <button
                           className="text-gray-400 hover:text-red-600 transition-colors p-1.5 hover:bg-red-50 rounded-md cursor-pointer"
                           title="Delete Job"
                         >
                           <RiDeleteBin6Line />
-                        </button>
+                        </button> */}
                       </div>
                     </td>
                   </tr>

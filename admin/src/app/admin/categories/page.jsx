@@ -23,7 +23,7 @@ export default function page() {
   const APIURL = process.env.NEXT_PUBLIC_APIURL;
   const router = useRouter();
 
-  const { geCategorytData, categoryData } = context();
+  const { getCategorytData, categoryData } = context();
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
@@ -88,7 +88,7 @@ export default function page() {
         if (finalData.success) {
           toast.success(finalData.message);
           // getData();
-          geCategorytData();
+          getCategorytData();
         }
       })
       .catch((err) => {

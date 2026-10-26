@@ -99,14 +99,14 @@ export default function SideBar() {
                 <span>Job Categories</span>
               </Link>
 
-              <a
-                href="#"
-                className="flex items-center space-x-3 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-900 rounded-xl font-medium transition-all group relative"
+              <Link
+                href="/admin/notification"
+                className={`flex items-center space-x-3 px-4 py-3 ${pathName == "/admin/notification" || pathName == "/admin/notification/add" || pathName.startsWith("/admin/notification/edit/") ? "bg-red-50 text-red-700" : " text-gray-500 hover:bg-gray-50 hover:text-gray-900"}  rounded-xl font-medium transition-all group relative`}
               >
                 <LuGalleryVerticalEnd className="w-4.5 h-4.5 transition-colors group-hover:text-red-500" />
                 {/* <span>All Platform Jobs</span> */}
                 <span>Notifications</span>
-              </a>
+              </Link>
             </div>
 
             {/* Admin Profile Snippet */}

@@ -29,7 +29,7 @@ export const MainContext = ({ children }) => {
 
 
 
-  const geCategorytData = () => {
+  const getCategorytData = () => {
     axios
       .get(`${ADMIN_APIURL}/category/view`)
       .then((res) => res.data)
@@ -142,7 +142,7 @@ export const MainContext = ({ children }) => {
 
 
   useEffect(() => {
-    geCategorytData();
+    getCategorytData();
     // getjob()
     // console.log("userRoleFilter", userRoleFilter);
 
@@ -160,9 +160,10 @@ export const MainContext = ({ children }) => {
     <Context.Provider
       value={{
         admin,
-        geCategorytData,
+        getCategorytData,
         categoryData,
         users,
+        getjob,
         jobs,
         isUserLoading,
         userRoleFilter, setUserRoleFilter,
