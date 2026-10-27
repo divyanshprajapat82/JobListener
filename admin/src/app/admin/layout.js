@@ -1,6 +1,6 @@
 import Header from "./common/Header";
 import SideBar from "./common/SideBar";
-import AdminAuth from "./controller/AdminAuth";
+import AdminAuth from "./components/AdminAuth";
 
 export default function AdminLayout({ children }) {
   return (

@@ -11,6 +11,7 @@ import {
     FaTimesCircle,
     FaInfoCircle
 } from 'react-icons/fa';
+import axios from 'axios';
 
 export default function AdminNotificationForm() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -82,7 +83,7 @@ export default function AdminNotificationForm() {
             );
 
             if (res.data.success) {
-                alert("Notification sent successfully!");
+                // alert("Notification sent successfully!");
 
                 setFormData({
                     audience: "all",
@@ -97,10 +98,10 @@ export default function AdminNotificationForm() {
             }
         } catch (error) {
             console.error("Notification error:", error.response?.data || error);
-            alert(
-                error.response?.data?.message ||
-                "Failed to send notification"
-            );
+            // alert(
+            //     error.response?.data?.message ||
+            //     "Failed to send notification"
+            // );
         } finally {
             setIsSending(false);
         }
@@ -209,6 +210,10 @@ export default function AdminNotificationForm() {
                                             <option value="all">All Platform Users</option>
                                             <option value="jobseekers">Jobseekers Only</option>
                                             <option value="employers">Employers Only</option>
+                                            <option value="all-admins">All Admins</option>
+                                            <option value="super-admin">Super Admin</option>
+                                            <option value="job-moderator">Job Moderator</option>
+                                            <option value="support-agent">Support Agent</option>
                                             {/* <option value="premium">Premium Employers</option>/ */}
                                         </select>
                                     </div>
@@ -337,7 +342,7 @@ export default function AdminNotificationForm() {
                                 <button
                                     type="submit"
                                     disabled={isSending || !formData.title || !formData.message}
-                                    className="flex-1 flex items-center justify-center bg-[#d00] hover:bg-[#b00000] text-white py-3.5 rounded-xl font-bold shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                                    className="flex-1 flex items-center justify-center bg-[#d00] hover:bg-[#b00000] text-white py-3.5 rounded-xl font-bold shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm cursor-pointer"
                                 >
                                     {isSending ? 'Broadcasting...' : <><FaPaperPlane className="mr-2" /> Publish Broadcast</>}
                                 </button>

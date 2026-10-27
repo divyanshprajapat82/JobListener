@@ -21,6 +21,8 @@ export const MainContext = ({ children }) => {
   const [limit, setLimit] = useState(10);
   const [totalJobs, setTotalJobs] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [notifications, setNotifications] = useState([])
+  const [count, setCount] = useState()
 
 
 
@@ -136,6 +138,49 @@ export const MainContext = ({ children }) => {
       });
   };
 
+  const getNotification = async () => {
+    try {
+      // setLoading(true);
+
+      const res = await axios.get(
+        `${ADMIN_APIURL}/admin-notification/get-notification`,
+        {
+          // params: {
+          //   activeFilter
+          // },
+          withCredentials: true,
+        }
+      );
+
+      // console.log("Notification Header API:", res.data);
+
+      if (res.data.success) {
+        setNotifications(res.data.data);
+        setCount(res.data.count)
+
+
+      } else {
+        toast.error(
+          res.data.message
+        );
+      }
+
+    } catch (err) {
+      // console.error(
+      //   "Notification error:",
+      //   err.response?.data || err
+      // );
+
+      // toast.error(
+      //   err.response?.data?.message
+      // );
+
+    }
+    // finally {
+    //   setLoading(false);
+    // }
+  };
+
   useEffect(() => {
     getAdmin();
   }, []);
@@ -143,6 +188,7 @@ export const MainContext = ({ children }) => {
 
   useEffect(() => {
     getCategorytData();
+    getNotification()
     // getjob()
     // console.log("userRoleFilter", userRoleFilter);
 
@@ -176,6 +222,9 @@ export const MainContext = ({ children }) => {
         limit, setLimit,
         totalJobs,
         totalPages,
+        getNotification,
+        count,
+        notifications
       }}>
       {children}
     </Context.Provider>

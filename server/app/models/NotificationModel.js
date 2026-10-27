@@ -5,7 +5,13 @@ const notificationSchema = new mongoose.Schema(
 		userId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
-			required: true,
+			// required: true,
+		},
+
+		adminId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Admin",
+			// required: true,
 		},
 
 		applicationId: {

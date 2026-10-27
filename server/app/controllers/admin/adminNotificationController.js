@@ -1,6 +1,7 @@
 // const Notification = require("../models/NotificationModel");
 const NotificationModel = require("../../models/NotificationModel");
-const User = require("../../models/UserModel");
+const { UserModel } = require("../../models/UserModel");
+const { AdminModel } = require("../../models/AdminModel");
 
 // @desc    Create admin broadcast notification
 // @route   POST /api/notifications/admin
@@ -27,7 +28,15 @@ const CreateAdminNotification = async (req, res) => {
 		}
 
 		// Validate audience
-		const allowedAudiences = ["all", "jobseekers", "employers"];
+		const allowedAudiences = [
+			"all",
+			"jobseekers",
+			"employers",
+			"all-admins",
+			"super-admin",
+			"job-moderator",
+			"support-agent",
+		];
 
 		if (!allowedAudiences.includes(audience)) {
 			return res.status(400).json({
@@ -85,24 +94,60 @@ const CreateAdminNotification = async (req, res) => {
 		}
 
 		// Find target users
+		// const userFilter = {};
+
+		// if (audience === "jobseekers") {
+		// 	userFilter.role = "jobseeker";
+		// } else if (audience === "employers") {
+		// 	userFilter.role = "employer";
+		// }
+
+		// const users = await UserModel.find(userFilter).select("_id");
+
+		// if (users.length === 0) {
+		// 	return res.status(404).json({
+		// 		success: false,
+		// 		message: "No users found for the selected audience.",
+		// 	});
+		// }
+
+		// Find target admins
+		let recipients = [];
+		let recipientType = "user";
+
 		const userFilter = {};
+		const adminFilter = {};
 
 		if (audience === "jobseekers") {
 			userFilter.role = "jobseeker";
+			recipients = await UserModel.find(userFilter).select("_id");
 		} else if (audience === "employers") {
 			userFilter.role = "employer";
+			recipients = await UserModel.find(userFilter).select("_id");
+		} else if (audience === "all") {
+			recipients = await UserModel.find({}).select("_id");
+		} else {
+			recipientType = "admin";
+
+			if (audience === "all-admins") {
+				// Change this if your AdminModel uses a different role structure
+				adminFilter.role = {
+					$in: ["super-admin", "job-moderator", "support-agent"],
+				};
+			} else {
+				adminFilter.role = audience;
+			}
+
+			recipients = await AdminModel.find(adminFilter).select("_id");
 		}
 
-		const users = await User.find(userFilter).select("_id");
-
-		if (users.length === 0) {
+		if (recipients.length === 0) {
 			return res.status(404).json({
 				success: false,
-				message: "No users found for the selected audience.",
+				message: "No recipients found for the selected audience.",
 			});
 		}
 
-		// Map notification type to category
 		const categoryMapping = {
 			announcement: "Announcement",
 			update: "Announcement",
@@ -114,8 +159,9 @@ const CreateAdminNotification = async (req, res) => {
 		let notificationsCreated = 0;
 
 		if (sendPush) {
-			const notifications = users.map((user) => ({
-				userId: user._id,
+			const notifications = recipients.map((recipient) => ({
+				userId: recipientType === "user" ? recipient._id : undefined,
+				adminId: recipientType === "admin" ? recipient._id : undefined,
 				type: typeMapping[type],
 				subject: title.trim(),
 				message: message.trim(),
@@ -140,7 +186,8 @@ const CreateAdminNotification = async (req, res) => {
 				: "Email delivery was requested, but no email was sent by this controller.",
 			data: {
 				audience,
-				totalRecipients: users.length,
+				// totalRecipients: users.length,
+				totalRecipients: recipients.length,
 				notificationsCreated,
 				sendPush,
 				sendEmail,
@@ -162,16 +209,22 @@ const CreateAdminNotification = async (req, res) => {
 // @access  Private
 const getMyNotifications = async (req, res) => {
 	try {
-		const userId = req.user._id;
+		const adminId = req.admin?.adminId;
 
-		const notifications = await Notification.find({ userId }).sort({
+		if (!adminId) {
+			return res
+				.status(401)
+				.json({ success: false, message: "Admin authentication required." });
+		}
+
+		const notifications = await NotificationModel.find({ adminId }).sort({
 			createdAt: -1,
 		});
 
 		return res.status(200).json({
 			success: true,
 			count: notifications.length,
-			notifications,
+			data: notifications,
 		});
 	} catch (error) {
 		console.error("Get notifications error:", error);

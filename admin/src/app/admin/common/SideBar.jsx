@@ -75,16 +75,18 @@ export default function SideBar() {
                 <span>Jobs</span>
               </Link>
 
-              <Link
-                href="/admin/admin-management"
-                className={`flex items-center space-x-3 px-4 py-3 ${pathName == "/admin/admin-management" ? "bg-red-50 text-red-700" : " text-gray-500 hover:bg-gray-50 hover:text-gray-900"} hover:text-gray-900"  rounded-xl font-medium transition-all group relative`}
-              >
-                {pathName == "/admin/admin-management" && (
-                  <div className="absolute left-0 w-1 h-6 bg-red-600 rounded-r-full"></div>
-                )}
-                <LuUsers className="w-5 h-5 transition-colors group-hover:text-red-500" />
-                <span>Admin Management</span>
-              </Link>
+              {admin?.role === "super-admin" &&
+                <Link
+                  href="/admin/admin-management"
+                  className={`flex items-center space-x-3 px-4 py-3 ${pathName == "/admin/admin-management" ? "bg-red-50 text-red-700" : " text-gray-500 hover:bg-gray-50 hover:text-gray-900"} hover:text-gray-900"  rounded-xl font-medium transition-all group relative`}
+                >
+                  {pathName == "/admin/admin-management" && (
+                    <div className="absolute left-0 w-1 h-6 bg-red-600 rounded-r-full"></div>
+                  )}
+                  <LuUsers className="w-5 h-5 transition-colors group-hover:text-red-500" />
+                  <span>Admin Management</span>
+                </Link>
+              }
 
               <Link
                 href="/admin/categories"

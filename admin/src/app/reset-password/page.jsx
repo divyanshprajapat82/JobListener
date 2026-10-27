@@ -6,7 +6,7 @@ import { FaEnvelope, FaShieldAlt, FaArrowLeft, FaKey } from 'react-icons/fa';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import AdminOTP from '../admin/controller/AdminOTP';
+import AdminOTP from '../admin/components/AdminOTP';
 
 export default function ResetPassword() {
     const [email, setEmail] = useState('');

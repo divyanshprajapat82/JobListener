@@ -3,7 +3,7 @@
 import axios from 'axios';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { FaBell, FaBriefcase, FaEnvelope, FaBuilding, FaCheckCircle, FaTrashAlt, FaExclamationTriangle, FaTimesCircle, FaInfoCircle } from 'react-icons/fa';
+import { FaBell, FaBriefcase, FaEnvelope, FaBuilding, FaCheckCircle, FaTrashAlt, FaExclamationTriangle, FaTimesCircle, FaInfoCircle, FaCog } from 'react-icons/fa';
 import { toast } from 'sonner';
 import { useAuth } from '../context/MainContext';
 import LoginPopup from '../common/LoginPopup';
@@ -182,6 +182,66 @@ export default function FullNotificationsPage() {
         });
     };
 
+    // const getPreviewIcon = (icon) => {
+    //     switch (icon) {
+    //         case "Success":
+    //             return (
+    //                 <FaCheckCircle
+    //                     className="text-green-500"
+    //                     size={20}
+    //                 />
+    //             );
+
+    //         case "Warning":
+    //             return (
+    //                 <FaExclamationTriangle
+    //                     className="text-yellow-500"
+    //                     size={20}
+    //                 />
+    //             );
+
+    //         case "Error":
+    //             return (
+    //                 <FaTimesCircle
+    //                     className="text-red-500"
+    //                     size={20}
+    //                 />
+    //             );
+
+    //         case "Update":
+    //             return (
+    //                 <FaBell
+    //                     className="text-blue-500"
+    //                     size={20}
+    //                 />
+    //             );
+
+    //         case "Info":
+    //             return (
+    //                 <FaInfoCircle
+    //                     className="text-blue-500"
+    //                     size={20}
+    //                 />
+    //             );
+
+    //         case "Announcement":
+    //             return (
+    //                 <FaBell
+    //                     className="text-purple-500"
+    //                     size={20}
+    //                 />
+    //             );
+
+    //         default:
+    //             return (
+    //                 <FaBell
+    //                     className="text-[#d00]"
+    //                     size={20}
+    //                 />
+    //             );
+    //     }
+    // };
+
     const getPreviewIcon = (icon) => {
         switch (icon) {
             case "Success":
@@ -210,7 +270,7 @@ export default function FullNotificationsPage() {
 
             case "Update":
                 return (
-                    <FaBell
+                    <FaCog
                         className="text-blue-500"
                         size={20}
                     />
@@ -226,7 +286,7 @@ export default function FullNotificationsPage() {
 
             case "Announcement":
                 return (
-                    <FaBell
+                    <FaExclamationTriangle
                         className="text-purple-500"
                         size={20}
                     />
@@ -372,16 +432,17 @@ export default function FullNotificationsPage() {
                             <Link key={item._id} href={`/notifications/${item._id}`} className='w-full'>
                                 <div className='flex gap-2'>
                                     <div className="w-12 h-12 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0">
-                                        {item.applicationId?.status &&
+                                        {/* {item.applicationId?.status &&
                                             // <FaCheckCircle className="text-green-500" size={20} />
-                                            getPreviewIcon(item.iconType)
-                                        }
+                                            } */}
+                                        {getPreviewIcon(item.iconType)}
                                     </div>
 
                                     <div className="flex-grow">
                                         <div className="flex justify-between items-start gap-4">
                                             <h3 className={`text-base font-bold ${item.isRead ? 'text-gray-800' : 'text-gray-900'}`}>
-                                                {item.jobId?.title}
+                                                {/* {item.jobId?.title} */}
+                                                {item.subject}
                                             </h3>
                                             <span className="text-xs font-bold text-gray-400 whitespace-nowrap shrink-0 mt-1">{getLocalTimeAgo(item.createdAt)}</span>
                                         </div>

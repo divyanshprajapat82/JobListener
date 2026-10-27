@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import { FaBars, FaBell, FaBriefcase, FaCheckCircle, FaExclamationCircle, FaExclamationTriangle, FaInfoCircle, FaTimesCircle, FaUser } from "react-icons/fa";
+import { FaBars, FaBell, FaBriefcase, FaCheckCircle, FaCog, FaExclamationCircle, FaExclamationTriangle, FaInfoCircle, FaTimesCircle, FaUser } from "react-icons/fa";
 import { IoBriefcase, IoClose } from "react-icons/io5";
 import { useAuth } from "../context/MainContext";
 import { BiSolidDownArrow } from "react-icons/bi";
@@ -183,6 +183,67 @@ export default function Header() {
     });
   };
 
+  // const getPreviewIcon = (icon) => {
+  //   switch (icon) {
+  //     case "Success":
+  //       return (
+  //         <FaCheckCircle
+  //           className="text-green-500"
+  //           size={20}
+  //         />
+  //       );
+
+  //     case "Warning":
+  //       return (
+  //         <FaExclamationTriangle
+  //           className="text-yellow-500"
+  //           size={20}
+  //         />
+  //       );
+
+  //     case "Error":
+  //       return (
+  //         <FaTimesCircle
+  //           className="text-red-500"
+  //           size={20}
+  //         />
+  //       );
+
+  //     case "Update":
+  //       return (
+  //         <FaBell
+  //           className="text-blue-500"
+  //           size={20}
+  //         />
+  //       );
+
+  //     case "Info":
+  //       return (
+  //         <FaInfoCircle
+  //           className="text-blue-500"
+  //           size={20}
+  //         />
+  //       );
+
+  //     case "Announcement":
+  //       return (
+  //         <FaExclamationTriangle
+  //           className="text-purple-500"
+  //           size={20}
+  //         />
+  //       );
+
+  //     default:
+  //       return (
+  //         <FaBell
+  //           className="text-[#d00]"
+  //           size={20}
+  //         />
+  //       );
+  //   }
+  // };
+
+
   const getPreviewIcon = (icon) => {
     switch (icon) {
       case "Success":
@@ -211,7 +272,7 @@ export default function Header() {
 
       case "Update":
         return (
-          <FaBell
+          <FaCog
             className="text-blue-500"
             size={20}
           />
@@ -227,7 +288,7 @@ export default function Header() {
 
       case "Announcement":
         return (
-          <FaBell
+          <FaExclamationTriangle
             className="text-purple-500"
             size={20}
           />
@@ -368,49 +429,6 @@ export default function Header() {
                     }
                   </div>
 
-
-                  {/* {isNotifOpen && (
-                  <div className="absolute top-15 right-10 md:right-0 w-80 sm:w-96 bg-gray-900 rounded-2xl shadow-2xl shadow-black/60 border border-gray-800 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200 z-40">
-
-                    <div className="px-4 py-3 border-b border-gray-800 flex justify-between items-center bg-gray-900">
-                      <span className="font-bold text-gray-100">Notifications</span>
-                      <button className="text-xs font-bold text-red-500 hover:text-red-400 transition-colors">Mark all as read</button>
-                    </div>
-
-                    <div className="max-h-80 overflow-y-auto">
-                      {notifications.map((notif) => (
-                        <div
-                          key={notif.id}
-                          className={`p-4 border-b border-gray-800 hover:bg-gray-800 transition flex gap-3 cursor-pointer ${notif.unread ? 'bg-red-950/30' : 'bg-gray-900'}`}
-                        >
-                          <div className="mt-1 shrink-0">{notif.icon}</div>
-                          <div>
-                            <h4 className={`text-sm font-bold ${notif.unread ? 'text-white' : 'text-gray-300'}`}>
-                              {notif.title}
-                            </h4>
-                            <p className="text-xs text-gray-400 mt-0.5 leading-relaxed">
-                              {notif.desc}
-                            </p>
-                            <span className="text-[10px] font-bold text-gray-500 mt-1 block">
-                              {notif.time}
-                            </span>
-                          </div>
-                          {notif.unread && (
-                            <div className="w-2 h-2 bg-red-500 rounded-full shrink-0 mt-1.5 ml-auto"></div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="p-3 bg-gray-900 border-t border-gray-800 text-center">
-                      <a href="/notifications" className="text-sm font-bold text-gray-300 hover:text-red-500 transition-colors">
-                        View all notifications
-                      </a>
-                    </div>
-
-                  </div>
-                )} */}
-
                   {isNotifOpen && (
                     <>
                       {/* <div className="h-[100%] w-[100%] text-white absolute top-15 right-0">
@@ -446,10 +464,10 @@ export default function Header() {
                                 className={`p-4 border-b border-gray-700 hover:bg-[#2a2a2a] transition flex gap-3 cursor-pointer ${!item.isRead ? 'bg-[#2a1a1a]' : 'bg-transparent'}`}
                               >
                                 {/* <div className="mt-1 shrink-0">{item.icon}</div> */}
-                                {item.applicationId?.status &&
+                                {/* {item.applicationId?.status &&
                                   // <FaCheckCircle className="text-green-500" size={20} />
-                                  getPreviewIcon(item.iconType)
-                                }
+                                  } */}
+                                {getPreviewIcon(item.iconType)}
                                 <div>
                                   <h4 className={`text-sm font-bold ${!item.isRead ? 'text-white' : 'text-gray-300'}`}>
                                     {item.subject}
