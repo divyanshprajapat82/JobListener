@@ -1,5 +1,6 @@
 "use client";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -23,6 +24,8 @@ export const MainContext = ({ children }) => {
   const [totalPages, setTotalPages] = useState(0);
   const [notifications, setNotifications] = useState([])
   const [count, setCount] = useState()
+
+  const router = useRouter()
 
 
 
@@ -71,6 +74,33 @@ export const MainContext = ({ children }) => {
     } finally {
       // setLoading(false);
     }
+  };
+
+  const logOut = () => {
+    axios
+      .post(
+        `${ADMIN_APIURL}/admin-auth/admin-logout`,
+        {},
+        {
+          withCredentials: true,
+        },
+      )
+      .then((res) => res.data)
+      .then((finalData) => {
+        if (finalData.success) {
+          // setUser(null);
+          // toast.success(finalData.message);
+          router.push("/");
+          // setUser(finalData.data);
+        }
+      })
+      .catch((err) => {
+        if (err.response) {
+          toast.error(err.response.data.message);
+        } else {
+          toast.error("Something went wrong");
+        }
+      });
   };
 
   const getUsers = () => {
@@ -205,7 +235,9 @@ export const MainContext = ({ children }) => {
   return (
     <Context.Provider
       value={{
+        getAdmin,
         admin,
+        logOut,
         getCategorytData,
         categoryData,
         users,

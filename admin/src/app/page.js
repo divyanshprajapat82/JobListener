@@ -67,21 +67,17 @@ export default function PremiumAdminLogin() {
       );
 
       if (response.data?.success) {
-        // toast.success(
-        //   response.data.message ||
-        //   "Administrator LoggedIn successfully"
-        // );
-
-        // clearForm();
-
-        setTimeout(() => {
-          router.push("/admin");
-        }, 500);
-      } else {
-        toast.error(
-          response.data?.message ||
-          "Failed to create administrator"
+        const adminResponse = await axios.get(
+          `${process.env.NEXT_PUBLIC_APIURL}/admin-auth/me`,
+          { withCredentials: true }
         );
+
+        if (adminResponse.data?.success) {
+          // Update your AdminContext here with adminResponse.data.admin
+          router.replace("/admin");
+        } else {
+          toast.error("Unable to load admin information.");
+        }
       }
     } catch (error) {
       // console.error("Create admin error:", error);
@@ -101,29 +97,29 @@ export default function PremiumAdminLogin() {
     // }, 1500);
   };
 
-  useEffect(() => {
-    const checkAdmin = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_APIURL}/admin-auth/me`,
-          {
-            withCredentials: true,
-          },
-        );
+  // useEffect(() => {
+  //   const checkAdmin = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${process.env.NEXT_PUBLIC_APIURL}/admin-auth/me`,
+  //         {
+  //           withCredentials: true,
+  //         },
+  //       );
 
-        if (response.data.success) {
-          router.replace("/admin");
-          return;
-        }
-      } catch (error) {
-        // router.replace("/");
-      } finally {
-        // setLoading(false);
-      }
-    };
+  //       if (response.data.success) {
+  //         router.replace("/admin");
+  //         return;
+  //       }
+  //     } catch (error) {
+  //       // router.replace("/");
+  //     } finally {
+  //       // setLoading(false);
+  //     }
+  //   };
 
-    checkAdmin();
-  }, []);
+  //   checkAdmin();
+  // }, []);
 
 
 

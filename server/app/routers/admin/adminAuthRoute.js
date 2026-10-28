@@ -9,6 +9,7 @@ const {
 	verifyOTP,
 	resetPassword,
 	getAdmins,
+	adminLogout,
 } = require("../../controllers/admin/adminAuthController");
 const { adminMiddleware } = require("../../middleware/adminMiddlewere");
 
@@ -16,6 +17,7 @@ let adminAuthRoute = express.Router();
 
 adminAuthRoute.post("/create-admin", createAdmin);
 adminAuthRoute.post("/admin-login", adminLogin);
+adminAuthRoute.post("/admin-logout", adminMiddleware, adminLogout);
 adminAuthRoute.get("/get-admins", getAdmins);
 adminAuthRoute.get("/me", adminMiddleware, getMe);
 adminAuthRoute.post("/send-otp", sendOTP);
