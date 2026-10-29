@@ -6,10 +6,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaBell, FaCheckCircle, FaCheckDouble, FaCog, FaExclamationTriangle, FaInfoCircle, FaTimesCircle } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { IoMdNotificationsOutline } from "react-icons/io";
+import { LiaExternalLinkAltSolid } from "react-icons/lia";
 
 export default function Header() {
 
-  const { getNotification, count, notifications } = context()
+  const { getNotification, count, notifications, platformData } = context()
 
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -263,7 +264,8 @@ export default function Header() {
                 setIsProfileOpen(false);
               }}
               className="relative cursor-pointer">
-              <div className="w-10 h-10 bg-gray-50 border border-gray-200 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors">
+              <div className={`relative w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isNotifOpen ? 'bg-gray-100 text-gray-900' : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
+                } border border-gray-200`}>
                 <FaBell size={18} />
               </div>
               {notifications?.length > 0 && count > 0 &&
@@ -274,7 +276,7 @@ export default function Header() {
               {/* <span className="absolute top-0 right-0 w-3 h-3 bg-[#d00] border-2 border-white rounded-full"></span> */}
             </div>
             {isNotifOpen && (
-              <div className="absolute top-17 right-0 md:right-10 w-80 sm:w-96 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-4 duration-200">
+              <div className="absolute top-17 right-0 md:right-10 w-80 sm:w-96 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-4 duration-200 select-none">
 
                 {/* Header */}
                 <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
@@ -345,10 +347,13 @@ export default function Header() {
               </div>
             )}
           </div>
-          <button className="bg-red-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-red-700 hover:shadow-lg hover:shadow-red-500/30 transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
-            <FaPlus />
-            Add Category
-          </button>
+          <Link href={""}>
+            <button className="bg-red-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-red-700 hover:shadow-lg hover:shadow-red-500/30 transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
+              <LiaExternalLinkAltSolid size={20} />
+              {/* Add Category */}
+              Website
+            </button>
+          </Link>
         </div>
       </header>
     </>

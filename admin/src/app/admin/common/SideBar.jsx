@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import { context } from "@/app/context/MainContext";
 import { PiUsersFourLight } from "react-icons/pi";
 import { HiDotsVertical, HiOutlineCog, HiOutlineLogout, HiOutlineUser } from "react-icons/hi";
+import { IoSettingsOutline } from "react-icons/io5";
 
 export default function SideBar() {
   const pathName = usePathname();
@@ -66,8 +67,8 @@ export default function SideBar() {
                 <PiUsersFourLight className="w-5 h-5 transition-colors group-hover:text-red-500" />
                 <span className="hidden md:block">Users</span>
               </Link>
-              <Link
 
+              {/* <Link
                 href="/admin/employers"
                 className={`flex items-center space-x-3 px-4 py-3 ${pathName == "/admin/employers" ? "bg-red-50 text-red-700" : " text-gray-500 hover:bg-gray-50 hover:text-gray-900"}  rounded-xl font-medium transition-all group relative`}
               >
@@ -76,7 +77,7 @@ export default function SideBar() {
                 )}
                 <PiUsersFourLight className="w-5 h-5 transition-colors group-hover:text-red-500" />
                 <span className="hidden md:block">Employers</span>
-              </Link>
+              </Link> */}
 
               <Link
                 href="/admin/jobs"
@@ -122,6 +123,19 @@ export default function SideBar() {
                 <LuGalleryVerticalEnd className="w-4.5 h-4.5 transition-colors group-hover:text-red-500" />
                 {/* <span>All Platform Jobs</span> */}
                 <span>Notifications</span>
+              </Link>
+
+              <Link
+                href="/admin/manage-setting"
+                className={`flex items-center space-x-3 px-4 py-3 ${pathName == "/admin/setting" || pathName == "/admin/setting/add" || pathName.startsWith("/admin/setting/edit/") ? "bg-red-50 text-red-700" : " text-gray-500 hover:bg-gray-50 hover:text-gray-900"}  rounded-xl font-medium transition-all group relative`}
+              >
+                {pathName == "/admin/categories" ||
+                  pathName == "/admin/categories/add" ||
+                  pathName.startsWith("/admin/categories/edit/") ? (
+                  <div className="absolute left-0 w-1 h-6 bg-red-600 rounded-r-full"></div>
+                ) : null}
+                <IoSettingsOutline className="w-4.5 h-4.5 transition-colors group-hover:text-red-500" />
+                <span>Setting</span>
               </Link>
             </div>
 

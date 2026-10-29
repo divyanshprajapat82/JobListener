@@ -13,7 +13,7 @@ export default function Header() {
   let pathName = usePathname();
 
   const [mediaNav, setMediaNav] = useState(false);
-  const { user, logOut, company, notifications, count, getNotification } = useAuth();
+  const { user, logOut, company, notifications, count, getNotification, platformData } = useAuth();
   const [loading, setLoading] = useState(true);
   // const [notifications, setNotifications] = useState([])
   // const [count, setCount] = useState()
@@ -348,10 +348,17 @@ export default function Header() {
                 <Link href={"/"}>
                   <div className="flex items-center gap-2">
                     <IoBriefcase className="text-[24px] mb-1 " />
-                    <span className="webName relative"> JobListener
-                      {user?.role == "employer" &&
-                        <span className="absolute top-0 ml-2 text-[11px] bg-[#d00] px-2 py-0.5 rounded-full">Employer</span>
-                      }
+                    <span className="webName relative">
+                      {/* JobListener */}
+                      {platformData?.platformName ?
+                        (<p className="">
+                          {platformData.platformName}
+                          {user?.role == "employer" &&
+                            <span className="absolute top-0 ml-2 text-[11px] bg-[#d00] px-2 py-0.5 rounded-full">Employer</span>
+                          }
+                        </p>
+                        ) : (<div className="h-5 w-32 animate-pulse rounded bg-gray-200" />
+                        )}
                     </span>
                   </div>
                 </Link>

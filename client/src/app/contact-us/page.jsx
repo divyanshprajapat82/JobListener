@@ -1,7 +1,10 @@
+'use client'
 import React from "react";
 import MoreJobs from "../components/MoreJobs";
+import { useAuth } from "../context/MainContext";
 
 export default function page() {
+  const { platformData, platformLoading } = useAuth()
   return (
     <>
       <div className="bg-[#000] text-[#fff] h-[250px] relative overflow-hidden">
@@ -54,7 +57,12 @@ export default function page() {
                   </div>
                   <div>
                     <p className="font-semibold">Email</p>
-                    <p className="text-sm text-gray-600">support@jobportal.com</p>
+                    {/* <p className="text-sm text-gray-600">support@jobportal.com</p> */}
+                    {/* <p className="text-sm text-gray-600">{platformData?.supportEmail}</p> */}
+                    {platformData?.supportEmail ? (<p className="text-sm text-gray-600">
+                      {platformData.supportEmail} </p>
+                    ) : (<div className="h-4 w-40 animate-pulse rounded bg-gray-200" />
+                    )}
                   </div>
                 </div>
 
@@ -64,7 +72,13 @@ export default function page() {
                   </div>
                   <div>
                     <p className="font-semibold">Phone</p>
-                    <p className="text-sm text-gray-600">+91 98765 43210</p>
+                    {/* <p className="text-sm text-gray-600">+91 98765 43210</p> */}
+                    {/* <p className="text-sm text-gray-600">{platformData?.supportNumber}</p> */}
+                    {platformData?.supportNumber ? (<p className="text-sm text-gray-600">
+                      {platformData.supportNumber} </p>
+                    ) : (<div className="h-4 w-28 animate-pulse rounded bg-gray-200" />
+                    )}
+
                   </div>
                 </div>
 
@@ -74,9 +88,14 @@ export default function page() {
                   </div>
                   <div>
                     <p className="font-semibold">Office</p>
-                    <p className="text-sm text-gray-600">
-                      Bangalore, Karnataka, India
-                    </p>
+                    {/* Bangalore, Karnataka, India */}
+                    {/* <p className="text-sm text-gray-600">
+                      {platformData?.office}
+                    </p> */}
+                    {platformData?.office ? (<p className="text-sm text-gray-600">
+                      {platformData.office} </p>
+                    ) : (<div className="h-4 w-50 animate-pulse rounded bg-gray-200" />
+                    )}
                   </div>
                 </div>
               </div>

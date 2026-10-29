@@ -14,6 +14,8 @@ export const MainContext = ({ children }) => {
   const router = useRouter();
   // const [loading, setLoading] = useState(true);
   const [company, setCompany] = useState([]);
+  const [platformData, setPlatformData] = useState(null)
+  const [platformLoading, setPlatformLoading] = useState(true)
   const [jobSeeker, setJobSeeker] = useState([]);
   const [education, setEducation] = useState([]);
   const [experience, setExperience] = useState([]);
@@ -224,6 +226,30 @@ export const MainContext = ({ children }) => {
     // });
   };
 
+  const getPlatformSetting = () => {
+    setPlatformLoading(true);
+    axios
+      .get(`http://localhost:8000/admin/platform-setting/get-platform`)
+      .then((res) => res.data)
+      .then((finalData) => {
+        if (finalData.success) {
+          setPlatformData(finalData.data);
+        } else {
+          toast.error(finalData.message);
+        }
+      })
+      .catch((err) => {
+        if (err.response) {
+          toast.error(err.response.finalData.message);
+        } else {
+          toast.error("Something went wrong");
+        }
+      })
+      .finally(() => {
+        setPlatformLoading(false);
+      });
+  };
+
   // const remote = ""
   const getjob = () => {
     // setLoading(true);
@@ -388,6 +414,7 @@ export const MainContext = ({ children }) => {
   useEffect(() => {
     getMe();
     getCategory();
+    getPlatformSetting()
     // getjob();
     // getNotification()
   }, []);
@@ -496,6 +523,8 @@ export const MainContext = ({ children }) => {
         experience,
         getExperience,
         category,
+        platformData,
+        platformLoading,
         jobs,
         search,
         setSearch,
