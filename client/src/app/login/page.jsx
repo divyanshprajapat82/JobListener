@@ -1,49 +1,53 @@
 "use client";
+
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FaKey } from "react-icons/fa";
 import { IoIosMail } from "react-icons/io";
 import { RxEyeOpen } from "react-icons/rx";
 import { GoEyeClosed } from "react-icons/go";
+import { CgSpinner } from "react-icons/cg";
 import { toast } from "sonner";
 import { useAuth } from "../context/MainContext";
-import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const [passwordShow, setPasswordShow] = useState(true);
+  const [passwordShow, setPasswordShow] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState({});
   const [data, setData] = useState({
     email: "",
     password: "",
   });
+
   const { getMe, user, loading } = useAuth();
   const router = useRouter();
-
   const APIURL = process.env.NEXT_PUBLIC_APIURL;
 
   useEffect(() => {
     if (user && !loading) {
-      return router.push(`/profile/${user.role}`);
+      router.push(`/profile/${user.role}`);
     }
   }, [user, loading, router]);
 
   const validate = () => {
     let newErrors = {};
-
     if (!data.email.trim()) {
-      newErrors.email = "Email is required";
+      newErrors.email = "Email address is required";
+    } else if (!/\S+@\S+\.\S+/.test(data.email)) {
+      newErrors.email = "Please enter a valid email address";
     }
 
     if (!data.password.trim()) {
       newErrors.password = "Password is required";
     }
-
     return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const errors = validate();
 
     if (Object.keys(errors).length > 0) {
@@ -51,187 +55,229 @@ export default function LoginPage() {
       return;
     }
 
-    let obj = {
-      email: data.email,
-      password: data.password,
-    };
+    setIsSubmitting(true);
+    setError({});
 
-    axios
-      .post(`${APIURL}/auth/login`, obj, {
-        withCredentials: true,
-      })
-      .then((res) => res.data)
-      .then((finalData) => {
-        if (finalData.success) {
-          toast.success(finalData.message);
-          getMe();
-          // if (finalData.role == "jobseeker") {
-          // router.push("/profile/jobSeeker");
-          router.push(`/profile/${finalData.role}`);
-          // }
-          // if (finalData.role == "employer") {
-          //   router.push("/profile/jobSeeker");
-          // }
-        }
-        setError({});
-      })
-      .catch((err) => {
-        if (err.response) {
-          if (err.response.data.message == "Email not found") {
-            setError({
-              emailError: err.response.data.message || "Email not found",
-            });
-          }
-          if (err.response.data.message == "invalid password") {
-            setError({
-              passwordError: err.response.data.message || "invalid password",
-            });
-          }
-          toast.error(err.response.data.message);
+    try {
+      const response = await axios.post(
+        `${APIURL}/auth/login`,
+        { email: data.email, password: data.password },
+        { withCredentials: true }
+      );
+
+      const finalData = response.data;
+      if (finalData.success) {
+        toast.success(finalData.message || "Login successful!");
+        await getMe();
+        router.push(`/profile/${finalData.role}`);
+      }
+    } catch (err) {
+      if (err.response) {
+        const message = err.response.data?.message || "Invalid credentials";
+        if (message.toLowerCase().includes("email")) {
+          setError({ emailError: message });
+        } else if (message.toLowerCase().includes("password")) {
+          setError({ passwordError: message });
         } else {
-          toast.error("Something went wrong");
+          setError({ api: message });
         }
-      });
+        toast.error(message);
+      } else {
+        toast.error("Network error. Please try again later.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    const updatedData = {
-      ...data,
-      [name]: value,
-    };
-
-    setData(updatedData);
+    setData((prev) => ({ ...prev, [name]: value }));
 
     setError((prev) => {
-      let newErrors = { ...prev };
-
-      if (name === "email" && value.trim() !== "") {
+      const newErrors = { ...prev };
+      if (name === "email") {
         delete newErrors.email;
+        delete newErrors.emailError;
       }
-
-      if (name === "password" && value.trim() !== "") {
+      if (name === "password") {
         delete newErrors.password;
+        delete newErrors.passwordError;
       }
-
       delete newErrors.api;
-
       return newErrors;
     });
   };
 
   return (
-    <div className="p-4 bg-[#f4f4f4] min-h-screen">
-      <div className="max-w-[1000px] m-auto">
-        <div className="flex justify-between items-center gap-8">
-          <div className="hidden md:block">
-            <img src="/images/loginImg.png" width={1000} alt="Login" />
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+      {/* Background Decorative Gradient Elements */}
+      <div className="fixed top-0 left-1/4 w-96 h-96 bg-red-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="fixed bottom-0 right-1/4 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="w-full max-w-[1000px] bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 items-center">
+          
+          {/* Left Column: Hero Image / Branding */}
+          <div className="hidden md:flex flex-col justify-center items-center bg-gradient-to-br from-red-50 to-orange-50 p-8 h-full border-r border-slate-100">
+            <div className="relative w-full max-w-[360px] aspect-square">
+              <Image
+                src="/images/loginImg.png"
+                alt="JobListener Login Illustration"
+                fill
+                className="object-contain hover:scale-105 transition-transform duration-500"
+                priority
+              />
+            </div>
+            <div className="text-center mt-6">
+              <h3 className="text-xl font-bold text-slate-800">
+                Connect with Top Opportunities
+              </h3>
+              <p className="text-sm text-slate-500 mt-2 max-w-xs">
+                Your gateway to personalized career growth and hiring.
+              </p>
+            </div>
           </div>
 
-          <div className="p-4 bg-[#fff] text-black w-full rounded-3xl shadow-sm">
-            <div>
-              <h1 className="text-[20px] font-semibold">
-                Welcome to <span className="text-[#d00]">JobListener</span>
+          {/* Right Column: Login Form */}
+          <div className="p-6 sm:p-10 lg:p-12 w-full">
+            <div className="mb-8">
+              <span className="text-xs font-bold uppercase tracking-wider text-red-600 bg-red-50 px-3 py-1 rounded-full">
+                Welcome Back
+              </span>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3">
+                Sign In to <span className="text-red-600">JobListener</span>
               </h1>
-              <h2 className="text-[24px] text-[#d00] font-semibold capitalize">
-                Sign In
-              </h2>
+              <p className="text-sm text-slate-500 mt-1">
+                Please enter your credentials to access your account.
+              </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-6">
-              <ul className="flex flex-col gap-4">
-                <li>
-                  <label className="block text-sm font-semibold mb-1">
-                    Email Address <span className="text-red-500">*</span>
-                  </label>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Email Input Field */}
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
+                  Email Address <span className="text-red-500">*</span>
+                </label>
 
-                  <div className="w-full h-full flex items-center gap-2 rounded-2xl border border-gray-200 px-4 py-3 focus-within:ring-2 focus-within:ring-red-500 focus-within:border-red-500 transition">
-                    <span className="text-[22px] text-[#d00]">
-                      <IoIosMail />
-                    </span>
+                <div
+                  className={`flex items-center gap-3 rounded-xl border bg-slate-50/50 px-4 py-3 transition duration-200 focus-within:bg-white focus-within:ring-2 ${
+                    error.email || error.emailError
+                      ? "border-red-400 focus-within:ring-red-500/20"
+                      : "border-slate-200 focus-within:border-red-500 focus-within:ring-red-500/20"
+                  }`}
+                >
+                  <IoIosMail className="text-xl text-red-600 shrink-0" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={data.email}
+                    onChange={handleChange}
+                    disabled={isSubmitting}
+                    className="w-full bg-transparent outline-none text-slate-800 placeholder-slate-400 text-sm disabled:opacity-50"
+                    placeholder="name@example.com"
+                    autoFocus
+                  />
+                </div>
 
-                    <input
-                      type="email"
-                      name="email"
-                      value={data.email}
-                      onChange={handleChange}
-                      className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400"
-                      placeholder="Enter your email"
-                      autoFocus
-                    />
-                  </div>
-
-                  {error.email && (
-                    <p className="text-red-500 text-sm">{error.email}</p>
-                  )}
-                  {error.emailError && (
-                    <li>
-                      <p className="text-red-500 text-sm">{error.emailError}</p>
-                    </li>
-                  )}
-                </li>
-
-                <li>
-                  <label className="block text-sm font-semibold mb-1">
-                    Password <span className="text-red-500">*</span>
-                  </label>
-
-                  <div className="w-full flex items-center gap-2 rounded-2xl border border-gray-200 px-4 py-3 focus-within:ring-2 focus-within:ring-red-500 focus-within:border-red-500 transition">
-                    <span className="text-[18px] text-[#d00]">
-                      <FaKey />
-                    </span>
-
-                    <input
-                      type={passwordShow ? "password" : "text"}
-                      name="password"
-                      value={data.password}
-                      onChange={handleChange}
-                      placeholder="Enter your password"
-                      className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400"
-                    />
-
-                    <span
-                      onClick={() => setPasswordShow(!passwordShow)}
-                      className="text-[20px] text-[#d00] pr-2 cursor-pointer"
-                    >
-                      {passwordShow ? <GoEyeClosed /> : <RxEyeOpen />}
-                    </span>
-                  </div>
-
-                  {error.password && (
-                    <p className="text-red-500 text-sm">{error.password}</p>
-                  )}
-                  {error.passwordError && (
-                    <li>
-                      <p className="text-red-500 text-sm">
-                        {error.passwordError}
-                      </p>
-                    </li>
-                  )}
-
-                  <p className="text-[#d55] text-[15px] text-right px-2 pt-1 cursor-pointer hover:text-[#d00] transition-all duration-300 select-none">
-                    Forgot Password?
+                {(error.email || error.emailError) && (
+                  <p className="text-red-500 text-xs mt-1.5 font-medium">
+                    {error.email || error.emailError}
                   </p>
-                </li>
+                )}
+              </div>
 
-                {error.api && (
-                  <li>
-                    <p className="text-red-500 text-sm">{error.api}</p>
-                  </li>
+              {/* Password Input Field */}
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
+                  Password <span className="text-red-500">*</span>
+                </label>
+
+                <div
+                  className={`flex items-center gap-3 rounded-xl border bg-slate-50/50 px-4 py-3 transition duration-200 focus-within:bg-white focus-within:ring-2 ${
+                    error.password || error.passwordError
+                      ? "border-red-400 focus-within:ring-red-500/20"
+                      : "border-slate-200 focus-within:border-red-500 focus-within:ring-red-500/20"
+                  }`}
+                >
+                  <FaKey className="text-lg text-red-600 shrink-0" />
+                  <input
+                    type={passwordShow ? "text" : "password"}
+                    name="password"
+                    value={data.password}
+                    onChange={handleChange}
+                    disabled={isSubmitting}
+                    placeholder="••••••••"
+                    className="w-full bg-transparent outline-none text-slate-800 placeholder-slate-400 text-sm disabled:opacity-50"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setPasswordShow(!passwordShow)}
+                    className="text-slate-400 hover:text-red-600 transition focus:outline-none"
+                    aria-label="Toggle password visibility"
+                  >
+                    {passwordShow ? (
+                      <RxEyeOpen className="text-lg" />
+                    ) : (
+                      <GoEyeClosed className="text-lg" />
+                    )}
+                  </button>
+                </div>
+
+                {(error.password || error.passwordError) && (
+                  <p className="text-red-500 text-xs mt-1.5 font-medium">
+                    {error.password || error.passwordError}
+                  </p>
                 )}
 
-                <li>
-                  <button
-                    type="submit"
-                    className="px-6 py-3 w-full rounded-2xl bg-red-600 text-white font-semibold hover:bg-red-700 transition cursor-pointer"
+                <div className="flex justify-end mt-2">
+                  <Link
+                    href="/forgot-password"
+                    className="text-xs font-medium text-slate-500 hover:text-red-600 transition"
                   >
-                    Login
-                  </button>
-                </li>
-              </ul>
+                    Forgot Password?
+                  </Link>
+                </div>
+              </div>
+
+              {/* General API Errors */}
+              {error.api && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-xl">
+                  <p className="text-red-600 text-xs text-center font-medium">
+                    {error.api}
+                  </p>
+                </div>
+              )}
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-3.5 px-6 rounded-xl bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-semibold text-sm shadow-lg shadow-red-600/25 hover:shadow-red-600/40 transition duration-200 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? (
+                  <>
+                    <CgSpinner className="animate-spin text-lg" />
+                    <span>Signing in...</span>
+                  </>
+                ) : (
+                  <span>Sign In</span>
+                )}
+              </button>
             </form>
+
+            {/* Footer Prompt */}
+            <p className="text-center text-xs text-slate-500 mt-8">
+              Don't have an account?{" "}
+              <Link
+                href="/register"
+                className="font-semibold text-red-600 hover:underline"
+              >
+                Create one now
+              </Link>
+            </p>
           </div>
+
         </div>
       </div>
     </div>

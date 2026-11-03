@@ -177,25 +177,25 @@ export default function PlatformSetting() {
                             <nav className="space-y-1">
                                 <button
                                     onClick={() => setActiveTab('general')}
-                                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-bold rounded-xl transition-colors ${activeTab === 'general' ? 'bg-white text-[#d00] shadow-sm border border-gray-200' : 'text-gray-600 hover:bg-white hover:text-gray-900 border border-transparent'}`}
+                                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-bold rounded-xl transition-colors cursor-pointer ${activeTab === 'general' ? 'bg-white text-[#d00] shadow-sm border border-gray-200' : 'text-gray-600 hover:bg-white hover:text-gray-900 border border-transparent'}`}
                                 >
                                     <FaGlobe className={activeTab === 'general' ? 'text-[#d00]' : 'text-gray-400'} size={16} /> General Config
                                 </button>
                                 <button
                                     onClick={() => setActiveTab('security')}
-                                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-bold rounded-xl transition-colors ${activeTab === 'security' ? 'bg-white text-[#d00] shadow-sm border border-gray-200' : 'text-gray-600 hover:bg-white hover:text-gray-900 border border-transparent'}`}
+                                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-bold rounded-xl transition-colors cursor-pointer ${activeTab === 'security' ? 'bg-white text-[#d00] shadow-sm border border-gray-200' : 'text-gray-600 hover:bg-white hover:text-gray-900 border border-transparent'}`}
                                 >
                                     <FaShieldAlt className={activeTab === 'security' ? 'text-[#d00]' : 'text-gray-400'} size={16} /> Security & Auth
                                 </button>
                                 <button
                                     onClick={() => setActiveTab('email')}
-                                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-bold rounded-xl transition-colors ${activeTab === 'email' ? 'bg-white text-[#d00] shadow-sm border border-gray-200' : 'text-gray-600 hover:bg-white hover:text-gray-900 border border-transparent'}`}
+                                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-bold rounded-xl transition-colors cursor-pointer ${activeTab === 'email' ? 'bg-white text-[#d00] shadow-sm border border-gray-200' : 'text-gray-600 hover:bg-white hover:text-gray-900 border border-transparent'}`}
                                 >
                                     <FaEnvelope className={activeTab === 'email' ? 'text-[#d00]' : 'text-gray-400'} size={16} /> Email Settings
                                 </button>
                                 <button
                                     onClick={() => setActiveTab('database')}
-                                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-bold rounded-xl transition-colors ${activeTab === 'database' ? 'bg-white text-[#d00] shadow-sm border border-gray-200' : 'text-gray-600 hover:bg-white hover:text-gray-900 border border-transparent'}`}
+                                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-bold rounded-xl transition-colors cursor-pointer ${activeTab === 'database' ? 'bg-white text-[#d00] shadow-sm border border-gray-200' : 'text-gray-600 hover:bg-white hover:text-gray-900 border border-transparent'}`}
                                 >
                                     <FaDatabase className={activeTab === 'database' ? 'text-[#d00]' : 'text-gray-400'} size={16} /> Backup & Data
                                 </button>

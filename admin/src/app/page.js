@@ -7,12 +7,14 @@ import { FaEnvelope, FaLock, FaShieldAlt, FaEye, FaEyeSlash, FaArrowLeft } from 
 import { toast } from 'sonner';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { context } from './context/MainContext';
 
 export default function PremiumAdminLogin() {
   // const [email, setEmail] = useState('');
   // const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -20,6 +22,8 @@ export default function PremiumAdminLogin() {
     role: "super-admin",
     password: "",
   });
+
+  const { admin, getAdmin } = context();
 
   const router = useRouter();
 
@@ -67,17 +71,19 @@ export default function PremiumAdminLogin() {
       );
 
       if (response.data?.success) {
-        const adminResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_APIURL}/admin-auth/me`,
-          { withCredentials: true }
-        );
+        // const adminResponse = await axios.get(
+        //   `${process.env.NEXT_PUBLIC_APIURL}/admin-auth/me`,
+        //   { withCredentials: true }
+        // );
 
-        if (adminResponse.data?.success) {
-          // Update your AdminContext here with adminResponse.data.admin
-          router.replace("/admin");
-        } else {
-          toast.error("Unable to load admin information.");
-        }
+        // if (adminResponse.data?.success) {
+        //   // Update your AdminContext here with adminResponse.data.admin
+        //   getAdmin()
+        //   router.replace("/admin");
+        // } else {
+        //   toast.error("Unable to load admin information.");
+        // }
+        router.replace("/admin");
       }
     } catch (error) {
       // console.error("Create admin error:", error);
@@ -121,6 +127,47 @@ export default function PremiumAdminLogin() {
   //   checkAdmin();
   // }, []);
 
+  // if (admin) {
+  //   router.replace("/admin");
+  // }
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_APIURL}/admin-auth/me`,
+          {
+            withCredentials: true,
+          }
+        );
+
+        if (response.data?.success) {
+          getAdmin();
+          router.replace("/admin");
+          return;
+        }
+      } catch (error) {
+        // Admin is not authenticated; show login page.
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    };
+
+    checkAdmin();
+  }, [router]);
+
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-4 border-red-600 border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm font-medium text-slate-500">
+            Checking authentication...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
 
   return (

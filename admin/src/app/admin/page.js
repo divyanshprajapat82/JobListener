@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import CountUp from "react-countup";
 import { context } from "../context/MainContext";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
 
@@ -15,6 +16,8 @@ export default function Home() {
   const filteredData = categoryData.filter((item) =>
     item.status === "active"
   )
+
+  const router = useRouter();
 
   const getLocalTimeAgo = (date) => {
     const now = new Date();
@@ -67,8 +70,9 @@ export default function Home() {
           // setAuthenticated(true);
           // console.log("Data", response.data);
 
+          router.replace("/admin");
         } else {
-          // router.replace("/");
+          router.replace("/");
         }
       } catch (error) {
         // router.replace("/");

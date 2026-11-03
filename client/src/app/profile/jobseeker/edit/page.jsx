@@ -352,43 +352,6 @@ export default function page() {
         editExpData={editExpData}
       />
       <div className="min-h-screen bg-gray-50 font-sans text-gray-900 pb-12">
-        {/* Navbar (Same as Profile Page) */}
-        {/* <nav className="bg-black text-white px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <svg
-              className="w-6 h-6 text-white"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 15H4V8h16v11z" />
-            </svg>
-            <span className="text-xl font-bold tracking-wide">JobListener</span>
-          </div>
-          <div className="hidden md:flex items-center space-x-6 text-sm font-medium text-gray-300">
-            <a href="#" className="hover:text-white transition">
-              Home
-            </a>
-            <a href="#" className="hover:text-white transition">
-              Jobs
-            </a>
-            <a href="#" className="hover:text-white transition">
-              Resume
-            </a>
-            <a href="#" className="hover:text-white transition">
-              About Us
-            </a>
-            <a href="#" className="hover:text-white transition">
-              Contact Us
-            </a>
-          </div>
-          <div className="flex items-center space-x-2 cursor-pointer">
-            <img
-              src="https://i.pravatar.cc/150?img=47"
-              alt="User Avatar"
-              className="w-8 h-8 rounded-full border border-gray-600"
-            />
-          </div>
-        </nav> */}
 
         {/* Main Content Form */}
         <main className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">

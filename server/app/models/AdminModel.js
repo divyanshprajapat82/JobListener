@@ -28,6 +28,11 @@ const adminSchema = new mongoose.Schema(
 			default: "support-agent",
 		},
 
+		phone: {
+			type: Number,
+			default: null,
+		},
+
 		logo: {
 			type: String,
 			default: null,

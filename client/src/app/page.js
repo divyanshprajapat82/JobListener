@@ -108,7 +108,7 @@ export default function Home() {
     //   </footer>
     // </div>
     <>
-    
+
       <div className="bg-[#fff] text-[#000]">
         <Intro />
         <PostJob />

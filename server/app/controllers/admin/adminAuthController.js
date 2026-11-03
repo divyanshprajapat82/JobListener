@@ -6,6 +6,7 @@ const { hashOTP, generateOTP } = require("../../utility/otp");
 const { transporter } = require("../../utility/mail");
 const { mailOTP } = require("../../config/mailOTP");
 const crypto = require("crypto");
+const { cloudinary } = require("../../config/cloudinary");
 
 // CREATE ADMIN
 const createAdmin = async (req, res) => {
@@ -232,6 +233,136 @@ const getMe = async (req, res) => {
 		});
 	}
 };
+
+const updateProfile = async (req, res) => {
+	try {
+		const { name, email, phone } = req.body;
+		const adminId = req.admin?.adminId;
+
+		if (!adminId) {
+			return res.status(401).json({
+				success: false,
+				message: "Admin authentication required",
+			});
+		}
+
+		const admin = await AdminModel.findById(adminId);
+
+		if (!admin) {
+			return res.status(404).json({
+				success: false,
+				message: "Admin not found",
+			});
+		}
+
+		// Check whether another admin is using this email
+		const existingAdmin = await AdminModel.findOne({
+			email: email.toLowerCase().trim(),
+			_id: { $ne: adminId },
+		});
+
+		if (existingAdmin) {
+			return res.status(409).json({
+				success: false,
+				message: "Email is already registered",
+			});
+		}
+
+		const data = await AdminModel.findByIdAndUpdate(
+			adminId,
+			{
+				$set: {
+					name,
+					email,
+					phone: phone || null,
+				},
+			},
+			{
+				new: true,
+				runValidators: true,
+			},
+		).select("-password -otp -resetPasswordToken");
+
+		return res.status(200).json({
+			success: true,
+			message: "Admin profile updated successfully",
+			data,
+		});
+	} catch (error) {
+		console.log("Update profile error:", error);
+
+		return res.status(500).json({
+			success: false,
+			message:
+				error.code === 11000 ? "Email is already registered" : error.message,
+		});
+	}
+};
+
+let adminProfileLogo = async (req, res) => {
+	try {
+		const adminId = req.admin?.adminId;
+
+		if (!adminId) {
+			return res.status(401).json({
+				success: false,
+				message: "Admin authentication required",
+			});
+		}
+
+		if (!req.file) {
+			return res.status(400).json({
+				success: false,
+				message: "Please select a logo",
+			});
+		}
+
+		const admin = await AdminModel.findById(adminId);
+
+		if (!admin) {
+			return res.status(404).json({
+				success: false,
+				message: "Admin not found",
+			});
+		}
+
+		// Delete previous logo from Cloudinary
+		if (admin.public_id) {
+			await cloudinary.uploader.destroy(admin.public_id);
+		}
+
+		// Upload new logo
+		const result = await cloudinary.uploader.upload(req.file.path, {
+			folder: "joblistener/admin-logos",
+			resource_type: "image",
+		});
+
+		const updatedAdmin = await AdminModel.findByIdAndUpdate(
+			adminId,
+			{
+				$set: {
+					logo: result.secure_url,
+					public_id: result.public_id,
+				},
+			},
+			{ new: true, runValidators: true },
+		).select("-password -otp -resetPasswordToken");
+
+		return res.status(200).json({
+			success: true,
+			message: "Profile logo updated successfully",
+			data: updatedAdmin,
+		});
+	} catch (error) {
+		console.error("Profile logo error:", error);
+
+		return res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
+// module.exports = { updateProfile };
 
 // ADMIN LOGOUT
 
@@ -903,6 +1034,243 @@ const resetPassword = async (req, res) => {
 	}
 };
 
+// VERIFY CURRENT PASSWORD AND SEND OTP FOR PASSWORD CHANGE
+const verifyCurrentPasswordAndSendOTP = async (req, res) => {
+	try {
+		const { currentPassword } = req.body;
+		const adminId = req.admin?.adminId;
+
+		if (!adminId) {
+			return res.status(401).json({
+				success: false,
+				message: "Admin authentication required",
+			});
+		}
+
+		if (!currentPassword) {
+			return res.status(400).json({
+				success: false,
+				message: "Current password is required",
+			});
+		}
+
+		const admin = await AdminModel.findById(adminId);
+
+		if (!admin || !admin.isActive) {
+			return res.status(404).json({
+				success: false,
+				message: "Admin account not found",
+			});
+		}
+
+		// Verify current password
+		const isPasswordCorrect = await bcrypt.compare(
+			currentPassword,
+			admin.password,
+		);
+
+		if (!isPasswordCorrect) {
+			return res.status(400).json({
+				success: false,
+				message: "Current password is incorrect",
+			});
+		}
+
+		// Generate OTP
+		const otp = generateOTP();
+
+		admin.otp = hashOTP(otp);
+		admin.otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+		// Clear any previous reset token
+		admin.resetPasswordToken = null;
+		admin.resetPasswordExpiresAt = null;
+
+		await admin.save();
+
+		// Send OTP to registered email
+		await mailOTP({
+			name: admin.name,
+			email: admin.email,
+			otp,
+		});
+
+		return res.status(200).json({
+			success: true,
+			message: "Current password verified. OTP sent to your registered email.",
+		});
+	} catch (error) {
+		console.error("Verify Current Password Error:", error);
+
+		return res.status(500).json({
+			success: false,
+			message: "Failed to verify password and send OTP",
+		});
+	}
+};
+
+// VERIFY OTP FOR PASSWORD CHANGE
+const verifyPasswordChangeOTP = async (req, res) => {
+	try {
+		const { otp } = req.body;
+		const adminId = req.admin?.adminId;
+
+		if (!adminId) {
+			return res.status(401).json({
+				success: false,
+				message: "Admin authentication required",
+			});
+		}
+
+		if (!otp || !/^\d{6}$/.test(String(otp))) {
+			return res.status(400).json({
+				success: false,
+				message: "Please enter a valid 6-digit OTP",
+			});
+		}
+
+		const admin = await AdminModel.findById(adminId);
+
+		if (!admin || !admin.isActive) {
+			return res.status(404).json({
+				success: false,
+				message: "Admin account not found",
+			});
+		}
+
+		if (!admin.otp || !admin.otpExpiresAt || admin.otpExpiresAt <= new Date()) {
+			return res.status(400).json({
+				success: false,
+				message: "OTP has expired. Please request a new one.",
+			});
+		}
+
+		if (hashOTP(String(otp)) !== admin.otp) {
+			return res.status(400).json({
+				success: false,
+				message: "Incorrect OTP",
+			});
+		}
+
+		// Generate reset token
+		const resetToken = crypto.randomBytes(32).toString("hex");
+
+		admin.resetPasswordToken = crypto
+			.createHash("sha256")
+			.update(resetToken)
+			.digest("hex");
+
+		admin.resetPasswordExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+		// Invalidate OTP
+		admin.otp = null;
+		admin.otpExpiresAt = null;
+
+		await admin.save();
+
+		return res.status(200).json({
+			success: true,
+			message: "OTP verified successfully",
+			resetToken,
+		});
+	} catch (error) {
+		console.error("Password Change OTP Error:", error);
+
+		return res.status(500).json({
+			success: false,
+			message: "OTP verification failed",
+		});
+	}
+};
+
+// UPDATE ADMIN PASSWORD AFTER OTP VERIFICATION
+const updateAdminPassword = async (req, res) => {
+	try {
+		const { resetToken, password, confirmPassword } = req.body;
+		const adminId = req.admin?.adminId;
+
+		if (!adminId) {
+			return res.status(401).json({
+				success: false,
+				message: "Admin authentication required",
+			});
+		}
+
+		if (!resetToken || !password || !confirmPassword) {
+			return res.status(400).json({
+				success: false,
+				message: "All fields are required",
+			});
+		}
+
+		if (password.length < 8) {
+			return res.status(400).json({
+				success: false,
+				message: "Password must be at least 8 characters long",
+			});
+		}
+
+		if (password !== confirmPassword) {
+			return res.status(400).json({
+				success: false,
+				message: "Passwords do not match",
+			});
+		}
+
+		const hashedToken = crypto
+			.createHash("sha256")
+			.update(resetToken)
+			.digest("hex");
+
+		const admin = await AdminModel.findOne({
+			_id: adminId,
+			resetPasswordToken: hashedToken,
+			resetPasswordExpiresAt: { $gt: new Date() },
+			isActive: true,
+		});
+
+		if (!admin) {
+			return res.status(400).json({
+				success: false,
+				message:
+					"Invalid or expired verification session. Please verify OTP again.",
+			});
+		}
+
+		// Prevent using the current password again
+		const isSamePassword = await bcrypt.compare(password, admin.password);
+
+		if (isSamePassword) {
+			return res.status(400).json({
+				success: false,
+				message: "New password must be different from your current password",
+			});
+		}
+
+		admin.password = await bcrypt.hash(password, 12);
+
+		// Invalidate reset token
+		admin.resetPasswordToken = null;
+		admin.resetPasswordExpiresAt = null;
+		admin.otp = null;
+		admin.otpExpiresAt = null;
+
+		await admin.save();
+
+		return res.status(200).json({
+			success: true,
+			message: "Password updated successfully",
+		});
+	} catch (error) {
+		console.error("Update Admin Password Error:", error);
+
+		return res.status(500).json({
+			success: false,
+			message: "Failed to update password",
+		});
+	}
+};
+
 // module.exports = {
 // 	adminLogin,
 // };
@@ -912,9 +1280,14 @@ module.exports = {
 	adminLogin,
 	getAdmins,
 	getMe,
+	updateProfile,
+	adminProfileLogo,
 	adminLogout,
 	sendOTP,
 	resendOTP,
 	verifyOTP,
 	resetPassword,
+	verifyCurrentPasswordAndSendOTP,
+	verifyPasswordChangeOTP,
+	updateAdminPassword,
 };

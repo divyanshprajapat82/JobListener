@@ -91,6 +91,7 @@ export const MainContext = ({ children }) => {
           // setUser(null);
           // toast.success(finalData.message);
           router.push("/");
+          getAdmin()
           // setUser(finalData.data);
         }
       })

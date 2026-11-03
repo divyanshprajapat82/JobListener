@@ -120,6 +120,9 @@ export default function SideBar() {
                 href="/admin/notification"
                 className={`flex items-center space-x-3 px-4 py-3 ${pathName == "/admin/notification" || pathName == "/admin/notification/add" || pathName.startsWith("/admin/notification/edit/") ? "bg-red-50 text-red-700" : " text-gray-500 hover:bg-gray-50 hover:text-gray-900"}  rounded-xl font-medium transition-all group relative`}
               >
+                {pathName == "/admin/notification" ? (
+                  <div className="absolute left-0 w-1 h-6 bg-red-600 rounded-r-full"></div>
+                ) : null}
                 <LuGalleryVerticalEnd className="w-4.5 h-4.5 transition-colors group-hover:text-red-500" />
                 {/* <span>All Platform Jobs</span> */}
                 <span>Notifications</span>
@@ -127,11 +130,9 @@ export default function SideBar() {
 
               <Link
                 href="/admin/manage-setting"
-                className={`flex items-center space-x-3 px-4 py-3 ${pathName == "/admin/setting" || pathName == "/admin/setting/add" || pathName.startsWith("/admin/setting/edit/") ? "bg-red-50 text-red-700" : " text-gray-500 hover:bg-gray-50 hover:text-gray-900"}  rounded-xl font-medium transition-all group relative`}
+                className={`flex items-center space-x-3 px-4 py-3 ${pathName == "/admin/manage-setting" ? "bg-red-50 text-red-700" : " text-gray-500 hover:bg-gray-50 hover:text-gray-900"}  rounded-xl font-medium transition-all group relative`}
               >
-                {pathName == "/admin/categories" ||
-                  pathName == "/admin/categories/add" ||
-                  pathName.startsWith("/admin/categories/edit/") ? (
+                {pathName == "/admin/manage-setting" ? (
                   <div className="absolute left-0 w-1 h-6 bg-red-600 rounded-r-full"></div>
                 ) : null}
                 <IoSettingsOutline className="w-4.5 h-4.5 transition-colors group-hover:text-red-500" />
@@ -144,8 +145,17 @@ export default function SideBar() {
 
               {/* Admin Info */}
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold border border-red-200">
-                  {admin?.name ? admin.name.substring(0, 2).toUpperCase() : 'AD'}
+                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold border border-red-200 overflow-hidden">
+                  {/* {admin?.name ? admin.name.substring(0, 2).toUpperCase() : 'AD'} */}
+                  {admin?.logo ? (
+                    <img
+                      src={admin?.logo}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    admin?.name?.substring(0, 2).toUpperCase()
+                  )}
                 </div>
                 <div>
                   <p className="text-sm font-bold text-gray-900">{admin?.name || 'Admin User'}</p>
@@ -173,15 +183,17 @@ export default function SideBar() {
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Account</p>
                   </div>
 
-                  <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-800 hover:bg-gray-50 transition-colors cursor-pointer">
-                    <HiOutlineUser size={18} className="text-gray-400" />
-                    My Profile
-                  </button>
+                  <Link href="/admin/profile">
+                    <button onClick={() => setIsDropdownOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-800 hover:bg-gray-50 transition-colors cursor-pointer">
+                      <HiOutlineUser size={18} className="text-gray-400" />
+                      My Profile
+                    </button>
+                  </Link>
 
-                  <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-800 hover:bg-gray-50  transition-colors cursor-pointer">
+                  {/* <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-800 hover:bg-gray-50  transition-colors cursor-pointer">
                     <HiOutlineCog size={18} className="text-gray-400" />
                     Account Settings
-                  </button>
+                  </button> */}
 
                   <div className="h-px bg-gray-100 my-1 mx-2"></div>
 
