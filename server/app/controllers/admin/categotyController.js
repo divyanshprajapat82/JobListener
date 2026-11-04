@@ -28,177 +28,248 @@ const { CategoryModel } = require("../../models/CategoryModel");
 // }
 
 const addCategoty = async (req, res) => {
-  try {
-    const { name, slug, description, status } = req.body;
+	try {
+		const { name, slug, description, status } = req.body;
 
-    if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: "jobListener/categories",
-      });
-      imageUrl = result.secure_url;
-      public_id = result.public_id;
-    }
+		if (req.file) {
+			const result = await cloudinary.uploader.upload(req.file.path, {
+				folder: "jobListener/categories",
+			});
+			imageUrl = result.secure_url;
+			public_id = result.public_id;
+		}
 
-    // Save in DB
-    const category = await CategoryModel.create({
-      name,
-      slug,
-      description,
-      status,
-      icon: imageUrl,
-      public_id,
-    });
+		// Save in DB
+		const category = await CategoryModel.create({
+			name,
+			slug,
+			description,
+			status,
+			icon: imageUrl,
+			public_id,
+		});
 
-    res.json({
-      success: true,
-      message: "Category added successfully",
-      data: category,
-      public_id,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+		res.json({
+			success: true,
+			message: "Category added successfully",
+			data: category,
+			public_id,
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
 };
 
 const viewCategory = async (req, res) => {
-  const data = await CategoryModel.find();
-  res.json({
-    success: true,
-    message: "Categories",
-    data,
-  });
+	const data = await CategoryModel.find();
+	res.json({
+		success: true,
+		message: "Categories",
+		data,
+	});
 };
 
 const singleCategoryView = async (req, res) => {
-  try {
-    const { id } = req.params;
+	try {
+		const { id } = req.params;
 
-    if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "ID is required",
-      });
-    }
+		if (!id) {
+			return res.status(400).json({
+				success: false,
+				message: "ID is required",
+			});
+		}
 
-    const data = await CategoryModel.findById(id);
+		const data = await CategoryModel.findById(id);
 
-    if (!data) {
-      return res.status(404).json({
-        success: false,
-        message: "Category not found",
-      });
-    }
+		if (!data) {
+			return res.status(404).json({
+				success: false,
+				message: "Category not found",
+			});
+		}
 
-    res.json({
-      success: true,
-      message: "Single Category",
-      data,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+		res.json({
+			success: true,
+			message: "Single Category",
+			data,
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
+
+const getPublicCategories = async (req, res) => {
+	try {
+		const categories = await CategoryModel.aggregate([
+			{
+				$match: {
+					status: "active",
+				},
+			},
+			{
+				$lookup: {
+					from: "jobs",
+					let: {
+						categoryId: "$_id",
+					},
+					pipeline: [
+						{
+							$match: {
+								$expr: {
+									$eq: ["$category", "$$categoryId"],
+								},
+								status: "Active",
+							},
+						},
+						{
+							$count: "total",
+						},
+					],
+					as: "jobData",
+				},
+			},
+			{
+				$addFields: {
+					jobs: {
+						$ifNull: [
+							{
+								$arrayElemAt: ["$jobData.total", 0],
+							},
+							0,
+						],
+					},
+				},
+			},
+			{
+				$project: {
+					name: 1,
+					slug: 1,
+					description: 1,
+					icon: 1,
+					jobs: 1,
+				},
+			},
+			{
+				$sort: {
+					name: 1,
+				},
+			},
+		]);
+
+		return res.status(200).json({
+			success: true,
+			data: categories,
+		});
+	} catch (error) {
+		return res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
 };
 
 const updateCategory = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { name, slug, description, status } = req.body;
+	try {
+		const { id } = req.params;
+		const { name, slug, description, status } = req.body;
 
-    const category = await CategoryModel.findById(id);
-    if (!category) {
-      return res.status(404).json({
-        success: false,
-        message: "Category not found",
-      });
-    }
+		const category = await CategoryModel.findById(id);
+		if (!category) {
+			return res.status(404).json({
+				success: false,
+				message: "Category not found",
+			});
+		}
 
-    let imageUrl = category.icon;
-    let public_id = category.public_id;
+		let imageUrl = category.icon;
+		let public_id = category.public_id;
 
-    if (req.file) {
-      if (category.public_id) {
-        await cloudinary.uploader.destroy(category.public_id);
-      }
+		if (req.file) {
+			if (category.public_id) {
+				await cloudinary.uploader.destroy(category.public_id);
+			}
 
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: "jobListener/categories",
-      });
+			const result = await cloudinary.uploader.upload(req.file.path, {
+				folder: "jobListener/categories",
+			});
 
-      imageUrl = result.secure_url;
-      public_id = result.public_id;
+			imageUrl = result.secure_url;
+			public_id = result.public_id;
 
-      // // 🧹 Delete local file (important)
-      // const fs = require("fs");
-      // fs.unlinkSync(req.file.path);
-    }
+			// // 🧹 Delete local file (important)
+			// const fs = require("fs");
+			// fs.unlinkSync(req.file.path);
+		}
 
-    const data = await CategoryModel.findByIdAndUpdate(
-      id,
-      {
-        name,
-        slug,
-        description,
-        status,
-        icon: imageUrl,
-        public_id,
-      },
-      { new: true },
-    );
+		const data = await CategoryModel.findByIdAndUpdate(
+			id,
+			{
+				name,
+				slug,
+				description,
+				status,
+				icon: imageUrl,
+				public_id,
+			},
+			{ new: true },
+		);
 
-    res.json({
-      success: true,
-      message: "Category updated successfully",
-      data,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+		res.json({
+			success: true,
+			message: "Category updated successfully",
+			data,
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
 };
 
 const deleteCategory = async (req, res) => {
-  try {
-    const { id } = req.params;
+	try {
+		const { id } = req.params;
 
-    const data = await CategoryModel.findById(id);
+		const data = await CategoryModel.findById(id);
 
-    if (!data) {
-      return res.status(404).json({
-        success: false,
-        message: "Category not found",
-      });
-    }
+		if (!data) {
+			return res.status(404).json({
+				success: false,
+				message: "Category not found",
+			});
+		}
 
-    if (data.public_id) {
-      await cloudinary.uploader.destroy(data.public_id);
-    }
+		if (data.public_id) {
+			await cloudinary.uploader.destroy(data.public_id);
+		}
 
-    await CategoryModel.findByIdAndDelete(id);
+		await CategoryModel.findByIdAndDelete(id);
 
-    res.json({
-      success: true,
-      message: "Category deleted successfully",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+		res.json({
+			success: true,
+			message: "Category deleted successfully",
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
 };
 
 module.exports = {
-  addCategoty,
-  viewCategory,
-  singleCategoryView,
-  updateCategory,
-  deleteCategory,
+	addCategoty,
+	viewCategory,
+	singleCategoryView,
+	getPublicCategories,
+	updateCategory,
+	deleteCategory,
 };

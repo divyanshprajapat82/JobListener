@@ -1099,7 +1099,7 @@ export default function Header() {
 
                       <div className="border-t border-slate-100 bg-slate-50/80 p-3">
                         <Link
-                          href="/admin/notifications"
+                          href="/notifications"
                           onClick={() => setNotificationsOpen(false)}
                           className="block rounded-xl border border-slate-200 bg-white py-2.5 text-center text-xs font-bold text-slate-700 transition hover:border-red-200 hover:text-red-600"
                         >

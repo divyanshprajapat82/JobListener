@@ -5,6 +5,7 @@ import { CiLocationOn, CiSearch } from "react-icons/ci";
 import DualSalaryRange from "./DualSalaryRange";
 import { useAuth } from "@/app/context/MainContext";
 import axios from "axios";
+import { useSearchParams } from "next/navigation";
 
 export default function SideBar() {
 
@@ -71,7 +72,13 @@ export default function SideBar() {
 
   const APIURL = process.env.NEXT_PUBLIC_APIURL;
 
+  const searchParams = useSearchParams();
 
+  useEffect(() => {
+    const categoryId = searchParams.get("category");
+
+    setCategoryFilter(categoryId || "");
+  }, [searchParams, setCategoryFilter]);
 
   useEffect(() => {
     const getTags = async () => {
