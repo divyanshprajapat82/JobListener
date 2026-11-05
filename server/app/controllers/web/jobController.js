@@ -905,6 +905,50 @@ const jobViews = async (req, res) => {
 	}
 };
 
+const getTopCompanies = async (req, res) => {
+	try {
+		const companies = await EmployerModel.find()
+			.select("companyName companyType companyCity userId")
+			.populate("userId", "logo");
+
+		const companiesWithJobs = await Promise.all(
+			companies.map(async (company) => {
+				const openJobs = await JobModel.countDocuments({
+					employer: company._id,
+					status: "Active",
+				});
+
+				return {
+					_id: company._id,
+					companyName: company.companyName,
+					companyType: company.companyType,
+					companyCity: company.companyCity,
+					logo: company.userId?.logo || "",
+					openJobs,
+				};
+			}),
+		);
+
+		const topCompanies = companiesWithJobs
+			.filter((company) => company.openJobs > 0)
+			.sort((a, b) => b.openJobs - a.openJobs)
+			.slice(0, 5);
+
+		return res.status(200).json({
+			success: true,
+			message: "Top companies fetched successfully",
+			data: topCompanies,
+		});
+	} catch (error) {
+		console.log("Get Top Companies Error:", error);
+
+		return res.status(500).json({
+			success: false,
+			message: "Internal server error",
+		});
+	}
+};
+
 const saveJob = async (req, res) => {
 	try {
 		const { jobId } = req.body;
@@ -1036,6 +1080,7 @@ module.exports = {
 	getSingleEditJob,
 	getEditJob,
 	getDeleteJob,
+	getTopCompanies,
 	saveJob,
 	unsaveJob,
 	getSavedJobs,

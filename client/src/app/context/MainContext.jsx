@@ -21,6 +21,7 @@ export const MainContext = ({ children }) => {
   const [experience, setExperience] = useState([]);
   const [category, setCategory] = useState([]);
   const [jobs, setJobs] = useState([]);
+  const [jobLoading, setJobLoading] = useState(false)
   const [search, setSearch] = useState("");
   const [location, setLocation] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
@@ -252,7 +253,7 @@ export const MainContext = ({ children }) => {
 
   // const remote = ""
   const getjob = () => {
-    // setLoading(true);
+    setJobLoading(true);
     axios
       .get(`${APIURL}/job/view-job`, {
         params: {
@@ -294,9 +295,9 @@ export const MainContext = ({ children }) => {
           toast.error("Something went wrong");
         }
       })
-    // .finally(() => {
-    //   setLoading(false);
-    // });
+      .finally(() => {
+        setJobLoading(false);
+      });
   };
 
   const getNotification = async () => {
@@ -526,6 +527,7 @@ export const MainContext = ({ children }) => {
         platformData,
         platformLoading,
         jobs,
+        jobLoading,
         search,
         setSearch,
         location,

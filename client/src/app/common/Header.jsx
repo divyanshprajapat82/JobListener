@@ -1155,6 +1155,9 @@ export default function Header() {
                         </Link>
                         {user?.role === "employer" && (
                           <>
+                            <Link href="/profile/employer/jobpost" onClick={closeMenus} className="block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-red-600">
+                              Post Jobs
+                            </Link>
                             <Link href="/profile/employer/manage-jobs" onClick={closeMenus} className="block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-red-600">
                               Manage Jobs
                             </Link>

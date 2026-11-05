@@ -5,113 +5,116 @@ const { UserModel } = require("../../models/UserModel");
 // Education
 
 const updateProfile = async (req, res) => {
-  try {
-    const userId = req.user?.userId;
-    const {
-      name,
-      // email,
-      // phone,
-      summary,
-      location,
-      professional,
-      linkedInUrl,
-      portfolio,
-      jobType,
-      workPlace,
-    } = req.body;
+	try {
+		const userId = req.user?.userId;
+		const {
+			name,
+			// email,
+			// phone,
+			summary,
+			location,
+			professional,
+			linkedInUrl,
+			portfolio,
+			jobType,
+			workPlace,
+		} = req.body;
 
-    const jobseeker = await JobseekerModel.findOne({ userId });
+		const jobseeker = await JobseekerModel.findOne({ userId });
 
-    if (!jobseeker) {
-      return res.status(404).json({ message: "Profile not found" });
-    }
+		if (!jobseeker) {
+			return res.status(404).json({ message: "Profile not found" });
+		}
 
-    const user = await UserModel.findByIdAndUpdate(
-      userId,
-      {
-        $set: {
-          name,
-        },
-      },
-      { new: true },
-    );
+		const user = await UserModel.findByIdAndUpdate(
+			userId,
+			{
+				$set: {
+					name,
+				},
+			},
+			{ new: true },
+		);
 
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "Education not found or profile missing",
-      });
-    }
+		if (!user) {
+			return res.status(404).json({
+				success: false,
+				message: "Education not found or profile missing",
+			});
+		}
 
-    const profile = await JobseekerModel.findOneAndUpdate(
-      { userId },
-      {
-        $set: {
-          userId,
-          summary,
-          location,
-          professional,
-          linkedInUrl,
-          portfolio,
-          jobType,
-          workPlace,
-        },
-      },
-      {
-        new: true,
-        upsert: true, // optional
-      },
-    );
+		const profile = await JobseekerModel.findOneAndUpdate(
+			{ userId },
+			{
+				$set: {
+					userId,
+					summary,
+					location,
+					professional,
+					linkedInUrl,
+					portfolio,
+					jobType,
+					workPlace,
+				},
+			},
+			{
+				new: true,
+				upsert: true, // optional
+			},
+		);
 
-    res.status(200).json({
-      success: true,
-      message: "Education updated successfully",
-      user,
-      profile,
-    });
-  } catch (error) {
-    // res.status(500).json({
-    //   success: false,
-    //   message: "Server Error",
-    //   error,
-    // });
+		res.status(200).json({
+			success: true,
+			message: "Education updated successfully",
+			user,
+			profile,
+		});
+	} catch (error) {
+		// res.status(500).json({
+		//   success: false,
+		//   message: "Server Error",
+		//   error,
+		// });
 
-    console.log("🔥 FULL ERROR:", error); // see in terminal
+		console.log("🔥 FULL ERROR:", error); // see in terminal
 
-    res.status(500).json({
-      success: false,
-      message: error.message, // ✅ show real error
-    });
-  }
+		res.status(500).json({
+			success: false,
+			message: error.message, // ✅ show real error
+		});
+	}
 };
 
 const getProfile = async (req, res) => {
-  try {
-    // const userId = req.user?.userId;
+	try {
+		// const userId = req.user?.userId;
 
-    const {id} = req.params
+		const { id } = req.params;
 
-    const jobseeker = await JobseekerModel.findOne({_id: id}).populate("userId", "name email phone logo isActivelyLooking");
+		const jobseeker = await JobseekerModel.findOne({ _id: id }).populate(
+			"userId",
+			"name email phone logo isActivelyLooking",
+		);
 
-    if (!jobseeker) {
-      return res.status(404).json({
-        success: false,
-        message: "Profile not found",
-      });
-    }
+		if (!jobseeker) {
+			return res.status(404).json({
+				success: false,
+				message: "Profile not found",
+			});
+		}
 
-    res.status(200).json({
-      success: true,
-      message: "Profile fetched successfully",
-      data: jobseeker,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+		res.status(200).json({
+			success: true,
+			message: "Profile fetched successfully",
+			data: jobseeker,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
 };
 
 // const resume = async (req, res) => {
@@ -294,554 +297,553 @@ const getProfile = async (req, res) => {
 // };
 
 const resume = async (req, res) => {
-  try {
-    const userId = req.user?.userId;
+	try {
+		const userId = req.user?.userId;
 
-    console.log("USER ID:", userId);
-    console.log("FILE:", req.file);
+		console.log("USER ID:", userId);
+		console.log("FILE:", req.file);
 
-    if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        message: "No resume file received",
-      });
-    }
+		if (!req.file) {
+			return res.status(400).json({
+				success: false,
+				message: "No resume file received",
+			});
+		}
 
-    const user = await JobseekerModel.findOne({ userId });
+		const user = await JobseekerModel.findOne({ userId });
 
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
+		if (!user) {
+			return res.status(404).json({
+				success: false,
+				message: "User not found",
+			});
+		}
 
-    let publicIdToDelete = user.resume_public_id;
+		let publicIdToDelete = user.resume_public_id;
 
-    if (!publicIdToDelete && user.resume) {
-      publicIdToDelete = getPublicIdFromUrl(user.resume);
-    }
+		if (!publicIdToDelete && user.resume) {
+			publicIdToDelete = getPublicIdFromUrl(user.resume);
+		}
 
-    // Delete old resume
-    if (publicIdToDelete) {
-      await cloudinary.uploader.destroy(publicIdToDelete, {
-        resource_type: "raw",
-      });
-    }
+		// Delete old resume
+		if (publicIdToDelete) {
+			await cloudinary.uploader.destroy(publicIdToDelete, {
+				resource_type: "raw",
+			});
+		}
 
-    console.log("Uploading:", req.file.path);
+		console.log("Uploading:", req.file.path);
 
-    // Upload new resume
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: "jobListener/resume",
-      resource_type: "raw",
-      use_filename: true,
-      unique_filename: false,
-      access_mode: "public",
-    });
+		// Upload new resume
+		const result = await cloudinary.uploader.upload(req.file.path, {
+			folder: "jobListener/resume",
+			resource_type: "raw",
+			use_filename: true,
+			unique_filename: false,
+			access_mode: "public",
+		});
 
-    console.log("CLOUDINARY RESULT:", result);
+		console.log("CLOUDINARY RESULT:", result);
 
-    const updatedResume = await JobseekerModel.findOneAndUpdate(
-      { userId },
-      {
-        resume: result.secure_url,
-        resume_public_id: result.public_id,
-      },
-      {
-        new: true,
-      }
-    );
+		const updatedResume = await JobseekerModel.findOneAndUpdate(
+			{ userId },
+			{
+				resume: result.secure_url,
+				resume_public_id: result.public_id,
+			},
+			{
+				new: true,
+			},
+		);
 
-    console.log("UPDATED USER:", updatedResume);
+		console.log("UPDATED USER:", updatedResume);
 
-    return res.status(200).json({
-      success: true,
-      message: "Resume updated successfully",
-      data: updatedResume,
-    });
+		return res.status(200).json({
+			success: true,
+			message: "Resume updated successfully",
+			data: updatedResume,
+		});
+	} catch (error) {
+		console.error("RESUME ERROR:", error);
 
-  } catch (error) {
-    console.error("RESUME ERROR:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+		return res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
 };
 
 const addEducation = async (req, res) => {
-  try {
-    const userId = req.user?.userId;
-    // console.log("UserId:", userId);
+	try {
+		const userId = req.user?.userId;
+		// console.log("UserId:", userId);
 
-    const {
-      degree,
-      school,
-      startDate,
-      endDate,
-      currentlyStudying,
-      grade,
-      activities,
-    } = req.body;
+		const {
+			degree,
+			school,
+			startDate,
+			endDate,
+			currentlyStudying,
+			grade,
+			activities,
+		} = req.body;
 
-    // console.log("Decoded User:", req.user);
-    // console.log("UserId used:", userId);
+		// console.log("Decoded User:", req.user);
+		// console.log("UserId used:", userId);
 
-    // const jobseeker = await JobseekerModel.findOne({ userId });
+		// const jobseeker = await JobseekerModel.findOne({ userId });
 
-    const jobseeker = await JobseekerModel.findOneAndUpdate(
-      { userId },
-      {
-        $push: {
-          education: {
-            degree,
-            school,
-            startDate,
-            endDate: currentlyStudying ? null : endDate,
-            currentlyStudying,
-            grade,
-            activities,
-          },
-        },
-      },
-      {
-        new: true,
-      }
-    );
+		const jobseeker = await JobseekerModel.findOneAndUpdate(
+			{ userId },
+			{
+				$push: {
+					education: {
+						degree,
+						school,
+						startDate,
+						endDate: currentlyStudying ? null : endDate,
+						currentlyStudying,
+						grade,
+						activities,
+					},
+				},
+			},
+			{
+				new: true,
+			},
+		);
 
-    if (!jobseeker) {
-      return res.status(404).json({ message: "Jobseeker Profile not found" });
-    }
+		if (!jobseeker) {
+			return res.status(404).json({ message: "Jobseeker Profile not found" });
+		}
 
-    // Push new education
-    // jobseeker.education.push({
-    //   degree,
-    //   school,
-    //   startDate,
-    //   endDate: currentlyStudying ? null : endDate,
-    //   currentlyStudying,
-    //   grade,
-    //   activities,
-    // });
+		// Push new education
+		// jobseeker.education.push({
+		//   degree,
+		//   school,
+		//   startDate,
+		//   endDate: currentlyStudying ? null : endDate,
+		//   currentlyStudying,
+		//   grade,
+		//   activities,
+		// });
 
-    // await jobseeker.save();
+		// await jobseeker.save();
 
-    res.status(200).json({
-      success: true,
-      message: "Education added successfully",
-      data: jobseeker.education,
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+		res.status(200).json({
+			success: true,
+			message: "Education added successfully",
+			data: jobseeker.education,
+		});
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
 };
 
 const getEducation = async (req, res) => {
-  try {
-    const userId = req.user?.userId;
+	try {
+		const userId = req.user?.userId;
 
-    const jobseeker = await JobseekerModel.findOne({ userId });
+		const jobseeker = await JobseekerModel.findOne({ userId });
 
-    if (!jobseeker) {
-      return res.status(404).json({
-        success: false,
-        message: "Profile not found",
-      });
-    }
+		if (!jobseeker) {
+			return res.status(404).json({
+				success: false,
+				message: "Profile not found",
+			});
+		}
 
-    res.status(200).json({
-      success: true,
-      message: "Education fetched successfully",
-      data: jobseeker.education,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+		res.status(200).json({
+			success: true,
+			message: "Education fetched successfully",
+			data: jobseeker.education,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
 };
 
 const getSingleEducation = async (req, res) => {
-  try {
-    const userId = req.user?.userId;
-    const { id } = req.params;
+	try {
+		const userId = req.user?.userId;
+		const { id } = req.params;
 
-    const jobseeker = await JobseekerModel.findOne({ userId });
+		const jobseeker = await JobseekerModel.findOne({ userId });
 
-    if (!jobseeker) {
-      return res.status(404).json({
-        success: false,
-        message: "Profile not found",
-      });
-    }
+		if (!jobseeker) {
+			return res.status(404).json({
+				success: false,
+				message: "Profile not found",
+			});
+		}
 
-    const education = jobseeker.education.id(id);
+		const education = jobseeker.education.id(id);
 
-    if (!education) {
-      return res.status(404).json({
-        success: false,
-        message: "Education not found",
-      });
-    }
+		if (!education) {
+			return res.status(404).json({
+				success: false,
+				message: "Education not found",
+			});
+		}
 
-    res.status(200).json({
-      success: true,
-      message: "Education fetched successfully",
-      data: education,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+		res.status(200).json({
+			success: true,
+			message: "Education fetched successfully",
+			data: education,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
 };
 
 const deleteEducation = async (req, res) => {
-  try {
-    const userId = req.user?.userId;
-    const { id } = req.params;
+	try {
+		const userId = req.user?.userId;
+		const { id } = req.params;
 
-    console.log(userId);
+		console.log(userId);
 
-    // const jobseeker = await JobseekerModel.education.findById(id);
-    const jobseeker = await JobseekerModel.findOne({ userId });
+		// const jobseeker = await JobseekerModel.education.findById(id);
+		const jobseeker = await JobseekerModel.findOne({ userId });
 
-    if (!jobseeker) {
-      return res.status(404).json({
-        success: false,
-        message: "Profile not found",
-      });
-    }
+		if (!jobseeker) {
+			return res.status(404).json({
+				success: false,
+				message: "Profile not found",
+			});
+		}
 
-    // await JobseekerModel.education.findByIdAndDelete(id);
-    jobseeker.education = jobseeker.education.filter(
-      (edu) => edu._id.toString() !== id,
-    );
+		// await JobseekerModel.education.findByIdAndDelete(id);
+		jobseeker.education = jobseeker.education.filter(
+			(edu) => edu._id.toString() !== id,
+		);
 
-    await jobseeker.save();
+		await jobseeker.save();
 
-    res.json({
-      success: true,
-      message: "Education deleted successfully",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+		res.json({
+			success: true,
+			message: "Education deleted successfully",
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
 };
 
 const updateEducation = async (req, res) => {
-  try {
-    const userId = req.user?.userId;
-    const { id } = req.params;
+	try {
+		const userId = req.user?.userId;
+		const { id } = req.params;
 
-    const {
-      degree,
-      school,
-      startDate,
-      endDate,
-      currentlyStudying,
-      grade,
-      activities,
-    } = req.body;
+		const {
+			degree,
+			school,
+			startDate,
+			endDate,
+			currentlyStudying,
+			grade,
+			activities,
+		} = req.body;
 
-    if (!degree || !school || !startDate) {
-      return res.status(400).json({
-        success: false,
-        message: "Degree, School and Start Date are required",
-      });
-    }
+		if (!degree || !school || !startDate) {
+			return res.status(400).json({
+				success: false,
+				message: "Degree, School and Start Date are required",
+			});
+		}
 
-    const updated = await JobseekerModel.findOneAndUpdate(
-      {
-        userId,
-        "education._id": id,
-      },
-      {
-        $set: {
-          "education.$.degree": degree,
-          "education.$.school": school,
-          "education.$.startDate": startDate,
-          "education.$.endDate": currentlyStudying ? null : endDate,
-          "education.$.currentlyStudying": currentlyStudying,
-          "education.$.grade": grade,
-          "education.$.activities": activities,
-        },
-      },
-      { new: true },
-    );
+		const updated = await JobseekerModel.findOneAndUpdate(
+			{
+				userId,
+				"education._id": id,
+			},
+			{
+				$set: {
+					"education.$.degree": degree,
+					"education.$.school": school,
+					"education.$.startDate": startDate,
+					"education.$.endDate": currentlyStudying ? null : endDate,
+					"education.$.currentlyStudying": currentlyStudying,
+					"education.$.grade": grade,
+					"education.$.activities": activities,
+				},
+			},
+			{ new: true },
+		);
 
-    if (!updated) {
-      return res.status(404).json({
-        success: false,
-        message: "Education not found or profile missing",
-      });
-    }
+		if (!updated) {
+			return res.status(404).json({
+				success: false,
+				message: "Education not found or profile missing",
+			});
+		}
 
-    res.status(200).json({
-      success: true,
-      message: "Education updated successfully",
-      data: updated.education,
-    });
-  } catch (error) {
-    // console.error("Update Education Error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server Error",
-    });
-  }
+		res.status(200).json({
+			success: true,
+			message: "Education updated successfully",
+			data: updated.education,
+		});
+	} catch (error) {
+		// console.error("Update Education Error:", error);
+		res.status(500).json({
+			success: false,
+			message: "Server Error",
+		});
+	}
 };
 
 // Experience
 
 const addExperience = async (req, res) => {
-  try {
-    const userId = req.user?.userId;
+	try {
+		const userId = req.user?.userId;
 
-    const jobseeker = await JobseekerModel.findOne({ userId });
+		const jobseeker = await JobseekerModel.findOne({ userId });
 
-    if (!jobseeker) {
-      return res.status(404).json({
-        success: false,
-        message: "Profile not found",
-      });
-    }
+		if (!jobseeker) {
+			return res.status(404).json({
+				success: false,
+				message: "Profile not found",
+			});
+		}
 
-    jobseeker.experience.push(req.body);
+		jobseeker.experience.push(req.body);
 
-    await jobseeker.save();
+		await jobseeker.save();
 
-    res.status(201).json({
-      success: true,
-      message: "Experience added successfully",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+		res.status(201).json({
+			success: true,
+			message: "Experience added successfully",
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
 };
 
 const getExperience = async (req, res) => {
-  try {
-    const userId = req.user?.userId;
+	try {
+		const userId = req.user?.userId;
 
-    const jobseeker = await JobseekerModel.findOne({ userId });
+		const jobseeker = await JobseekerModel.findOne({ userId });
 
-    if (!jobseeker) {
-      return res.status(404).json({
-        success: false,
-        message: "Profile not found",
-      });
-    }
+		if (!jobseeker) {
+			return res.status(404).json({
+				success: false,
+				message: "Profile not found",
+			});
+		}
 
-    res.status(200).json({
-      success: true,
-      message: "Experience fetched successfully",
-      data: jobseeker.experience,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+		res.status(200).json({
+			success: true,
+			message: "Experience fetched successfully",
+			data: jobseeker.experience,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
 };
 
 const getSingleExperience = async (req, res) => {
-  try {
-    const userId = req.user?.userId;
-    const { id } = req.params;
+	try {
+		const userId = req.user?.userId;
+		const { id } = req.params;
 
-    const jobseeker = await JobseekerModel.findOne({ userId });
+		const jobseeker = await JobseekerModel.findOne({ userId });
 
-    if (!jobseeker) {
-      return res.status(404).json({
-        success: false,
-        message: "Profile not found",
-      });
-    }
+		if (!jobseeker) {
+			return res.status(404).json({
+				success: false,
+				message: "Profile not found",
+			});
+		}
 
-    const experience = jobseeker.experience.id(id);
+		const experience = jobseeker.experience.id(id);
 
-    if (!experience) {
-      return res.status(404).json({
-        success: false,
-        message: "Experience not found",
-      });
-    }
+		if (!experience) {
+			return res.status(404).json({
+				success: false,
+				message: "Experience not found",
+			});
+		}
 
-    res.status(200).json({
-      success: true,
-      message: "Experience fetched successfully",
-      data: experience,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+		res.status(200).json({
+			success: true,
+			message: "Experience fetched successfully",
+			data: experience,
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
 };
 
 const deleteExperience = async (req, res) => {
-  try {
-    const userId = req.user?.userId;
-    const { id } = req.params;
+	try {
+		const userId = req.user?.userId;
+		const { id } = req.params;
 
-    const jobseeker = await JobseekerModel.findOne({ userId });
+		const jobseeker = await JobseekerModel.findOne({ userId });
 
-    if (!jobseeker) {
-      return res.status(404).json({
-        success: false,
-        message: "Profile not found",
-      });
-    }
+		if (!jobseeker) {
+			return res.status(404).json({
+				success: false,
+				message: "Profile not found",
+			});
+		}
 
-    jobseeker.experience = jobseeker.experience.filter(
-      (exp) => exp._id.toString() !== id,
-    );
+		jobseeker.experience = jobseeker.experience.filter(
+			(exp) => exp._id.toString() !== id,
+		);
 
-    await jobseeker.save();
+		await jobseeker.save();
 
-    res.status(200).json({
-      success: true,
-      message: "Experience deleted successfully",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+		res.status(200).json({
+			success: true,
+			message: "Experience deleted successfully",
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
 };
 
 const updateExperience = async (req, res) => {
-  try {
-    const userId = req.user?.userId;
-    const { id } = req.params;
+	try {
+		const userId = req.user?.userId;
+		const { id } = req.params;
 
-    const { jobTitle, company, startDate, endDate, currentRole, description } =
-      req.body;
+		const { jobTitle, company, startDate, endDate, currentRole, description } =
+			req.body;
 
-    if (!jobTitle || !company || !startDate) {
-      return res.status(400).json({
-        success: false,
-        message: "Degree, School and Start Date are required",
-      });
-    }
+		if (!jobTitle || !company || !startDate) {
+			return res.status(400).json({
+				success: false,
+				message: "Degree, School and Start Date are required",
+			});
+		}
 
-    const updated = await JobseekerModel.findOneAndUpdate(
-      {
-        userId,
-        "experience._id": id,
-      },
-      {
-        $set: {
-          "experience.$.jobTitle": jobTitle,
-          "experience.$.company": company,
-          "experience.$.startDate": startDate,
-          "experience.$.endDate": currentRole ? null : endDate,
-          "experience.$.currentRole": currentRole,
-          "experience.$.description": description,
-        },
-      },
-      { new: true },
-    );
+		const updated = await JobseekerModel.findOneAndUpdate(
+			{
+				userId,
+				"experience._id": id,
+			},
+			{
+				$set: {
+					"experience.$.jobTitle": jobTitle,
+					"experience.$.company": company,
+					"experience.$.startDate": startDate,
+					"experience.$.endDate": currentRole ? null : endDate,
+					"experience.$.currentRole": currentRole,
+					"experience.$.description": description,
+				},
+			},
+			{ new: true },
+		);
 
-    if (!updated) {
-      return res.status(404).json({
-        success: false,
-        message: "Experience not found or profile missing",
-      });
-    }
+		if (!updated) {
+			return res.status(404).json({
+				success: false,
+				message: "Experience not found or profile missing",
+			});
+		}
 
-    res.status(200).json({
-      success: true,
-      message: "Experience updated successfully",
-      data: updated.education,
-    });
-  } catch (error) {
-    console.error("Update Experience Error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server Error",
-    });
-  }
+		res.status(200).json({
+			success: true,
+			message: "Experience updated successfully",
+			data: updated.education,
+		});
+	} catch (error) {
+		console.error("Update Experience Error:", error);
+		res.status(500).json({
+			success: false,
+			message: "Server Error",
+		});
+	}
 };
 
 // Skills
 
 const addSkills = async (req, res) => {
-  try {
-    const userId = req.user?.userId;
-    let { skills } = req.body;
+	try {
+		const userId = req.user?.userId;
+		let { skills } = req.body;
 
-    // basic check
-    if (!skills || !Array.isArray(skills)) {
-      return res.status(400).json({
-        success: false,
-        message: "Skills must be an array",
-      });
-    }
+		// basic check
+		if (!skills || !Array.isArray(skills)) {
+			return res.status(400).json({
+				success: false,
+				message: "Skills must be an array",
+			});
+		}
 
-    // remove empty + trim
-    skills = skills
-      .map((skill) => skill.trim())
-      .filter((skill) => skill !== "");
+		// remove empty + trim
+		skills = skills
+			.map((skill) => skill.trim())
+			.filter((skill) => skill !== "");
 
-    const jobseeker = await JobseekerModel.findOne({ userId });
+		const jobseeker = await JobseekerModel.findOne({ userId });
 
-    if (!jobseeker) {
-      return res.status(404).json({
-        success: false,
-        message: "Profile not found",
-      });
-    }
+		if (!jobseeker) {
+			return res.status(404).json({
+				success: false,
+				message: "Profile not found",
+			});
+		}
 
-    jobseeker.skills = skills;
+		jobseeker.skills = skills;
 
-    await jobseeker.save();
+		await jobseeker.save();
 
-    res.status(200).json({
-      success: true,
-      message: "Skills updated successfully",
-      data: jobseeker.skills,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+		res.status(200).json({
+			success: true,
+			message: "Skills updated successfully",
+			data: jobseeker.skills,
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
 };
 
 const getSkills = async (req, res) => {
-  try {
-    const userId = req.user?.userId;
+	try {
+		const userId = req.user?.userId;
 
-    const jobseeker = await JobseekerModel.findOne({ userId });
+		const jobseeker = await JobseekerModel.findOne({ userId });
 
-    res.status(200).json({
-      success: true,
-      data: jobseeker?.skills || [],
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+		res.status(200).json({
+			success: true,
+			data: jobseeker?.skills || [],
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: error.message,
+		});
+	}
 };
 
 // const deleteSkill = async (req, res) => {
@@ -886,69 +888,69 @@ const getSkills = async (req, res) => {
 // };
 
 const deleteSkill = async (req, res) => {
-  try {
-    const userId = req.user?.userId;
-    const { skill } = req.body;
+	try {
+		const userId = req.user?.userId;
+		const { skill } = req.body;
 
-    if (!skill || typeof skill !== "string") {
-      return res.status(400).json({
-        success: false,
-        message: "Valid skill is required",
-      });
-    }
+		if (!skill || typeof skill !== "string") {
+			return res.status(400).json({
+				success: false,
+				message: "Valid skill is required",
+			});
+		}
 
-    const jobseeker = await JobseekerModel.findOne({ userId });
+		const jobseeker = await JobseekerModel.findOne({ userId });
 
-    if (!jobseeker) {
-      return res.status(404).json({
-        success: false,
-        message: "Profile not found",
-      });
-    }
+		if (!jobseeker) {
+			return res.status(404).json({
+				success: false,
+				message: "Profile not found",
+			});
+		}
 
-    const originalLength = jobseeker.skills.length;
+		const originalLength = jobseeker.skills.length;
 
-    jobseeker.skills = jobseeker.skills.filter(
-      (s) => s.toLowerCase() !== skill.toLowerCase(),
-    );
+		jobseeker.skills = jobseeker.skills.filter(
+			(s) => s.toLowerCase() !== skill.toLowerCase(),
+		);
 
-    if (jobseeker.skills.length === originalLength) {
-      return res.status(400).json({
-        success: false,
-        message: "Skill not found",
-      });
-    }
+		if (jobseeker.skills.length === originalLength) {
+			return res.status(400).json({
+				success: false,
+				message: "Skill not found",
+			});
+		}
 
-    await jobseeker.save();
+		await jobseeker.save();
 
-    res.status(200).json({
-      success: true,
-      message: "Skill removed successfully",
-      data: jobseeker.skills,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message || "Server error",
-    });
-  }
+		res.status(200).json({
+			success: true,
+			message: "Skill removed successfully",
+			data: jobseeker.skills,
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: error.message || "Server error",
+		});
+	}
 };
 
 module.exports = {
-  updateProfile,
-  getProfile,
-  resume,
-  addEducation,
-  getEducation,
-  getSingleEducation,
-  deleteEducation,
-  updateEducation,
-  addExperience,
-  getExperience,
-  getSingleExperience,
-  deleteExperience,
-  updateExperience,
-  addSkills,
-  getSkills,
-  deleteSkill,
+	updateProfile,
+	getProfile,
+	resume,
+	addEducation,
+	getEducation,
+	getSingleEducation,
+	deleteEducation,
+	updateEducation,
+	addExperience,
+	getExperience,
+	getSingleExperience,
+	deleteExperience,
+	updateExperience,
+	addSkills,
+	getSkills,
+	deleteSkill,
 };

@@ -4,10 +4,11 @@ let express = require("express");
 const { authMiddlewere } = require("../../middleware/authMiddlewere");
 // const upload = require("../../middleware/multer");
 const {
-  updateEProfile,
-  addPerks,
-  getPerks,
-  deletePerks,
+	updateEProfile,
+	addPerks,
+	getPerks,
+	deletePerks,
+	getTopCompanies,
 } = require("../../controllers/web/employerController");
 
 let employerRoute = express.Router();

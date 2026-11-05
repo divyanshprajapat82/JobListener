@@ -17,6 +17,7 @@ const {
 	getEditJob,
 	getSingleEditJob,
 	getDeleteJob,
+	getTopCompanies,
 } = require("../../controllers/web/jobController");
 const { SavedJobModel } = require("../../models/SavedJobModel");
 // const upload = require("../../middleware/multer");
@@ -33,6 +34,8 @@ jobRoute.patch("/view/:jobId", authMiddlewere, jobViews);
 jobRoute.get("/single-job/:id", authMiddlewere, getSingleEditJob);
 jobRoute.put("/edit-job/:id", authMiddlewere, getEditJob);
 jobRoute.delete("/delete/:id", authMiddlewere, getDeleteJob);
+
+jobRoute.get("/top-companies", getTopCompanies);
 
 jobRoute.get("/popular-tags", getPopularTags);
 
