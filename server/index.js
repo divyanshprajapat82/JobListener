@@ -45,7 +45,10 @@ app.use(express.json());
 //   })
 // );
 
-const allowedOrigins = ["http://localhost:3000", "https://job-listener.vercel.app"];
+const allowedOrigins = [
+	"https://admin-job-listener.vercel.app",
+	"https://job-listener.vercel.app",
+];
 
 // 1. CORS middleware
 app.use(
