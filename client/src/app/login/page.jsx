@@ -69,7 +69,7 @@ export default function LoginPage() {
       if (finalData.success) {
         toast.success(finalData.message || "Login successful!");
         await getMe();
-        router.push(`/${finalData?.role}/profile`);
+        router.push(`/profile/${finalData?.role}`);
       }
     } catch (err) {
       if (err.response) {
