@@ -347,7 +347,7 @@ export default function Header() {
               </div>
             )}
           </div>
-          <Link href={""}>
+          <Link href={"https://job-listener.vercel.app/"} target="_blank">
             <button className="bg-red-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-red-700 hover:shadow-lg hover:shadow-red-500/30 transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
               <LiaExternalLinkAltSolid size={20} />
               {/* Add Category */}
