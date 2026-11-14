@@ -45,10 +45,6 @@ app.use(express.json());
 //   })
 // );
 
-const allowedOrigins = [
-	"https://admin-job-listener.vercel.app",
-	"https://job-listener.vercel.app",
-];
 
 // 1. CORS middleware
 // app.use(
@@ -60,21 +56,48 @@ const allowedOrigins = [
 // 	}),
 // );
 
-app.use(
-	cors({
-		origin: function (origin, callback) {
-			if (!origin || allowedOrigins.includes(origin)) {
-				callback(null, true);
-			} else {
-				console.log("Blocked by CORS:", origin);
-				callback(new Error("Not allowed by CORS"));
-			}
-		},
-		methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-		allowedHeaders: ["Content-Type", "Authorization"],
-		credentials: true,
-	}),
-);
+// const allowedOrigins = [
+// 	"https://admin-job-listener.vercel.app",
+// 	"https://job-listener.vercel.app",
+// ];
+
+// app.use(
+// 	cors({
+// 		origin: function (origin, callback) {
+// 			if (!origin || allowedOrigins.includes(origin)) {
+// 				callback(null, true);
+// 			} else {
+// 				console.log("Blocked by CORS:", origin);
+// 				callback(new Error("Not allowed by CORS"));
+// 			}
+// 		},
+// 		methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+// 		allowedHeaders: ["Content-Type", "Authorization"],
+// 		credentials: true,
+// 	}),
+// );
+
+const allowedOrigins = [
+    "https://admin-job-listener.vercel.app",
+    "https://job-listener.vercel.app",
+];
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            console.log("Blocked by CORS:", origin);
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 
 app.use("/joblistener", jobListenerRoute);
 app.use("/admin", adminRoute);
