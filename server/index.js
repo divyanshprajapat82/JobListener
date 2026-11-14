@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
-const nodemailer = require("nodemailer")
+const nodemailer = require("nodemailer");
 
 const { jobListenerRoute } = require("./app/routers/jobListenerRoute");
 const cookieParser = require("cookie-parser");
@@ -27,22 +27,34 @@ app.use(express.json());
 //   }
 // })
 
-const allowedOrigins = [
-  "http://localhost:3000",
-  "http://localhost:3001",
-];
+// const allowedOrigins = [
+//   "http://localhost:3000",
+//   "http://localhost:3001",
+// ];
 
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     credentials: true,
+//   })
+// );
+
+const allowedOrigins = ["http://localhost:3000", "https://job-listener.vercel.app"];
+
+// 1. CORS middleware
 app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
+	cors({
+		origin: allowedOrigins,
+		methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+		allowedHeaders: ["Content-Type", "Authorization"],
+		credentials: true,
+	}),
 );
 
 app.use("/joblistener", jobListenerRoute);
@@ -90,7 +102,7 @@ dns.setServers(["8.8.8.8", "1.1.1.1"]);
 // mongoose
 //   .connect(uri, {
 //     // 💡 2. FORCES IPV4 LOOKUP TO BYPASS FAULTY INTERNET PROVIDER DNS LOOKUPS
-//     family: 4 
+//     family: 4
 //   })
 //   .then(() => {
 //     console.log("✅ Connected");
@@ -99,21 +111,19 @@ dns.setServers(["8.8.8.8", "1.1.1.1"]);
 //     console.error("❌ Connection failed:", err);
 //   });
 
-
-
 (async () => {
-  try {
-    // await mongoose.connect("mongodb://127.0.0.1:27017/jobListener", {
-    await mongoose.connect(process.env.MONGODB_URL, {
-      serverSelectionTimeoutMS: 5000,
-    });
+	try {
+		// await mongoose.connect("mongodb://127.0.0.1:27017/jobListener", {
+		await mongoose.connect(process.env.MONGODB_URL, {
+			serverSelectionTimeoutMS: 5000,
+		});
 
-    console.log("✅ MongoDB connected:", mongoose.connection.name);
+		console.log("✅ MongoDB connected:", mongoose.connection.name);
 
-    app.listen(process.env.PORT || 8000, () => {
-      console.log("🚀 Server running on PORT", process.env.PORT || 8000);
-    });
-  } catch (err) {
-    console.log("❌ MongoDB connect error:", err.message);
-  }
+		app.listen(process.env.PORT || 8000, () => {
+			console.log("🚀 Server running on PORT", process.env.PORT || 8000);
+		});
+	} catch (err) {
+		console.log("❌ MongoDB connect error:", err.message);
+	}
 })();
