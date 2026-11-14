@@ -51,9 +51,25 @@ const allowedOrigins = [
 ];
 
 // 1. CORS middleware
+// app.use(
+// 	cors({
+// 		origin: allowedOrigins,
+// 		methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+// 		allowedHeaders: ["Content-Type", "Authorization"],
+// 		credentials: true,
+// 	}),
+// );
+
 app.use(
 	cors({
-		origin: allowedOrigins,
+		origin: function (origin, callback) {
+			if (!origin || allowedOrigins.includes(origin)) {
+				callback(null, true);
+			} else {
+				console.log("Blocked by CORS:", origin);
+				callback(new Error("Not allowed by CORS"));
+			}
+		},
 		methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
 		allowedHeaders: ["Content-Type", "Authorization"],
 		credentials: true,
