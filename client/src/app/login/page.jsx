@@ -69,7 +69,7 @@ export default function LoginPage() {
       if (finalData.success) {
         toast.success(finalData.message || "Login successful!");
         await getMe();
-        router.push(`/profile/${finalData.role}`);
+        router.push(`/${finalData.role}/profile`);
       }
     } catch (err) {
       if (err.response) {
@@ -117,7 +117,7 @@ export default function LoginPage() {
 
       <div className="w-full max-w-[1000px] bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 items-center">
-          
+
           {/* Left Column: Hero Image / Branding */}
           <div className="hidden md:flex flex-col justify-center items-center bg-gradient-to-br from-red-50 to-orange-50 p-8 h-full border-r border-slate-100">
             <div className="relative w-full max-w-[360px] aspect-square">
@@ -161,11 +161,10 @@ export default function LoginPage() {
                 </label>
 
                 <div
-                  className={`flex items-center gap-3 rounded-xl border bg-slate-50/50 px-4 py-3 transition duration-200 focus-within:bg-white focus-within:ring-2 ${
-                    error.email || error.emailError
-                      ? "border-red-400 focus-within:ring-red-500/20"
-                      : "border-slate-200 focus-within:border-red-500 focus-within:ring-red-500/20"
-                  }`}
+                  className={`flex items-center gap-3 rounded-xl border bg-slate-50/50 px-4 py-3 transition duration-200 focus-within:bg-white focus-within:ring-2 ${error.email || error.emailError
+                    ? "border-red-400 focus-within:ring-red-500/20"
+                    : "border-slate-200 focus-within:border-red-500 focus-within:ring-red-500/20"
+                    }`}
                 >
                   <IoIosMail className="text-xl text-red-600 shrink-0" />
                   <input
@@ -194,11 +193,10 @@ export default function LoginPage() {
                 </label>
 
                 <div
-                  className={`flex items-center gap-3 rounded-xl border bg-slate-50/50 px-4 py-3 transition duration-200 focus-within:bg-white focus-within:ring-2 ${
-                    error.password || error.passwordError
-                      ? "border-red-400 focus-within:ring-red-500/20"
-                      : "border-slate-200 focus-within:border-red-500 focus-within:ring-red-500/20"
-                  }`}
+                  className={`flex items-center gap-3 rounded-xl border bg-slate-50/50 px-4 py-3 transition duration-200 focus-within:bg-white focus-within:ring-2 ${error.password || error.passwordError
+                    ? "border-red-400 focus-within:ring-red-500/20"
+                    : "border-slate-200 focus-within:border-red-500 focus-within:ring-red-500/20"
+                    }`}
                 >
                   <FaKey className="text-lg text-red-600 shrink-0" />
                   <input
