@@ -16,6 +16,8 @@ export default function RecentJobs() {
     const [showToast, setShowToast] = useState(false);
     const [showRmToast, setShowRmToast] = useState(false);
     const [savedJobs, setSavedJobs] = useState([]);
+    const [loading, setLoading] = useState(null)
+
 
     const {
         jobs,
@@ -416,11 +418,24 @@ export default function RecentJobs() {
                                                 <Link
                                                     // href={`./${item.detailsUrl}`}
                                                     href={`./jobs/${job._id}`}
-                                                    onClick={(e) => e.stopPropagation()}
+                                                    disabled={loading !== null}
+                                                    onClick={(e) => {
+                                                        setLoading(job._id)
+                                                        e.stopPropagation()
+                                                    }}
                                                     className="w-full md:w-auto"
                                                 >
-                                                    <button className="w-full py-2 bg-slate-900 hover:bg-red-600 dark:bg-slate-800 dark:hover:bg-red-600 text-white font-semibold text-xs rounded-xl transition-all shadow-sm cursor-pointer">
-                                                        View Details
+                                                    <button className="w-full py-2 text-center bg-slate-900 hover:bg-red-600 dark:bg-slate-800 dark:hover:bg-red-600 text-white font-semibold text-xs rounded-xl transition-all shadow-sm cursor-pointer">
+                                                        {loading !== job._id ?
+                                                            "View Details"
+                                                            :
+                                                            <div className='flex justify-center'>
+                                                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="size-4 shrink-0 animate-spin motion-reduce:animate-none">
+                                                                    <circle cx="12" cy="12" r="9.5" strokeWidth="3" className="stroke-neutral-200 dark:stroke-neutral-800" />
+                                                                    <circle cx="12" cy="12" r="9.5" strokeWidth="3" strokeLinecap="round" pathLength="100" strokeDasharray="25 75" className="stroke-red-500 dark:stroke-zinc-50" />
+                                                                </svg>
+                                                            </div>
+                                                        }
                                                     </button>
                                                 </Link>
                                             </div>

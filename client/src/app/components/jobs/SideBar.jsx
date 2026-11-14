@@ -65,7 +65,10 @@ export default function SideBar() {
     workPlace, setWorkPlace,
     experienceFilter, setExperienceFilter,
     datePostedFilter, setDatePostedFilter,
-    tag, setTag
+    tag, setTag,
+    setCurrentPage,
+    setMinSalary,
+    setMaxSalary,
   } = useAuth();
 
   const [tags, setTags] = useState([])
@@ -79,6 +82,25 @@ export default function SideBar() {
 
     setCategoryFilter(categoryId || "");
   }, [searchParams, setCategoryFilter]);
+
+  // useEffect(() => {
+  //   const categoryId = searchParams.get("category");
+
+  //   setCategoryFilter(categoryId || "");
+
+  //   // Clear other filters when category changes
+  //   setSearch("");
+  //   setLocation("");
+  //   setJobType("");
+  //   setWorkPlace("");
+  //   setExperienceFilter("");
+  //   setDatePostedFilter("");
+  //   setTag("");
+  //   setMinSalary(undefined);
+  //   setMaxSalary(undefined);
+  //   setCurrentPage(1);
+
+  // }, [searchParams]);
 
   useEffect(() => {
     const getTags = async () => {
@@ -140,7 +162,7 @@ export default function SideBar() {
         <h4 className="font-semibold text-red-500 mb-3">Category</h4>
         <ul
           className="space-y-2.5">
-          {category.map((cat, i) => (
+          {category.slice(0, 5).map((cat, i) => (
             <li
               key={i}
               className="flex justify-between items-center group cursor-pointer"
@@ -159,7 +181,7 @@ export default function SideBar() {
                 {cat.name}
               </label>
               <span className="bg-slate-100 text-slate-500 text-xs px-2 py-0.5 rounded-full font-medium">
-                10
+                {cat.jobs}
               </span>
             </li>
           ))}

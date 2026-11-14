@@ -20,6 +20,7 @@ export const MainContext = ({ children }) => {
   const [education, setEducation] = useState([]);
   const [experience, setExperience] = useState([]);
   const [category, setCategory] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [jobs, setJobs] = useState([]);
   const [jobLoading, setJobLoading] = useState(false)
   const [search, setSearch] = useState("");
@@ -204,9 +205,9 @@ export const MainContext = ({ children }) => {
   };
 
   const getCategory = () => {
-    // setLoading(true);
+    setCategoriesLoading(true);
     axios
-      .get(`http://localhost:8000/admin/category/view`)
+      .get(`http://localhost:8000/admin/category/public-categories`)
       .then((res) => res.data)
       .then((finalData) => {
         if (finalData.success) {
@@ -222,9 +223,9 @@ export const MainContext = ({ children }) => {
           toast.error("Something went wrong");
         }
       })
-    // .finally(() => {
-    //   setLoading(false);
-    // });
+      .finally(() => {
+        setCategoriesLoading(false);
+      });
   };
 
   const getPlatformSetting = () => {
@@ -524,6 +525,7 @@ export const MainContext = ({ children }) => {
         experience,
         getExperience,
         category,
+        categoriesLoading,
         platformData,
         platformLoading,
         jobs,

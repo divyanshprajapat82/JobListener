@@ -79,7 +79,7 @@ export default function page() {
       .then((finalData) => {
         if (finalData.success) {
           toast.success(finalData.message);
-          router.push("/categories");
+          router.push("/admin/categories");
           // router.push("/");
         }
       })

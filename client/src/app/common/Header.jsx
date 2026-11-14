@@ -964,7 +964,7 @@ export default function Header() {
               <span className="max-w-[190px] truncate text-xl font-extrabold tracking-tight text-slate-900 sm:max-w-none">
                 {/* {platformData?.platformName || "CareerPulse"} */}
                 {platformData?.platformName ?
-                  (<p className="">
+                  (<p className="sm:block hidden">
                     {platformData.platformName}
                     {user?.role == "employer" &&
                       <span className="absolute top-0 ml-2 rounded-full bg-red-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-red-600 sm:inline-flex">Employer</span>
@@ -1033,7 +1033,7 @@ export default function Header() {
                   </button>
 
                   {notificationsOpen && (
-                    <div className="absolute  top-17 right-0 md:right-10 z-[60] max-w-90 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/15">
+                    <div className="absolute top-17 right-0 md:right-10 z-[60] sm:max-w-90 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/15">
                       <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/80 px-4 py-4">
                         <div>
                           <h3 className="font-bold text-slate-900">Notifications</h3>
@@ -1128,7 +1128,7 @@ export default function Header() {
                         <FaUser />
                       )}
                     </span>
-                    <span className="hidden max-w-[125px] text-left sm:block">
+                    <span className="hidden max-w-[125px] text-left md:block">
                       <span className="block truncate text-xs font-bold text-slate-800">{displayName}</span>
                       <span className="block text-[10px] capitalize text-slate-500">{user?.role || "Account"}</span>
                     </span>

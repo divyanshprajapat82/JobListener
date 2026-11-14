@@ -16,6 +16,7 @@ import {
 export default function Hero() {
   const [searchQuery, setSearchQuery] = useState('');
   const [locationQuery, setLocationQuery] = useState('');
+  const [loading, setLoading] = useState(false)
   const router = useRouter();
 
   const {
@@ -25,6 +26,7 @@ export default function Hero() {
 
   const handleSearch = () => {
     // Update global search filters
+    setLoading(true)
     setSearch(searchQuery);
     setLocation(locationQuery);
 
@@ -35,6 +37,7 @@ export default function Hero() {
     router.push(
       `/jobs?search=${encodeURIComponent(searchQuery)}&location=${encodeURIComponent(locationQuery)}`
     );
+    // setLoading(false)
   };
 
 
@@ -100,7 +103,14 @@ export default function Hero() {
                   onClick={handleSearch}
                   className="w-full h-11 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-semibold text-sm rounded-xl shadow-lg shadow-red-500/30 flex items-center justify-center gap-2 transition-all cursor-pointer"
                 >
-                  <FaSearch className="w-3.5 h-3.5" />
+                  {!loading ?
+                    <FaSearch className="w-3.5 h-3.5" />
+                    :
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="size-4 shrink-0 animate-spin motion-reduce:animate-none">
+                      <circle cx="12" cy="12" r="9.5" strokeWidth="3" className="stroke-neutral-200 dark:stroke-neutral-800" />
+                      <circle cx="12" cy="12" r="9.5" strokeWidth="3" strokeLinecap="round" pathLength="100" strokeDasharray="25 75" className="stroke-red-500 dark:stroke-zinc-50" />
+                    </svg>
+                  }
                   Search Jobs
                 </button>
               </div>

@@ -8,6 +8,7 @@ import { FaBuilding, FaBullhorn, FaChartLine, FaChevronRight, FaHandHoldingMedic
 import { ImUserTie } from "react-icons/im";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function BrowseCategory() {
     // let categories = [
@@ -64,6 +65,7 @@ export default function BrowseCategory() {
 
     const [categories, setCategories] = useState([]);
     const [categoriesLoading, setCategoriesLoading] = useState(true);
+    const [loading, setLoading] = useState(null)
 
     const router = useRouter();
 
@@ -105,7 +107,7 @@ export default function BrowseCategory() {
                     </div>
                 </div>
             </div> */}
-            <section id="categories" className="py-16 bg-white dark:bg-slate-900 transition-colors">
+            <section className="py-16 bg-white dark:bg-slate-900 transition-colors">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col md:flex-row md:items-end justify-between mb-10">
                         <div>
@@ -116,9 +118,9 @@ export default function BrowseCategory() {
                                 Find opportunities across top industry sectors updated daily
                             </p>
                         </div>
-                        <a href="#all-categories" className="mt-4 md:mt-0 text-sm font-semibold text-red-600 dark:text-red-400 hover:text-red-700 flex items-center gap-1 group">
+                        <Link href="/categories" className="mt-4 md:mt-0 text-sm font-semibold text-red-600 dark:text-red-400 hover:text-red-700 flex items-center gap-1 group">
                             View All Categories <FaChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                        </a>
+                        </Link>
                     </div>
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                         {categoriesLoading ? (
@@ -149,7 +151,10 @@ export default function BrowseCategory() {
                                 <button
                                     key={cat._id}
                                     type="button"
+                                    disabled={loading !== null}
                                     onClick={() => {
+                                        setLoading(cat._id)
+
                                         router.push(`/jobs?category=${cat._id}`);
                                     }}
                                     className="group flex w-full items-center justify-between rounded-2xl border border-slate-200/70 bg-slate-50/70 p-6 text-left shadow-sm transition-all duration-300 hover:border-red-500/50 hover:bg-white hover:shadow-xl hover:shadow-red-500/5 dark:border-slate-800 dark:bg-slate-800/40 dark:hover:bg-slate-800 cursor-pointer"
@@ -178,7 +183,14 @@ export default function BrowseCategory() {
                                         </div>
                                     </div>
 
-                                    <FaChevronRight className="h-4 w-4 shrink-0 text-slate-400 transition-all group-hover:translate-x-1 group-hover:text-red-600" />
+                                    {loading !== cat._id ?
+                                        <FaChevronRight className="h-4 w-4 shrink-0 text-slate-400 transition-all group-hover:translate-x-1 group-hover:text-red-600" />
+                                        :
+                                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="size-4 shrink-0 animate-spin motion-reduce:animate-none">
+                                            <circle cx="12" cy="12" r="9.5" strokeWidth="3" className="stroke-neutral-200 dark:stroke-neutral-800" />
+                                            <circle cx="12" cy="12" r="9.5" strokeWidth="3" strokeLinecap="round" pathLength="100" strokeDasharray="25 75" className="stroke-red-500 dark:stroke-zinc-50" />
+                                        </svg>
+                                    }
                                 </button>
                             ))
                         )}

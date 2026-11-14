@@ -31,12 +31,53 @@ let userSchema = new mongoose.Schema(
 			required: true,
 		},
 
+		dateOfBirth: {
+			type: Date,
+		},
+		gender: {
+			type: String,
+			enum: ["male", "female", "other"],
+		},
+		companyName: String,
+		companyCity: String,
+		companyType: String,
+
+		otpResendAt: {
+			type: Date,
+			default: null,
+		},
+
 		logo: String,
 		public_id: String,
 
 		isActivelyLooking: {
 			type: Boolean,
 			default: false,
+		},
+
+		isEmailVerified: {
+			type: Boolean,
+			default: false,
+		},
+
+		otp: {
+			type: String,
+			default: null,
+		},
+
+		otpExpiresAt: {
+			type: Date,
+			default: null,
+		},
+
+		otpAttempts: {
+			type: Number,
+			default: 0,
+		},
+
+		resetPasswordToken: {
+			type: String,
+			default: null,
 		},
 	},
 	{

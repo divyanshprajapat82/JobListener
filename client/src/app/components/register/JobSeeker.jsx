@@ -11,6 +11,7 @@ import { RxEyeOpen } from "react-icons/rx";
 import axios from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import VerifyOTP from "../auth/VerifyOTP";
 
 export default function JobSeeker() {
   const options = [
@@ -32,23 +33,99 @@ export default function JobSeeker() {
     dateOfBirth: "",
     gender: "",
   });
+
+  const [showOTP, setShowOTP] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState("");
+
   const router = useRouter();
 
   const APIURL = process.env.NEXT_PUBLIC_APIURL;
 
-  const handleSubmit = (e) => {
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+
+  //   let errors = validate();
+
+  //   if (Object.keys(errors).length > 0) {
+  //     setError(errors);
+  //     return;
+  //   }
+
+  //   let obj = {
+  //     name: data.firstName + " " + data.lastName,
+  //     email: data.email,
+  //     phone: data.mobile,
+  //     password: data.password,
+  //     role: "jobseeker",
+  //     dateOfBirth: data.dateOfBirth,
+  //     gender: data.gender,
+  //   };
+
+  //   // console.log(obj);
+
+  //   axios
+  //     .post(`${APIURL}/auth/register`, obj)
+  //     .then((res) => res.data)
+  //     .then((finalData) => {
+  //       console.log("Registration response:", finalData.data);
+  //       if (finalData.success) {
+  //         // setRegisteredEmail(finalData.email);
+  //         // toast.success(finalData.message);
+  //         // router.push("/login");
+
+  //         setRegisteredEmail(data.companyEmail);
+  //         setShowOTP(true);
+  //         toast.success(res.data.message);
+  //       }
+  //       //  else {
+  //       //   toast.error(finalData.message);
+  //       // }
+  //     })
+  //     .catch((err) => {
+  //       if (err.response) {
+  //         toast.error(err.response.data.message);
+  //       } else {
+  //         toast.error("Something went wrong");
+  //       }
+  //     });
+
+  //   // console.log(finalData.message);
+
+  //   // axios
+  //   //   .post(`${APIURL}/auth/register`, obj)
+  //   //   .then((res) => {
+  //   //     let finalData = res.data;
+
+  //   //     if (finalData.success) {
+  //   //       toast.success(finalData.message);
+  //   //     } else {
+  //   //       toast.error(finalData.message);
+  //   //     }
+  //   //   })
+  //   //   .catch((err) => {
+  //   //     if (err.response) {
+  //   //       toast.error(err.response.data.message);
+  //   //     } else {
+  //   //       toast.error("Something went wrong");
+  //   //     }
+  //   //   });
+
+  //   setError({});
+  // };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let errors = validate();
+    const errors = validate();
 
     if (Object.keys(errors).length > 0) {
       setError(errors);
       return;
     }
 
-    let obj = {
-      name: data.firstName + " " + data.lastName,
-      email: data.email,
+    const obj = {
+      name: `${data.firstName} ${data.lastName}`.trim(),
+      email: data.email.trim().toLowerCase(),
       phone: data.mobile,
       password: data.password,
       role: "jobseeker",
@@ -56,48 +133,29 @@ export default function JobSeeker() {
       gender: data.gender,
     };
 
-    // console.log(obj);
+    try {
+      const res = await axios.post(
+        `${APIURL}/auth/register`,
+        obj
+      );
 
-    axios
-      .post(`${APIURL}/auth/register`, obj)
-      .then((res) => res.data)
-      .then((finalData) => {
-        if (finalData.success) {
-          toast.success(finalData.message);
-          router.push("/login");
-        }
-        //  else {
-        //   toast.error(finalData.message);
-        // }
-      })
-      .catch((err) => {
-        if (err.response) {
-          toast.error(err.response.data.message);
-        } else {
-          toast.error("Something went wrong");
-        }
-      });
+      console.log("Registration response:", res.data);
 
-    // console.log(finalData.message);
+      if (res.data.success) {
+        setRegisteredEmail(res.data.email || obj.email);
+        setShowOTP(true);
 
-    // axios
-    //   .post(`${APIURL}/auth/register`, obj)
-    //   .then((res) => {
-    //     let finalData = res.data;
+        toast.success(res.data.message);
+      } else {
+        toast.error(res.data.message || "Registration failed");
+      }
+    } catch (err) {
+      console.log("Registration error:", err.response?.data || err);
 
-    //     if (finalData.success) {
-    //       toast.success(finalData.message);
-    //     } else {
-    //       toast.error(finalData.message);
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     if (err.response) {
-    //       toast.error(err.response.data.message);
-    //     } else {
-    //       toast.error("Something went wrong");
-    //     }
-    //   });
+      toast.error(
+        err.response?.data?.message || "Something went wrong"
+      );
+    }
 
     setError({});
   };
@@ -217,217 +275,223 @@ export default function JobSeeker() {
 
   return (
     <>
-      <div className="p-2 mt-4">
-        <form
-          onSubmit={handleSubmit}
-          className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4"
-        >
-          <div>
-            <label className="block text-sm font-semibold mb-1">
-              First Name <span className="text-red-500">*</span>
-            </label>
-            <div
-              className="w-full flex items-center gap-2 rounded-2xl border border-gray-200 px-4 py-3
+      {showOTP ? (
+        <VerifyOTP
+          email={registeredEmail}
+          onBack={() => setShowOTP(false)}
+        />
+      ) : (
+        <div className="p-2 mt-4">
+          <form
+            onSubmit={handleSubmit}
+            className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4"
+          >
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                First Name <span className="text-red-500">*</span>
+              </label>
+              <div
+                className="w-full flex items-center gap-2 rounded-2xl border border-gray-200 px-4 py-3
                             focus-within:ring-2 focus-within:ring-red-500
                             focus-within:border-red-500 transition"
-            >
-              <input
-                type="text"
-                className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400"
-                placeholder="First name"
-                autoFocus
-                name="firstName"
-                value={data.firstName}
-                onChange={handleChange}
-              // noValidate
-              // required
-              />
-            </div>
-            {error.firstName && (
-              <p className="text-red-500 text-sm">{error.firstName}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold mb-1">last Name</label>
-            <div
-              className="w-full flex items-center gap-2 rounded-2xl border border-gray-200 px-4 py-3
-                            focus-within:ring-2 focus-within:ring-red-500
-                            focus-within:border-red-500 transition"
-            >
-              <input
-                type="text"
-                className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400"
-                placeholder="Last name"
-                name="lastName"
-                value={data.lastName}
-                onChange={handleChange}
-              // required
-              />
-            </div>
-            {error.lastName && (
-              <p className="text-red-500 text-sm">{error.lastName}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold mb-1">
-              Email Address
-            </label>
-            <div
-              className="w-full flex items-center gap-2 rounded-2xl border border-gray-200 px-4 py-3
-                            focus-within:ring-2 focus-within:ring-red-500
-                            focus-within:border-red-500 transition"
-            >
-              <span className="text-[22px] text-[#d00]">
-                <IoIosMail />
-              </span>
-
-              <input
-                type="email"
-                className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400"
-                placeholder="Enter your email"
-                name="email"
-                value={data.email}
-                onChange={handleChange}
-              // required
-              />
-            </div>
-            {error.email && (
-              <p className="text-red-500 text-sm">{error.email}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold mb-1">
-              Mobile Number
-            </label>
-            <div
-              className="w-full flex items-center gap-2 rounded-2xl border border-gray-200 px-4 py-3
-                            focus-within:ring-2 focus-within:ring-red-500
-                            focus-within:border-red-500 transition"
-            >
-              <span className="text-[18px] text-[#d00] pr-1">
-                <FaPhoneAlt />
-              </span>
-
-              <input
-                type="number"
-                className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400"
-                placeholder="Enter your Mobile Number"
-                name="mobile"
-                value={data.mobile}
-                onChange={handleChange}
-              // required
-              />
-            </div>
-            {error.mobile && (
-              <p className="text-red-500 text-sm">{error.mobile}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold mb-1">
-              Password <span className="text-red-500">*</span>
-            </label>
-            <div
-              className="w-full flex items-center gap-2 rounded-2xl border border-gray-200 px-4 py-3
-                            focus-within:ring-2 focus-within:ring-red-500
-                            focus-within:border-red-500 transition"
-            >
-              <span className="text-[18px] text-[#d00]">
-                <TbPasswordFingerprint />
-              </span>
-              <input
-                type={passwordShow ? "password" : "text"}
-                placeholder="Enter your password"
-                className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400"
-                name="password"
-                value={data.password}
-                onChange={handleChange}
-              // required
-              />
-              <span
-                onClick={() => setPasswordShow(!passwordShow)}
-                className="text-[20px] text-[#d00] pr-2 cursor-pointer"
               >
-                {passwordShow ? <GoEyeClosed /> : <RxEyeOpen />}
-              </span>
+                <input
+                  type="text"
+                  className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400"
+                  placeholder="First name"
+                  autoFocus
+                  name="firstName"
+                  value={data.firstName}
+                  onChange={handleChange}
+                // noValidate
+                // required
+                />
+              </div>
+              {error.firstName && (
+                <p className="text-red-500 text-sm">{error.firstName}</p>
+              )}
             </div>
-            {error.password && (
-              <p className="text-red-500 text-sm">{error.password}</p>
-            )}
-          </div>
 
-          <div>
-            <label className="block text-sm font-semibold mb-1">
-              Confirm Password <span className="text-red-500">*</span>
-            </label>
-            <div
-              className="w-full flex items-center gap-2 rounded-2xl border border-gray-200 px-4 py-3
+            <div>
+              <label className="block text-sm font-semibold mb-1">last Name</label>
+              <div
+                className="w-full flex items-center gap-2 rounded-2xl border border-gray-200 px-4 py-3
                             focus-within:ring-2 focus-within:ring-red-500
                             focus-within:border-red-500 transition"
-            >
-              <span className="text-[18px] text-[#d00] pr-1">
-                <TbPasswordFingerprint />
-              </span>
-
-              <input
-                type="password"
-                className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400"
-                placeholder="Confirm Your Password"
-                name="confirmPassword"
-                value={data.confirmPassword}
-                onChange={handleChange}
-              // required
-              />
+              >
+                <input
+                  type="text"
+                  className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400"
+                  placeholder="Last name"
+                  name="lastName"
+                  value={data.lastName}
+                  onChange={handleChange}
+                // required
+                />
+              </div>
+              {error.lastName && (
+                <p className="text-red-500 text-sm">{error.lastName}</p>
+              )}
             </div>
-            {error.confirmPassword && (
-              <p className="text-red-500 text-sm">{error.confirmPassword}</p>
-            )}
-          </div>
 
-          {/* --------- */}
-          <div className="w-[100%]">
-            <h2 className="font-semibold text-[18px] mt-4 flex items-center gap-2">
-              <span className="text-[22px] text-[#d00] pb-0.5">
-                <TiPointOfInterestOutline />
-              </span>{" "}
-              Personal Details
-            </h2>
-          </div>
-
-          <br className="hidden md:block" />
-
-          <div>
-            <label className="block text-sm font-semibold mb-1">
-              Date of Birth <span className="text-red-500">*</span>
-            </label>
-            <div
-              className="w-full flex items-center gap-2 rounded-2xl border border-gray-200 px-4 py-3
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Email Address
+              </label>
+              <div
+                className="w-full flex items-center gap-2 rounded-2xl border border-gray-200 px-4 py-3
                             focus-within:ring-2 focus-within:ring-red-500
                             focus-within:border-red-500 transition"
-            >
-              <span className="text-[22px] text-[#d00]">
-                <LiaBirthdayCakeSolid />
-              </span>
+              >
+                <span className="text-[22px] text-[#d00]">
+                  <IoIosMail />
+                </span>
 
-              <input
-                type="date"
-                className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400"
-                placeholder="Enter your Date of Birth"
-                name="dateOfBirth"
-                value={data.dateOfBirth}
-                onChange={handleChange}
-              // required
-              />
+                <input
+                  type="email"
+                  className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400"
+                  placeholder="Enter your email"
+                  name="email"
+                  value={data.email}
+                  onChange={handleChange}
+                // required
+                />
+              </div>
+              {error.email && (
+                <p className="text-red-500 text-sm">{error.email}</p>
+              )}
             </div>
-            {error.dateOfBirth && (
-              <p className="text-red-500 text-sm">{error.dateOfBirth}</p>
-            )}
-          </div>
 
-          {/* <div>
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Mobile Number
+              </label>
+              <div
+                className="w-full flex items-center gap-2 rounded-2xl border border-gray-200 px-4 py-3
+                            focus-within:ring-2 focus-within:ring-red-500
+                            focus-within:border-red-500 transition"
+              >
+                <span className="text-[18px] text-[#d00] pr-1">
+                  <FaPhoneAlt />
+                </span>
+
+                <input
+                  type="number"
+                  className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400"
+                  placeholder="Enter your Mobile Number"
+                  name="mobile"
+                  value={data.mobile}
+                  onChange={handleChange}
+                // required
+                />
+              </div>
+              {error.mobile && (
+                <p className="text-red-500 text-sm">{error.mobile}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Password <span className="text-red-500">*</span>
+              </label>
+              <div
+                className="w-full flex items-center gap-2 rounded-2xl border border-gray-200 px-4 py-3
+                            focus-within:ring-2 focus-within:ring-red-500
+                            focus-within:border-red-500 transition"
+              >
+                <span className="text-[18px] text-[#d00]">
+                  <TbPasswordFingerprint />
+                </span>
+                <input
+                  type={passwordShow ? "password" : "text"}
+                  placeholder="Enter your password"
+                  className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400"
+                  name="password"
+                  value={data.password}
+                  onChange={handleChange}
+                // required
+                />
+                <span
+                  onClick={() => setPasswordShow(!passwordShow)}
+                  className="text-[20px] text-[#d00] pr-2 cursor-pointer"
+                >
+                  {passwordShow ? <GoEyeClosed /> : <RxEyeOpen />}
+                </span>
+              </div>
+              {error.password && (
+                <p className="text-red-500 text-sm">{error.password}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Confirm Password <span className="text-red-500">*</span>
+              </label>
+              <div
+                className="w-full flex items-center gap-2 rounded-2xl border border-gray-200 px-4 py-3
+                            focus-within:ring-2 focus-within:ring-red-500
+                            focus-within:border-red-500 transition"
+              >
+                <span className="text-[18px] text-[#d00] pr-1">
+                  <TbPasswordFingerprint />
+                </span>
+
+                <input
+                  type="password"
+                  className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400"
+                  placeholder="Confirm Your Password"
+                  name="confirmPassword"
+                  value={data.confirmPassword}
+                  onChange={handleChange}
+                // required
+                />
+              </div>
+              {error.confirmPassword && (
+                <p className="text-red-500 text-sm">{error.confirmPassword}</p>
+              )}
+            </div>
+
+            {/* --------- */}
+            <div className="w-[100%]">
+              <h2 className="font-semibold text-[18px] mt-4 flex items-center gap-2">
+                <span className="text-[22px] text-[#d00] pb-0.5">
+                  <TiPointOfInterestOutline />
+                </span>{" "}
+                Personal Details
+              </h2>
+            </div>
+
+            <br className="hidden md:block" />
+
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Date of Birth <span className="text-red-500">*</span>
+              </label>
+              <div
+                className="w-full flex items-center gap-2 rounded-2xl border border-gray-200 px-4 py-3
+                            focus-within:ring-2 focus-within:ring-red-500
+                            focus-within:border-red-500 transition"
+              >
+                <span className="text-[22px] text-[#d00]">
+                  <LiaBirthdayCakeSolid />
+                </span>
+
+                <input
+                  type="date"
+                  className="w-full bg-transparent outline-none text-gray-700 placeholder-gray-400"
+                  placeholder="Enter your Date of Birth"
+                  name="dateOfBirth"
+                  value={data.dateOfBirth}
+                  onChange={handleChange}
+                // required
+                />
+              </div>
+              {error.dateOfBirth && (
+                <p className="text-red-500 text-sm">{error.dateOfBirth}</p>
+              )}
+            </div>
+
+            {/* <div>
             <label className="block text-sm font-semibold mb-1">
               Mobile Number
             </label>
@@ -450,51 +514,51 @@ export default function JobSeeker() {
             </div>
           </div> */}
 
-          <div className="w-full max-w-md">
-            <label className="block text-sm font-semibold mb-1">
-              Gender <span className="text-red-500">*</span>
-            </label>
+            <div className="w-full max-w-md">
+              <label className="block text-sm font-semibold mb-1">
+                Gender <span className="text-red-500">*</span>
+              </label>
 
-            <div className="flex w-full rounded-2xl border border-gray-200 bg-gray-50 p-1 shadow-sm">
-              {options.map((opt) => (
-                <label key={opt.value} className="flex-1">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value={opt.value}
-                    // checked={gender === opt.value}
-                    checked={data.gender === opt.value}
-                    // onChange={() => setGender(opt.value)}
-                    // onChange={() => setData({ ...data, gender: opt.value })}
-                    onChange={handleChange}
-                    className="sr-only"
-                  />
-                  <span
-                    className={[
-                      "block w-full cursor-pointer select-none rounded-2xl py-2 text-center text-sm font-semibold transition-all",
-                      data.gender === opt.value
-                        ? "bg-[#d00] text-white shadow"
-                        : "text-gray-600 hover:bg-white",
-                    ].join(" ")}
-                  >
-                    {opt.label}
-                  </span>
-                </label>
-              ))}
+              <div className="flex w-full rounded-2xl border border-gray-200 bg-gray-50 p-1 shadow-sm">
+                {options.map((opt) => (
+                  <label key={opt.value} className="flex-1">
+                    <input
+                      type="radio"
+                      name="gender"
+                      value={opt.value}
+                      // checked={gender === opt.value}
+                      checked={data.gender === opt.value}
+                      // onChange={() => setGender(opt.value)}
+                      // onChange={() => setData({ ...data, gender: opt.value })}
+                      onChange={handleChange}
+                      className="sr-only"
+                    />
+                    <span
+                      className={[
+                        "block w-full cursor-pointer select-none rounded-2xl py-2 text-center text-sm font-semibold transition-all",
+                        data.gender === opt.value
+                          ? "bg-[#d00] text-white shadow"
+                          : "text-gray-600 hover:bg-white",
+                      ].join(" ")}
+                    >
+                      {opt.label}
+                    </span>
+                  </label>
+                ))}
+              </div>
+
+              <p className="mt-2 text-xs text-gray-500">
+                Selected: <span className="font-semibold">{data.gender}</span>
+              </p>
+
+              {error.gender && (
+                <p className="text-red-500 text-sm">{error.gender}</p>
+              )}
             </div>
 
-            <p className="mt-2 text-xs text-gray-500">
-              Selected: <span className="font-semibold">{data.gender}</span>
-            </p>
+            {/* ----------- */}
 
-            {error.gender && (
-              <p className="text-red-500 text-sm">{error.gender}</p>
-            )}
-          </div>
-
-          {/* ----------- */}
-
-          {/* <div className="md:col-span-2">
+            {/* <div className="md:col-span-2">
             <label className="block text-sm font-semibold mb-1">
               Current Location <span className="text-red-500">*</span>
             </label>
@@ -518,7 +582,7 @@ export default function JobSeeker() {
             </div>
           </div> */}
 
-          {/* <div className="md:col-span-2">
+            {/* <div className="md:col-span-2">
             <label className="block text-sm font-semibold mb-1">Message</label>
             <textarea
               rows="5"
@@ -527,16 +591,17 @@ export default function JobSeeker() {
             ></textarea>
           </div> */}
 
-          <div className="md:col-span-2 flex justify-end">
-            <button
-              type="submit"
-              className="px-12 py-3 rounded-2xl bg-red-600 text-white font-semibold hover:bg-red-700 transition cursor-pointer"
-            >
-              Register
-            </button>
-          </div>
-        </form>
-      </div>
+            <div className="md:col-span-2 flex justify-end">
+              <button
+                type="submit"
+                className="px-12 py-3 rounded-2xl bg-red-600 text-white font-semibold hover:bg-red-700 transition cursor-pointer"
+              >
+                Register
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </>
   );
 }

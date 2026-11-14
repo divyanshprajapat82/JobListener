@@ -9,6 +9,11 @@ const {
 	jobSeekerView,
 	profileLogo,
 	toggleActivelyLooking,
+	verifyOTP,
+	resendOTP,
+	sendForgetPOTP,
+	verifyForgetPOTP,
+	resetForgetPassword,
 } = require("../controllers/authController");
 const { authMiddlewere } = require("../middleware/authMiddlewere");
 const upload = require("../middleware/multer");
@@ -16,6 +21,9 @@ const upload = require("../middleware/multer");
 let authRoute = express.Router();
 
 authRoute.post("/register", register);
+// router.post("/register", register);
+authRoute.post("/verify-otp", verifyOTP);
+authRoute.post("/resend-otp", resendOTP);
 authRoute.post("/login", login);
 authRoute.get("/me", authMiddlewere, getme);
 authRoute.post("/logout", logOut);
@@ -28,5 +36,9 @@ authRoute.put(
 	authMiddlewere,
 	toggleActivelyLooking,
 );
+authRoute.post("/send-otp", sendForgetPOTP);
+// authRoute.post("/resend-otp", resendOTP);
+authRoute.post("/verify-forget-otp", verifyForgetPOTP);
+authRoute.post("/reset-password", resetForgetPassword);
 
 module.exports = { authRoute };
