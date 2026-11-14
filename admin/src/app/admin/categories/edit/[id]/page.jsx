@@ -134,7 +134,7 @@ export default function page() {
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <a
-            href="/categories"
+            href="/admin/categories"
             className="flex items-center text-sm font-semibold text-gray-500 hover:text-red-600 transition-colors mb-4 w-fit"
           >
             <svg
