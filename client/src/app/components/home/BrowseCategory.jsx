@@ -73,7 +73,8 @@ export default function BrowseCategory() {
         const fetchCategories = async () => {
             try {
                 const res = await axios.get(
-                    `http://localhost:8000/admin/category/public-categories`
+                    // `http://localhost:8000/admin/category/public-categories`
+                    `https://joblistener.onrender.com/admin/category/public-categories`
                 );
 
                 setCategories(res.data.data || []);

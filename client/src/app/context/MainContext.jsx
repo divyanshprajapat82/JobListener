@@ -207,7 +207,8 @@ export const MainContext = ({ children }) => {
   const getCategory = () => {
     setCategoriesLoading(true);
     axios
-      .get(`http://localhost:8000/admin/category/public-categories`)
+      // .get(`http://localhost:8000/admin/category/public-categories`)
+      .get(`https://joblistener.onrender.com/admin/category/public-categories`)
       .then((res) => res.data)
       .then((finalData) => {
         if (finalData.success) {
@@ -231,7 +232,8 @@ export const MainContext = ({ children }) => {
   const getPlatformSetting = () => {
     setPlatformLoading(true);
     axios
-      .get(`http://localhost:8000/admin/platform-setting/get-platform`)
+      // .get(`http://localhost:8000/admin/platform-setting/get-platform`)
+      .get(`https://joblistener.onrender.com/admin/platform-setting/get-platform`)
       .then((res) => res.data)
       .then((finalData) => {
         if (finalData.success) {
