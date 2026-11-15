@@ -36,6 +36,8 @@ export default function JobSeeker() {
 
   const [showOTP, setShowOTP] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   const router = useRouter();
 
@@ -133,6 +135,9 @@ export default function JobSeeker() {
       gender: data.gender,
     };
 
+    setIsSubmitting(true);
+
+
     try {
       const res = await axios.post(
         `${APIURL}/auth/register`,
@@ -155,6 +160,8 @@ export default function JobSeeker() {
       toast.error(
         err.response?.data?.message || "Something went wrong"
       );
+    } finally {
+      setIsSubmitting(false);
     }
 
     setError({});
@@ -596,7 +603,15 @@ export default function JobSeeker() {
                 type="submit"
                 className="px-12 py-3 rounded-2xl bg-red-600 text-white font-semibold hover:bg-red-700 transition cursor-pointer"
               >
-                Register
+                {isSubmitting ? (
+                  <>
+                    <CgSpinner className="animate-spin text-lg" />
+                    <span>Registering...</span>
+                  </>
+                ) : (
+                  <span>Register</span>
+                )}
+                {/* Register */}
               </button>
             </div>
           </form>
