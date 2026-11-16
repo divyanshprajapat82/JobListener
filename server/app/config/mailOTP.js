@@ -2,7 +2,7 @@ const { transporter } = require("../utility/mail");
 
 const mailOTP = async ({ name, email, otp }) => {
 	const mail = {
-		from: `"JobListener Admin" <${process.env.EMAIL_USER}>`,
+		from: `"JobListener Admin" <${process.env.BREVO_SENDER_EMAIL}>`,
 		to: email,
 		subject: "Your JobListener OTP",
 		html: `

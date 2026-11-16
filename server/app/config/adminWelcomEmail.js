@@ -20,7 +20,7 @@ const adminWelcomEmail = async ({
 
 	if (emailType === "welcome") {
 		const mailOptions = {
-			from: `"JobListener Admin" <${process.env.EMAIL_USER}>`,
+			from: `"JobListener Admin" <${process.env.BREVO_SENDER_EMAIL}>`,
 			to: email,
 			subject: "Welcome to JobListener Admin Panel",
 
@@ -284,7 +284,7 @@ const adminWelcomEmail = async ({
 		// });
 
 		const mailOptions = {
-			from: `"JobListener Admin" <${process.env.EMAIL_USER}>`,
+			from: `"JobListener Admin" <${process.env.BREVO_SENDER_EMAIL}>`,
 			to: email,
 			subject: "New Login to Your JobListener Admin Account",
 
