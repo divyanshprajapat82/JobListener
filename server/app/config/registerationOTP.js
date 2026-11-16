@@ -2,7 +2,8 @@ const { transporter } = require("../utility/mail");
 
 const registerationOTP = async ({ name, email, otp }) => {
 	const mail = {
-		from: `"JobListener" <${process.env.EMAIL_USER}>`,
+		// from: `"JobListener" <${process.env.EMAIL_USER}>`,
+		from: `"JobListener" <${process.env.BREVO_SENDER_EMAIL}>`,
 		to: email,
 		subject: "Your JobListener Verification Code",
 		html: `
