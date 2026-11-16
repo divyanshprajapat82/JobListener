@@ -9,6 +9,7 @@ import { RxEyeOpen } from "react-icons/rx";
 import { TbPasswordFingerprint } from "react-icons/tb";
 import { toast } from "sonner";
 import VerifyOTP from "../auth/VerifyOTP";
+import { CgSpinner } from "react-icons/cg";
 
 export default function Employers() {
   const [passwordShow, setPasswordShow] = useState(true);

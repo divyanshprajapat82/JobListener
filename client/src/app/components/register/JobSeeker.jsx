@@ -12,6 +12,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import VerifyOTP from "../auth/VerifyOTP";
+import { CgSpinner } from "react-icons/cg";
 
 export default function JobSeeker() {
   const options = [
