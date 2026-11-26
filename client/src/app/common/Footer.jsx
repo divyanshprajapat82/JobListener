@@ -118,7 +118,7 @@ export default function Footer() {
                   )}
               </div>
               <p className="text-xs sm:text-sm leading-relaxed text-slate-500 dark:text-slate-400 max-w-sm mb-4">
-                CareerPulse is the modern platform connecting exceptional talent with world-class engineering, design, and business teams globally.
+                JobListener is the modern platform connecting exceptional talent with world-class engineering, design, and business teams globally.
               </p>
             </div>
 
